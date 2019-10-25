@@ -1,0 +1,52 @@
+---
+protobufType: "eu.vmis_ehe.vmis2.controlservice.ExternalSituations"
+#protobufType: "eu.vmis_ehe.vmis2.control.data.Situations"
+topic: "Test-External-Situations"
+objects:
+- key: "TEST"
+# X-Protobuf-Type will be set automically based on the protobufType !
+  headers:
+  - X-test-header1: "test-header-1"
+  - X-test-header2: "test-header-2"
+  data:
+    situations:
+    - eventTime: "#TS(2019-08-02T05:56:10.949152200+02:00)"
+      startTime: "#TS(2019-08-02T05:56:10.949152200+02:00)"
+      endTime: "#TS(2019-10-02T08:56:10.949152200+02:00)"
+      situationClassId: "TrafficState"
+      situationSubClassId: "jam"
+      attributesList: []
+      extId:
+        sourceSystem: "HB"
+        sourceSystemId: "4711"
+      location:
+        gipLocations: null
+        coordinates: null
+        milePostings:
+          milePostingsList:
+          - fromKm: 3.0
+            toKm: 2.0
+            roadId: "A23_2"
+      name: null
+      comment: null
+      dangerAhead: false
+    - eventTime: "#TS(2019-08-02T03:56:10.949152200Z)"
+      startTime: "#TS(2019-08-02T03:56:10.949152200Z)"
+      endTime: "#TS(2019-10-02T07:56:10.949152200Z)"
+      situationClassId: "ViewingCondition"
+      situationSubClassId: "extremeFog"
+      attributesList: []
+      extId:
+        sourceSystem: "HB"
+        sourceSystemId: "4712"
+      location:
+        gipLocations: null
+        coordinates: null
+        milePostings:
+          milePostingsList:
+          - fromKm: 3.0
+            toKm: 4.0
+            roadId: "A23_1"
+      name: null
+      comment: null
+      dangerAhead: false

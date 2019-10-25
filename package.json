@@ -1,0 +1,43 @@
+{
+  "name": "kafkacli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "create": "npm run build && npm run test",
+    "build": "tsc -p .",
+    "test": "sudo npm i -g && pizza",
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+  },
+  "bin": {
+    "kafka-cli": "src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/await-timeout": "^0.3.1",
+    "await-timeout": "^0.6.0",
+    "chalk": "^2.4.2",
+    "clear": "^0.1.0",
+    "commander": "^3.0.2",
+    "figlet": "^1.2.4",
+    "kafkajs": "^1.11.0",
+    "path": "^0.12.7",
+    "pino": "^5.13.5",
+    "pino-pretty": "^3.2.2",
+    "yaml": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/clear": "^0.1.0",
+    "@types/figlet": "^1.2.0",
+    "@types/node": "^12.11.1",
+    "@types/pino": "^5.8.12",
+    "@types/yaml": "^1.2.0",
+    "nodemon": "^1.19.4",
+    "protobufjs": "git+https://github.com/protobufjs/protobuf.js.git#4d490eb1bf71f5c5c4c9d253a2ffd36edea12386",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  }
+}
