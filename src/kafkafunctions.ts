@@ -23,16 +23,15 @@ const fs = require("fs").promises;
 const TS_LITERAL = "#TS(";
 const X_PROTO_HEADER = "X-Protobuf-Type";
 
-async function readProtoDef(file: string): Promise<any> {
+async function readProtoDef (file: string): Promise<any> {
   var json = await fs.readFile(file);
   return JSON.parse(json);
 }
 
-export async function listTopics(
+export async function listTopicsServer (
   topic: RegExp,
-  kafkaCliConfig: any
+  kafka: Kafka
 ): Promise<ITopicMetadata[]> {
-  const kafka = new Kafka(kafkaCliConfig);
   const adminClient = kafka.admin();
   await adminClient.connect();
   let metaData = await adminClient.fetchTopicMetadata({ topics: [] });
@@ -49,7 +48,15 @@ export async function listTopics(
   return filteredTopics;
 }
 
-export async function testProduce(
+export async function listTopics (
+  topic: RegExp,
+  kafkaCliConfig: any
+): Promise<ITopicMetadata[]> {
+  const kafka = new Kafka(kafkaCliConfig);
+  return listTopicsServer(topic, kafka);
+}
+
+export async function testProduce (
   topic: string,
   kafkaCliConfig: any,
   delay: number,
@@ -89,7 +96,7 @@ export interface TopicOffsets {
   readonly low: string;
 }
 
-export async function getTopicOffsets(
+export async function getTopicOffsets (
   topic: string,
   kafkaCliConfig: any
 ): Promise<Array<TopicOffsets>> {
@@ -103,7 +110,7 @@ export async function getTopicOffsets(
   }
 }
 
-export async function tailTopics(
+export async function tailTopics (
   topics: RegExp,
   kafkaCliConfig: any,
   protoDefinitionFile: string,
@@ -119,7 +126,7 @@ export async function tailTopics(
 
     log.info(
       `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} ` +
-        (keyFilter ? `keyFilter = ${keyFilter}` : "")
+      (keyFilter ? `keyFilter = ${keyFilter}` : "")
     );
     topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
 
@@ -190,7 +197,7 @@ export async function tailTopics(
         } else {
           let offset: number = low;
 
-          let nm = numMessages && numMessages>0?numMessages:1;
+          let nm = numMessages && numMessages > 0 ? numMessages : 1;
           if (high - nm >= low) {
             offset = high - nm;
           }
@@ -219,7 +226,7 @@ export interface PublishDescription {
   ];
 }
 
-export async function publish(
+export async function publish (
   kafkaCliConfig: any,
   protoDefinitionFile: string,
   yamlFile: string
@@ -278,6 +285,7 @@ export async function publish(
 
 export default {
   listTopics,
+  listTopicsServer,
   getTopicOffsets,
   testProduce,
   tailTopics,
@@ -288,7 +296,7 @@ export default {
  * Replace all timestamps with string representations in a object decoded from protobuf.
  * @param val the document decoded from protobuf.
  */
-function replaceTimeStampInObject(val: any): any {
+function replaceTimeStampInObject (val: any): any {
   if (isTimestamp(val)) {
     let l = val.seconds as Long;
     let n = l.toNumber() * 1000;
@@ -305,7 +313,7 @@ function replaceTimeStampInObject(val: any): any {
  * @param key the key of the current object to check
  * @param val the current object
  */
-function replaceTimeStamp(obj: any, key: string, val: any): void {
+function replaceTimeStamp (obj: any, key: string, val: any): void {
   if (isTimestamp(val)) {
     let l = val.seconds as Long;
     let n = l.toNumber() * 1000;
@@ -326,7 +334,7 @@ function replaceTimeStamp(obj: any, key: string, val: any): void {
  * @param val the object to check
  * @returns true if val is an object
  */
-function isObject(val?: any): boolean {
+function isObject (val?: any): boolean {
   if (val === null) {
     return false;
   }
@@ -338,7 +346,7 @@ function isObject(val?: any): boolean {
  * @param val the object to check
  * @returns true if val is a timestamp
  */
-function isTimestamp(val?: any): boolean {
+function isTimestamp (val?: any): boolean {
   if (val === null) {
     return false;
   }
@@ -351,7 +359,7 @@ function isTimestamp(val?: any): boolean {
  * @param val the object to check
  * @param root the protobuf.Root tu create the Timestamp
  */
-function getTS(val: any, root: protobuf.Root): any | undefined {
+function getTS (val: any, root: protobuf.Root): any | undefined {
   if (typeof val !== "string") {
     return undefined;
   } else {
@@ -371,7 +379,7 @@ function getTS(val: any, root: protobuf.Root): any | undefined {
  * @param val the object to change
  * @param root the protobuf.Root tu create the Timestamp
  */
-function replaceProtoTimeStampsInObject(val: any, root: protobuf.Root): any {
+function replaceProtoTimeStampsInObject (val: any, root: protobuf.Root): any {
   let lDate = getTS(val, root);
   if (lDate) {
     return lDate;
@@ -390,7 +398,7 @@ function replaceProtoTimeStampsInObject(val: any, root: protobuf.Root): any {
  * @param val the current object
  * @param root the protobuf.Root tu create the Timestamp
  */
-function replaceWithProtoTimeStamps(
+function replaceWithProtoTimeStamps (
   obj: any,
   key: string,
   val: any,
@@ -419,7 +427,7 @@ function replaceWithProtoTimeStamps(
  * @param message  the message containing the key, the message value and headers
  * @param root  the protobuf.Root object to decode a protobuf message
  */
-function printMessage(
+function printMessage (
   topic: string,
   partition: number,
   message: KafkaMessage,
@@ -446,7 +454,7 @@ function printMessage(
   }
   log.info(
     `Topic: ${topic}, Time: ${date.toLocaleString()}  Key: ${
-      message.key
+    message.key
     }, Partition: ${partition}, Offset: ${message.offset}`
   );
 
