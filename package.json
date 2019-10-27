@@ -28,11 +28,13 @@
     "envalid": "^5.0.0",
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
+    "fibers": "^4.0.2",
     "figlet": "^1.2.4",
     "kafkajs": "^1.11.0",
     "path": "^0.12.7",
     "pino": "^5.13.5",
     "pino-pretty": "^3.2.2",
+    "sass": "^1.23.1",
     "yaml": "^1.7.2"
   },
   "devDependencies": {
