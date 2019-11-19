@@ -1,7 +1,7 @@
 {
   "brokers": [
-    "localhost:59980",
-    "localhost:59997"
+    "localhost: 50000",
+    "localhost:50001"
   ],
   "clientId": "JayBeesTestClientId-Test",
   "groupId": "JayBeesTestGroupId-Test",

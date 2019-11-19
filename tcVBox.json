@@ -1,0 +1,9 @@
+{
+  "brokers": [
+    "192.168.178.49:50000",
+    "192.168.178.49:50001"
+  ],
+  "clientId": "JayBeesTestClientId-Test-VBox",
+  "groupId": "JayBeesTestGroupId-Test-VBox",
+  "logLevel": 2
+}

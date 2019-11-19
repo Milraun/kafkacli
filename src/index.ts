@@ -8,6 +8,8 @@ import kf from "./kafkafunctions";
 const fs = require("fs").promises;
 import { ITopicMetadata } from "kafkajs";
 import pino from "pino";
+import protobuf from "protobufjs";
+import { printMessage } from "./utils"
 
 const log = pino({
   prettyPrint: {
@@ -19,18 +21,23 @@ const log = pino({
 
 import doodle from "./doodle";
 
-function banner(): void {
+function banner (): void {
   console.log(
     chalk.bold(figlet.textSync("kafkacli", { horizontalLayout: "fitted" }))
   );
 }
 
-async function readKafkaConfig(file: string): Promise<any> {
+async function readKafkaConfig (file: string): Promise<any> {
   var json = await fs.readFile(file);
   return JSON.parse(json);
 }
 
-function printTopics(topics: ITopicMetadata[], full: boolean): void {
+async function readProtoDef (file: string): Promise<any> {
+  var json = await fs.readFile(file);
+  return JSON.parse(json);
+}
+
+function printTopics (topics: ITopicMetadata[], full: boolean): void {
   topics.forEach(t => {
     log.info(t.name);
     if (full) {
@@ -66,10 +73,18 @@ program
   .command("listTopics <regexp>")
   .description("List topics matching regexp")
   .option("-v, --verbose", "detailed output")
-  .action(async function(regex, cmdObj) {
+  .action(async function (regex, cmdObj) {
     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
     let topics = await kf.listTopics(new RegExp(regex), kafkaConfig);
     printTopics(topics, cmdObj.verbose);
+  });
+
+program
+  .command("deleteTopics <regexp>")
+  .description("List topics matching regexp")
+  .action(async function (regex, cmdObj) {
+    let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+    let topics = await kf.deleteTopics(new RegExp(regex), kafkaConfig);
   });
 
 program
@@ -83,7 +98,7 @@ program
     "-kf, --keyFilter <regexp>",
     "regular expression to filter the key with"
   )
-  .action(async function(regex, cmdObj) {
+  .action(async function (regex, cmdObj) {
     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
     await kf.tailTopics(
       new RegExp(regex),
@@ -96,11 +111,41 @@ program
   });
 
 program
+  .command("tailTopicsObservable <regexp>")
+  .description(
+    "Tail topics per regexp. Show numOffsets for all partitions or all if omitted"
+  )
+  .option("-f, --follow", "follow. Stay online an show incoming messages")
+  .option("-l, --lines <numLines>", "number of messages per partition", 1)
+  .option(
+    "-kf, --keyFilter <regexp>",
+    "regular expression to filter the key with"
+  )
+  .action(async function (regex, cmdObj) {
+    let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+    let observable = await kf.tailTopicsObservable(
+      new RegExp(regex),
+      kafkaConfig,
+      cmdObj.lines,
+      cmdObj.follow
+    );
+    let proto = await readProtoDef(cmdObj.parent.protobuf);
+    let root = protobuf.Root.fromJSON(proto);
+
+    observable.subscribe({
+      next: (m) => printMessage(m.topic, m.partition, m.message, root),
+      complete: () => log.info(`Done!`),
+      error: (e) => log.error(`An error occured: ${e}`)
+    })
+
+  });
+
+program
   .command("publish <yaml>")
   .description(
     "Publish the contents described in a yaml file to a topic. Data is converted to protobuf before publishing."
   )
-  .action(async function(yaml, cmdObj) {
+  .action(async function (yaml, cmdObj) {
     log.info(`publish: ${yaml}`);
     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
     await kf.publish(kafkaConfig, cmdObj.parent.protobuf, yaml);
@@ -111,7 +156,7 @@ program
 program
   .command("getTopicOffsets <topic>")
   .description("Gets the partition offsets of a certain topic")
-  .action(async function(topic, cmdObj) {
+  .action(async function (topic, cmdObj) {
     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
     let topicOffsets = await kf.getTopicOffsets(topic, kafkaConfig);
     topicOffsets.forEach(o => {
@@ -124,13 +169,13 @@ program
   .description("Produces dummy text messages to one topic !")
   .option("-n <numMessages>", "number of message", 10)
   .option("-d <delay>", "delay im ms", 0)
-  .action(async function(topic, cmdObj) {
+  .action(async function (topic, cmdObj) {
     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
     await kf.testProduce("JayBeeTest", kafkaConfig, cmdObj.D, cmdObj.N);
   });
 
 // error on unknown commands
-program.on("command:*", function() {
+program.on("command:*", function () {
   console.error(
     "Invalid command: %s\nSee --help for a list of available commands.",
     program.args.join(" ")
