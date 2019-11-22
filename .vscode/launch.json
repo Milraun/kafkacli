@@ -66,14 +66,29 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "kafka-cl tailTopics",
+      "name": "kafka-cl tailTopics follow",
       "program": "${workspaceFolder}\\src\\index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "args": [
-        "--config=testConfig.json",
         "tailTopics",
-        "^tammi.*",
+        "^VRZ-SituationMerged",
         "--follow"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "kafka-cl tailTopics partitions",
+      "program": "${workspaceFolder}\\src\\index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "args": [
+        "tailTopics",
+        "^VRZ-SituationMerged",
+        "--partitions=1,3"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"

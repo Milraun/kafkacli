@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "MeasuredValueStateProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+// Measured value state (MARZ_2018)
+message MeasuredValueStateWrapper{
+	enum MeasuredValueState {
+	    OK = 0;
+	    NOT_MEASURED = 1;
+	    INDETERMINABLE = 2;
+	    SET_MAX = 3;
+	    SET_MIN = 4;
+	    IMPLAUSIBLE = 5;
+	    INTERPOLATED = 6;
+	    EXTRAPLATED = 7;
+	    INCORRECT = 8;
+	}
+}

@@ -76,7 +76,7 @@ export async function deleteTopicsServer (
     }
   }
 
-  filteredTopics.forEach(t => log.info(`Deleting Topic $t`));
+  filteredTopics.forEach(t => log.info(`Deleting Topic ${t.name}`));
   let topicsToDelete = filteredTopics.map(t => t.name);
   await adminClient.deleteTopics({ topics: topicsToDelete });
   await adminClient.disconnect();
@@ -247,11 +247,21 @@ export async function tailTopics (
   }
 }
 
+/**
+ * Tailing topics selected by a regular expression 
+ * returning a rxjs Observable.
+ * @param topics the topics regex
+ * @param kafkaCliConfig the config object needed to initialize kafka
+ * @param numMessages number of messages to go back from tail for each partition
+ * @param follow keep listening and show new message as they appear
+ * @param partitions list of partitions to use. If undefined all partitiions are used.
+ */
 export async function tailTopicsObservable (
   topics: RegExp,
   kafkaCliConfig: any,
   numMessages?: number,
-  follow?: boolean
+  follow?: boolean,
+  partitions?: number[]
 ): Promise<Observable<EachMessagePayload>> {
   const kafka = new Kafka(kafkaCliConfig);
   const consumer = kafka.consumer({ groupId: kafkaCliConfig.groupId });
@@ -259,24 +269,31 @@ export async function tailTopicsObservable (
   try {
     let topicsMeta = await listTopics(topics, kafkaCliConfig);
 
-    log.info(
-      `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} `
-    );
-    topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
-
     let partitionOffsetsPerTopic: { [id: string]: TopicOffsets[] } = {};
     let endOffsetPerTopicPartition: { [topicPartition: string]: number } = {};
     let finishedTopicPartitions: { [topicPartition: string]: number } = {};
 
     topicsMeta.forEach(async tm => {
       let partitionOffsets = await getTopicOffsets(tm.name, kafkaCliConfig);
-      partitionOffsetsPerTopic[tm.name] = partitionOffsets;
-      partitionOffsets.forEach(
-        to =>
+      partitionOffsetsPerTopic[tm.name] = partitionOffsets.filter(to => !partitions || partitions.includes(to.partition));
+      partitionOffsets
+        .filter(to => !partitions || partitions.includes(to.partition))
+        .forEach(
+        to => {
           (endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
             +to.high || 0)
+        }
       );
     });
+
+    log.info(
+      `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} `
+    );
+    topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
+    if( partitions ) {
+      let sPart = partitions.join(",");
+      log.info(`Using partitions: ${sPart}`);
+    }
     await consumer.subscribe({ topic: topics });
 
     const subject = new Subject<EachMessagePayload>();

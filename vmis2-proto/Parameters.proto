@@ -1,0 +1,168 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.paramservice;
+
+import "ValueWrappers.proto";
+import "ConfigMqUqVq.proto";
+import "ConfigBase.proto";
+import "google/protobuf/wrappers.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.paramservice";
+option java_outer_classname = "ParametersProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.paramservice";
+
+// Parameter definition set, that consists of multiple parameter definitions, each of which defines a structure of a single parameter
+message ParameterDefinitionSet {
+    string definition_set_id = 1; // ID of parameter definition set
+    repeated ParameterDefinition definitions = 3; // List of parameter definitions, that this set consists of
+    ItemType propagation_target = 9; // Type of sensor, that these parameter definitions apply to
+    DefinitionType definitionType = 10; // Type of algorithm, that this parameter definition set represents
+}
+
+// Definition of a single parameter value
+message ParameterDefinition {
+    string parameter_id = 1; // ID of parameter that this definition applies to
+    string caption = 2; // Displayable and readable parameter name for UI
+    string unit = 4; // Unit of measure
+    ParameterScope scope = 5; // Scope of the parameter  (e.g. Global / Lane specific)
+    ValueType value_type = 6; // Type of the parameter value (e.g. int, string, double...)
+    ValueRestriction value_restriction = 7; // Boundaries for the value of parameter (e.g. min / max)
+    reserved 8; // ver. 0.12.0: Ranges unavailable_numbers = 8;
+    repeated int32 unavailable_numbers = 9; // Unavailable numbers for numbered values (e.g. no value could be defined for some lane specific parameter at lane 1.)
+}
+
+//List for Propagation in Kafka
+//for easy parsing the instance_id and the definition_set_id is repeated here
+//and must be the same for all entries
+message ParameterSetList {
+    string instance_id = 1; // ID of the instance
+    string definition_set_id = 2; // ID of parameter definition set
+    string road_id = 3; // ID of the road (autobahn or ramp)
+    repeated ParameterSet values = 4; // List of parameter sets
+    string iid = 5;
+}
+
+// Set of parameters (parameter values)
+message ParameterSet {
+    string instance_id = 1; // ID of the instance
+    string definition_set_id = 2; // ID of parameter definition set
+    ParametrizationTarget target = 3; // Target of the parameterization (e.g. MQ with id MQ_XY, or UZ with id UZ_FVE, or VRZ)
+    repeated ParameterValue values = 4; // List of global parameters
+    repeated NumberedParameterValues numbered_values = 5; // List of numbered parameters
+    // For external consumers, defines the source of the value.
+    // When the parameter inheritance rules apply, you have to be able to see, where the actual value come from.
+    // (e.g. target: MQ MQ_XY, valueSource: VRZ means that the value was inherited from system default, but it is intended for MQ_XY)
+    ValueSource value_source = 6;
+    string comment = 100; // Comment provided when this parameter was activated
+    google.protobuf.Int64Value timestamp = 101; // Timestamp this item was saved at
+    string userId = 102; //User that saved this ParameterSet
+}
+
+// Numbered single parameter value.
+// E.g. some parameter has different values based on the number of available lanes.
+message NumberedParameterValues {
+    int32 number = 1; // Some parameters have specific values for particular number of lanes. This is number of lanes but starting with 0 (e.g. 0 = 1FS, 1 = 2FS, 2 = 3FS)
+    repeated ParameterValue values = 2; // List of numbered parameter values for the number of lanes specified above
+}
+
+// Single parameter value
+message ParameterValue {
+    string parameter_id = 1; // ID of the parameter
+    ValueWrapper value = 2; // Value of the parameter
+}
+
+// Simple value restriction for some particular parameter value
+message ValueRestriction {
+    oneof restriction {
+        Ranges ranges_restriction = 1; // Restriction of type from-to
+        AllowedValues allowed_values_restriction = 2; // Enum like restriction, specifies the allowed values
+    }
+}
+
+// Collection of simple min max ranges
+message Ranges {
+    repeated Range ranges = 1; // Restrictions of type from-to
+}
+
+// Simple inclusive min max range
+message Range {
+    ValueWrapper min = 1; // Min value
+    ValueWrapper max = 2; // Max value
+}
+
+// Collection of allowed values
+message AllowedValues {
+    ValueWrapper values = 1; // A list of allowed values (e.g. STRING_LIST)
+}
+
+// An instance
+message Instance {
+    string instance_id = 1; // ID of the instance
+    string caption = 2; // Visible name of the instance for UI
+}
+
+// The Parameterizable object
+message ParametrizationTarget {
+    ItemType item_type = 1; // type of the parameterization target (e.g. MQ, AQ, UZ, VRZ)
+    string item_id = 2; // not required if item type is "system default" (VRZ)
+}
+
+// Type of a parameterizable object (item)
+message ItemType {
+    configservice.ConfigItemType type = 1; // VRZ is the "system default"
+    configservice.CfgUdeSensor.UdeType ude_type = 2; // Only relevant if type = UDE_SENSOR
+    configservice.CfgVltSensor.VltType vlt_type = 3; // Only relevant if type = VLT_SENSOR
+}
+
+// validation rule set for parameter
+message ValidationRuleSet {
+    string definition_set_id = 1; // ID of parameter definition set
+    string caption = 2; // Comment for rule set
+    repeated ValidationRule rules = 3; // List of rules
+}
+
+// Single validation rule for parameter
+message ValidationRule {
+    string caption = 1; // Comment for rule
+    string rule = 2; // Rule in Spring Expression Language (SpEL) format
+    string fail_message = 3; // Message that should be displayed if the rule is broken
+    ValidationSeverity severity = 4; // Severity level of the rule violation.
+}
+
+// Scope of a parameter value
+enum ParameterScope {
+    UNDEFINED = 0; // Default value required by the framework
+    GLOBAL = 1; // Independent from the lane count and lane index
+    LANE_COUNT = 2; // Parameter value defined by the number of lanes for AQ/MQ
+    LANE_INDEX = 3; // Parameter value defined for the specific lane (sensor) for AQ/MQ
+}
+
+// Source of the value, used for external consumers
+enum ValueSource {
+    SOURCE_UNDEFINED = 0; // Default value required by the framework
+    VRZ = 1; // Value was defined at the VRZ
+    UZ = 2; // Value was defined at the UZ
+    DIRECT = 3; // Value was defined directly for the object
+}
+
+// Scope of a parameter value
+enum MainDetector {
+    DETECTOR_UNDEFINED = 0; // Default value required by the framework
+    VDE = 1;
+    UDE = 2;
+    IMMISSIONSDATEN = 3;
+}
+
+// Scope of a parameter value
+enum DefinitionType {
+    DEFINITION_TYPE_UNKNOWN = 0; // Default value required by the framework
+    SITUATIONSERKENNUNGSVERFAHREN = 1; // Type: Situationserkennungsverfahren
+    DATENAUFBEREITUNG = 2; // Type: Datenaufbereitung
+    DATENUEBERNAHME = 3; // Type: Datenuebernahme
+}
+
+enum ValidationSeverity {
+    SEVERITY_UNDEFINED = 0; // Default value required by the framework
+    WARNING = 1; // Severity: Warning
+    ERROR = 2; // Severity: Error
+}

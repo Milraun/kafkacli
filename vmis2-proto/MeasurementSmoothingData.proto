@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data.smooth;
+option java_outer_classname = "MeasurementSmoothingDataProto";
+
+/* State of value smoothing*/
+
+enum MeasurementSmoothingState{
+
+	OK = 0;					// The smoothed value could be determine.
+	INDETERMINATE = 1;	// The smoothed value could not be determine.
+}
+
+/* Short-term measurement smoothing data to smooth data of lane. (output)*/
+message PrognosisDataLane {
+  string id = 1;                                    // Identification of lane
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data
+                                                     * record happens to be processed by the stream processing 
+                                                     * application, i.e. when the record is being consumed. The 
+                                                     * processing time may be milliseconds, hours, or days etc. later
+                                                     * than the original event time This is something like setting a 
+                                                     * system_time from the database in old.
+                                                     * specification: 'systemzeit' */
+    google.protobuf.Timestamp event_time = 3;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or aggregation
+                                                     * time of the situation systems
+                                                     * specification: intervalbegin */
+    int32 interval_length = 4;                      // Recording interval length in seconds
+  	string algo_name = 5;							// smoothing procedure.
+  	string algo_instance = 6;						// smoothing instance.
+    google.protobuf.Timestamp seq_begin = 7;        /* Timestamp: begin of sequential preparation. 
+                                                     * null=no preparation. Specification: 'ersetzungsbeginn' */
+    int32 q_KFZ = 8;                                // Vehicle volume pro hour
+    int32 q_PKW = 9;                                // Passenger cars volume pro hour
+    int32 q_LKW = 10;                               // Heavy vehicle (truck) volume pro hour
+    int32 q_B = 11;									// measurement traffic volume
+    int32 a_LKW = 12;								// percentage of trucks							
+    int32 d = 13;								    // traffic density
+  	int32 d_PKW = 14;								// car density
+  	int32 d_LKW = 15;								// trucks density
+  	int32 d_q_B = 16;								// measurement traffic  density
+    int32 v_KFZ = 17;                               // Average speed of all vehicles
+    int32 v_PKW = 18;                               // Average speed of passenger cars
+    int32 v_LKW = 19;                               // Average speed of heavy vehicle
+    int32 b = 20;                                   // Vehicle occupancy rate in %
+    int32 s = 21;                                   // Variance of speeds
+    MeasurementSmoothingState q_KFZ_state = 22;		// State after value smoothing of qKFZ
+    MeasurementSmoothingState q_PKW_state = 23;     // State after value smoothing of qPKW
+    MeasurementSmoothingState q_LKW_state = 24;     // State after value smoothing of qLKW
+    MeasurementSmoothingState q_B_state = 25;	  	// State after value smoothing of measurement traffic volume
+    MeasurementSmoothingState a_LKW_state = 26;		// State after value smoothing of aLKW
+    MeasurementSmoothingState d_state = 27;			// State after value smoothing of traffic density 
+	MeasurementSmoothingState d_PKW_state = 28;		// State after value smoothing of cars density
+	MeasurementSmoothingState d_LKW_state = 29;		// State after value smoothing of trucks density
+	MeasurementSmoothingState d_q_B_state = 30;		// State after value smoothing of measurement traffic density
+    MeasurementSmoothingState v_KFZ_state = 31;     // State after value smoothing of vKFZ
+    MeasurementSmoothingState v_PKW_state = 32;	    // State after value smoothing of vPKW
+    MeasurementSmoothingState v_LKW_state = 33;	    // State after value smoothing of vLKW
+    MeasurementSmoothingState b_state = 34;			// State after value smoothing of Vehicle occupancy rate in %
+    MeasurementSmoothingState s_state = 35;	        // State after value smoothing of Variance of speeds
+    int32 q_KFZ_quality = 36;                       // Quality of vehicle volume in percent  (specification:  'Guete')
+    int32 q_PKW_quality = 37;                       // Quality of cars volume in percent  (specification:  'Guete')
+    int32 q_LKW_quality = 38;                       // Quality of trucks volume in percent  (specification:  'Guete')
+    int32 q_B_quality = 39;							// Quality of measurement traffic volume in percent  (specification:  'Guete')
+    int32 v_KFZ_quality = 40;                       // Quality of Average speed of all vehicles in percent  (specification:  'Guete')
+    int32 v_PKW_quality = 41;                       // Quality of Average speed of cars in percent (specification:  'Guete')
+    int32 v_LKW_quality = 42;                       // Quality of Average speed of trucks in percent  (specification:  'Guete')
+    int32 b_quality = 43;                           // Quality of Vehicle occupancy rate in % in percent  (specification:  'Guete')
+    int32 s_quality = 44;                           // Quality of Variance of speeds in percent  (specification:  'Guete')
+    int32 a_LKW_quality = 45;						// Quality of percentage of trucks in percent  (specification:  'Guete')							
+    int32 d_quality = 46;							// Quality of traffic density in percent  (specification:  'Guete')
+    int32 d_PKW_quality = 47;						// Quality of cars density in percent  (specification:  'Guete')
+    int32 d_LKW_quality = 48;						// Quality of trucks density in percent  (specification:  'Guete')
+    int32 d_q_B_quality = 49;						// Quality of measurement traffic density in percent  (specification:  'Guete')
+}
+/* Short-term measurement smoothing data to smooth data of detection site. (output) */
+message PrognosisDataDetSite {
+ 
+    string id = 1;                                  // Identification of detection site
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data
+                                                     * record happens to be processed by the stream processing 
+                                                     * application, i.e. when the record is being consumed. The 
+                                                     * processing time may be milliseconds, hours, or days etc. later
+                                                     * than the original event time This is something like setting a 
+                                                     * system_time from the database in old.
+                                                     * specification: 'systemzeit' */
+    google.protobuf.Timestamp event_time = 3;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or aggregation
+                                                     * time of the situation systems
+                                                     * specification: intervalbegin */
+    int32 interval_length = 4;                      // Recording interval length in seconds
+  	string algo_name = 5;							// smoothing procedure.
+  	string algo_instance = 6;						// smoothing instance.
+    google.protobuf.Timestamp seq_begin = 7;        /* Timestamp: begin of sequential preparation. 
+                                                     * null=no preparation. Specification: 'ersetzungsbeginn' */
+    int32 Q_KFZ = 8;                                // Vehicle volume pro hour
+    int32 Q_PKW = 9;                                // Passenger cars volume pro hour
+    int32 Q_LKW = 10;                               // Heavy vehicle (truck) volume pro hour
+    int32 Q_B = 11;									// measurement traffic volume
+    int32 A_LKW = 12;								// percentage of trucks							
+    int32 D = 13;							        // traffic density
+  	int32 D_PKW = 14;							    // car density
+  	int32 D_LKW = 15;							    // trucks density
+  	int32 D_q_B = 16;							    // measurement traffic  density
+    int32 V_KFZ = 17;                               // Average speed of all vehicles
+    int32 V_PKW = 18;                               // Average speed of passenger cars
+    int32 V_LKW = 19;                               // Average speed of heavy vehicle
+    int32 B = 20;                                   // Vehicle occupancy rate in %
+    int32 S = 21;                                   // Variance of speeds
+    MeasurementSmoothingState Q_KFZ_state = 22;		// State after value smoothing of qKFZ
+    MeasurementSmoothingState Q_PKW_state = 23;     // State after value smoothing of qPKW
+    MeasurementSmoothingState Q_LKW_state = 24;     // State after value smoothing of qLKW
+    MeasurementSmoothingState Q_B_state = 25;	  	// State after value smoothing of measurement traffic volume
+    MeasurementSmoothingState A_LKW_state = 26;		// State after value smoothing of aLKW
+    MeasurementSmoothingState D_state = 27;	        // State after value smoothing of traffic density 
+	MeasurementSmoothingState D_PKW_state = 28;	    // State after value smoothing of cars density
+	MeasurementSmoothingState D_LKW_state = 29;     // State after value smoothing of trucks density
+	MeasurementSmoothingState D_q_B_state = 30;	    // State after value smoothing of measurement traffic density
+    MeasurementSmoothingState V_KFZ_state = 31;     // State after value smoothing of vKFZ
+    MeasurementSmoothingState V_PKW_state = 32;	    // State after value smoothing of vPKW
+    MeasurementSmoothingState V_LKW_state = 33;	    // State after value smoothing of vLKW
+    MeasurementSmoothingState B_state = 34;		    // State after value smoothing of Vehicle occupancy rate in %
+    MeasurementSmoothingState S_state = 35;	        // State after value smoothing of Variance of speeds
+    int32 Q_KFZ_quality = 36;                       // Quality of vehicle volume in percent  (specification:  'Guete')
+    int32 Q_PKW_quality = 37;                       // Quality of cars volume in percent  (specification:  'Guete')
+    int32 Q_LKW_quality = 38;                       // Quality of trucks volume in percent  (specification:  'Guete')
+    int32 Q_B_quality = 39;							// Quality of measurement traffic volume in percent  (specification:  'Guete')
+    int32 V_KFZ_quality = 40;                       // Quality of Average speed of all vehicles in percent  (specification:  'Guete')
+    int32 V_PKW_quality = 41;                       // Quality of Average speed of cars in percent (specification:  'Guete')
+    int32 V_LKW_quality = 42;                       // Quality of Average speed of trucks in percent  (specification:  'Guete')
+    int32 B_quality = 43;                           // Quality of Vehicle occupancy rate in % in percent  (specification:  'Guete')
+    int32 S_quality = 44;                           // Quality of Variance of speeds in percent  (specification:  'Guete')
+    int32 A_LKW_quality = 45;						// Quality of percentage of trucks in percent  (specification:  'Guete')							
+    int32 D_quality = 46;                           // Quality of traffic density in percent  (specification:  'Guete')
+    int32 D_PKW_quality = 47;                       // Quality of cars density in percent  (specification:  'Guete')
+    int32 D_LKW_quality = 48;                       // Quality of trucks density in percent  (specification:  'Guete')
+    int32 D_Q_B_quality = 49;                       // Quality of measurement traffic density in percent  (specification:  'Guete')
+}
+  
+/* List of PrognosisDataLane used e.g. to publish PrognosisDataLane-data to a broker etc. */
+message PrognosisDataLanes {
+    repeated PrognosisDataLane data = 1;
+    string iid = 2;                     // message id
+}
+
+/* List of PrognosisDataDetSite used e.g. to publish PrognosisDataDetSites to a broker etc. */
+message PrognosisDataDetSites {
+    repeated PrognosisDataDetSite data = 1;
+    string iid = 2;                     // message id
+}
+  

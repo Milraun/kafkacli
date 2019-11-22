@@ -1,0 +1,254 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "VehicleType.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "ImmisionProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+    
+// Choice of control measure relevant values
+message ImmControlMeasureOpt {
+	enum ControlMeasureOpt{	
+   	NOX = 0;                        // Rate with NOx
+    NO2 = 1;  						// Rate with NO2
+    }                      
+}    
+
+// Plausibility codes
+message ImmPlausCodeWrapper {
+	enum ImmPlausCode {
+	    OK = 0;                                     // Plausibility ok
+	    TOO_HIGH = 1;                           	// Value is greater than upper limit
+	    TOO_LOW = 2;                           		// Value is smaller than lower limit
+	    DISCREPANCE = 3;                        	// Distance to last value is too large 
+	    STABLE = 4;                             	// Value is stable for 6 hours 
+	    MISSING = 5;                            	// Value is missing
+	}
+}   
+
+// Hour groups dispersion class of immission
+message ImmDispersionClassHourGroupWrapper {
+	enum ImmDispersionClassHourGroup {
+	    FROM1_TO5 = 0;                              // From 1:00 to 5:00 am
+	    FROM5_TO9 = 1;                              // From 5:00 to 9:00 am
+	    FROM9_TO13 = 2;                             // From 9:00 am to 1:00 pm
+	    FROM13_TO17 = 3;                            // From 1:00 to 5:00 pm
+	    FROM17_TO21 = 4;                            // From 5:00 to 9:00 pm
+	    FROM21_TO1 = 5;                             // From 9:00 pm to 1:00 am
+	}   
+}
+
+// Dispersion class of immission
+message ImmDispersionClassWrapper {
+	enum ImmDispersionClass {
+	    LOW = 0;                                    // Low dispersion
+	    MEDIUM = 1;                                 // Medium dispersion
+	    HIGH = 2;                                   // High dispersion
+    }   
+}
+
+// Tau values
+message ImmTauValues {
+    message TauData {
+        double tau = 1;                                 			// Calculated tau value
+        google.protobuf.Timestamp processing_time = 2;  			// Timestamp of calculated tau value
+    }
+    
+    message DispersionClassHourGroupData {
+        ImmDispersionClassHourGroupWrapper.ImmDispersionClassHourGroup hour_class = 1;      // Dispersion hour class
+        google.protobuf.Timestamp next_timestamp = 2;   			// Timestamp of next dispersion class cycle
+        double tau_averaged= 3;                         			// Tau value average of dispersion hour class
+    }
+    
+    repeated TauData data = 1;                          			// Calculated tau values for last 24 hours
+    repeated DispersionClassHourGroupData class_data = 2;			// Timestamps of dispersion classes for next 24 hours
+    
+    ImmDispersionClassHourGroupWrapper.ImmDispersionClassHourGroup act_hour_group = 3;     	// Current dispersion class hour group
+    ImmDispersionClassHourGroupWrapper.ImmDispersionClassHourGroup next_hour_group = 4;    	// Next dispersion class hour group
+    ImmDispersionClassHourGroupWrapper.ImmDispersionClassHourGroup last_hour_group = 5;    	// Last dispersion class hour group
+}   
+
+// Short term data (2 + 0 data)
+message ImmLVSV30 {
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data  
+                                                         * record happens to be processed by the stream processing application, 
+                                                         * i.e. when the record is being consumed. The processing time may be 
+                                                         * milliseconds, hours, or days etc. later than the original event time 
+                                                         * This is something like setting a system_time from the database in old 
+                                                         * systems */
+    string id = 3;										// System id
+    int32 q_PKW = 4;									// Quantity of passenger cars (LV)
+    int32 q_LKW = 5;    								// Quantity of heavy vehicles (SV)                     
+}
+
+// Environment data of a system
+message ImmED {
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data  
+                                                         * record happens to be processed by the stream processing application, 
+                                                         * i.e. when the record is being consumed. The processing time may be 
+                                                         * milliseconds, hours, or days etc. later than the original event time 
+                                                         * This is something like setting a system_time from the database in old 
+                                                         * systems */
+    string id = 3;										// System id
+    double value_NO = 4;								// Value of NO sensor
+    double value_NO2 = 5;    							// Value of NO2 sensor		
+    double value_NOx = 6;   							// Value of NOx sensor		
+    double value_v_wind = 7;   							// Value of windspeed sensor		                   
+}
+
+// Aggregated values of a system (8 + 1 data)
+message ImmQVData {
+	message QVValue {
+	    VehicleTypeWrapper.VehicleType type = 1;              // Vehicle class  
+        int32 q = 2;                                    // Quantity of vehicle type
+	    double v = 3;                                   // Average speed of vehicle type
+	}
+	
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data  
+                                                         * record happens to be processed by the stream processing application, 
+                                                         * i.e. when the record is being consumed. The processing time may be 
+                                                         * milliseconds, hours, or days etc. later than the original event time 
+                                                         * This is something like setting a system_time from the database in old 
+                                                         * systems */
+    string id = 3;										// System id    
+    repeated QVValue values = 4;                        // Quantity and speed of vehicles classes          
+}
+
+// Calculated emmission values of immission algorithm
+message ImmEmmissionValues {
+    double g = 1;                                       // Total emmission
+    double g_PKW = 2;                                   // Emmission of PKW classes
+    double delta = 3;                                   // Difference for g_PKW between standard speed and current speed
+}
+
+// Output Values of immission algorithm
+message ImmOutputValues {
+    google.protobuf.Timestamp event_time = 1;           				/* The point in time when an event or data record occurred,
+                                                        				* i.e. was originally created "at the source". Contains
+                                                         				* e.g. the interval time stamp of input values or 
+                                                         				* aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      				/* Processing time - The point in time when the event or data  
+                                                         				* record happens to be processed by the stream processing application, 
+                                                         				* i.e. when the record is being consumed. The processing time may be 
+                                                         				* milliseconds, hours, or days etc. later than the original event time 
+                                                         				* This is something like setting a system_time from the database in old 
+                                                         				* systems */
+    string id = 3;                                      				// System id
+    bool data_correct = 4;                              				// Correction of input: calculation data were fine"
+    bool switching_state_100 = 5;                       				// Switching state for APIGLuft100
+    bool switching_state_80 = 6;                        				// Switching state for APIGLuft80
+    
+    ImmControlMeasureOpt.ControlMeasureOpt control_measure_opt = 7;		// Control measure relevant value
+    double threshold_100 = 8;                           				// Current threshold of tempo 100
+    double threshold_80 = 9;                            				// Current threshold of tempo 80
+    
+    double nox_PKW = 10;                                				// Contribution of PKW class to NOx-Immission
+    double no2_PKW = 11;                                				// Contribution of PKW class to NO2-Immission
+    double tau = 12;                                    				// Empirical diffusion paramter (Oekoscience- Modell)
+    
+    ImmEmmissionValues emmission_values = 13;           				// Emmission values
+
+    ImmPlausCodeWrapper.ImmPlausCode plaus_NO = 14;                   				// Plausibility NO
+    ImmPlausCodeWrapper.ImmPlausCode plaus_NOx = 15;                  				// Plausibility NOx
+    ImmPlausCodeWrapper.ImmPlausCode plaus_NO2 = 16;                  				// Plausibility NO2
+    ImmPlausCodeWrapper.ImmPlausCode plaus_VWIND = 17;                				// Plausibility vWind
+    ImmPlausCodeWrapper.ImmPlausCode plaus_BUS = 18;                 					// Plausibility bus
+    ImmPlausCodeWrapper.ImmPlausCode plaus_MR = 19;                   				// Plausibility motorbike
+    ImmPlausCodeWrapper.ImmPlausCode plaus_PKW = 20;                  				// Plausibility passenger car
+    ImmPlausCodeWrapper.ImmPlausCode plaus_PKWA = 21;                 				// Plausibility passenger car with trailer
+    ImmPlausCodeWrapper.ImmPlausCode plaus_LKW = 22;                  				// Plausibility heavy vehicle
+    ImmPlausCodeWrapper.ImmPlausCode plaus_LKWA = 23;                 				// Plausibility heavy vehicle with trailer
+    ImmPlausCodeWrapper.ImmPlausCode plaus_LNF = 24;                  				// Plausibility van
+    ImmPlausCodeWrapper.ImmPlausCode plaus_SZ = 25;                   				// Plausibility tractor trailer
+    ImmPlausCodeWrapper.ImmPlausCode plaus_NKFZ = 26;                 				// Plausibility non vehicle
+    int32 plaus_8P1_ufd = 27;                           				// Plausibility 8+1 long term data
+    google.protobuf.Timestamp last_data_correct = 28;   				/* The last point in time when data_correct was true. If data_correct is
+                                                        				 * true, this timestamp is equal to processing_time */
+    bool no_values_replaced = 29;                       				// True if NO values were replaced by algorithm
+}
+
+// Permanent tempo 100 if NO2-minimum 1:00-5:00 a.m. is too high
+message ImmNO2MinPerm100 {
+    message NO2Data {
+        google.protobuf.Timestamp event_time = 1;        /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * aggregation time of the situation */
+        double no2_value = 2;                            // NO2 value
+    }
+    
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data  
+                                                         * record happens to be processed by the stream processing application, 
+                                                         * i.e. when the record is being consumed. The processing time may be 
+                                                         * milliseconds, hours, or days etc. later than the original event time 
+                                                         * This is something like setting a system_time from the database in old 
+                                                         * systems */
+    string id = 3;                                      // System id
+    double no2_min = 4;                                 // NO2 minimum betwenn 1:00 and 5:00 a.m."  
+    repeated NO2Data data = 5;                          // NO2 values of last calculation cycles
+}
+
+// Intermediate values of traffic and tau prognosis
+message ImmIntermediateValues {
+    google.protobuf.Timestamp event_time = 1;           		/* The point in time when an event or data record occurred,
+                                                         		* i.e. was originally created "at the source". Contains
+                                                         		* e.g. the interval time stamp of input values or 
+                                                         		* aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      		/* Processing time - The point in time when the event or data  
+                                                         		* record happens to be processed by the stream processing application, 
+                                                        		* i.e. when the record is being consumed. The processing time may be 
+                                                         		* milliseconds, hours, or days etc. later than the original event time 
+                                                         		* This is something like setting a system_time from the database in old 
+                                                         		* systems */
+    string id = 3;                                      		// System id
+    ImmEmmissionValues analysis_emmission_values = 4;   		// Emmission values before prognosis
+  
+    int32 analysis_LV = 5;                              		// Quantity of passenger cars (LV) before prognosis
+    int32 analysis_SV = 6;                              		// Quantity of heavy vehicles (SV) before prognosis 
+    
+    double factor_LV = 7;                               		// Factor of passenger cars (LV)
+    double factor_SV = 8;                               		// Factor of heavy vehicles (SV)
+    
+    double efa_LV = 9;                                  		// EFA of passenger cars (LV)
+    double efa_SV = 10;                                 		// EFA of heavy vehicles (SV)
+    
+    int32 prognosis_LV = 11;                            		// Prognosis of quantity of passenger cars (LV)
+    int32 prognosis_SV = 12;                            		// Prognosis of quantity of heavy vehicles (SV)
+    
+    ImmDispersionClassHourGroupWrapper.ImmDispersionClassHourGroup hour_group = 13;		// Current hour group for tau averages
+    double tau_average_hour_group = 14;                 		// Tau average of current hour group
+    ImmDispersionClassWrapper.ImmDispersionClass dispersion_class = 15;        // Current dispersion class for tau averages
+    
+    double tau_average_120 = 16;                        		// Tau average last 120 minutes
+    double factor_tau_expectation = 17;                 		// Factor of tau time series
+    double analysis_tau = 18;                           		// Tau value before prognosis
+    
+    repeated ImmLVSV30 hist_lvsv30 = 19;                		// History of short term data (2 + 0)
+    repeated ImmED hist_ed = 20;                        		// History of environment data
+    repeated ImmQVData hist_8P1 = 21;                   		// History of long term data (8 + 1)
+    
+    repeated bool hist_plausibilities_g = 22;           		// History of plausibilities of calculated g
+    repeated ImmEmmissionValues hist_emmission_values = 23;		// History of emmission values
+    ImmTauValues tau_values = 24;                       		// Calculated tau values
+    bool switching_state_changed_100 = 25;              		// True if switching state for APIGLuft100 has changed in last cycle
+    bool switching_state_changed_80 = 26;               		// True if switching state for APIGLuft80 has changed in last cycle
+}   

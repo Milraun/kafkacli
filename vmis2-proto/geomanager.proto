@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+import "base.proto";
+import "features.proto";
+import "hierarchy.proto";
+import "validitySection.proto";
+import "road.proto";
+import "routing.proto";
+import "tmc.proto";
+import "gip.proto";
+import "google/protobuf/descriptor.proto";
+import "google/protobuf/empty.proto";
+
+//import "google/api/annotations.proto";
+
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager";
+option csharp_namespace = "Geomanager";
+option java_outer_classname = "GeoManagerProto";
+
+package eu.vmis_ehe.vmis2.geomanager;
+
+extend google.protobuf.FileOptions {
+    string interface_version = 50000;
+}
+option (interface_version) = "3.1.8";
+
+// Interface that defines functionality for a geo-spatial service.
+service GeoManager {
+	// Returns version information about this service
+    rpc GetServiceVersion(google.protobuf.Empty) returns (base.ServiceVersion) {}
+
+	// Returns geometric features that match the given filter
+	rpc GetGeoFeatures (features.GeoFilter) returns (features.GeoFeatures) {}
+	// Returns geometric features that lie on specific roads
+	rpc GetGeoFeaturesOnRoads (features.FeaturesOnRoadsRequest) returns (features.FeaturesOnRoadsResponds) {}
+
+    // Returns a mapping from ConfigItemType to feature's Types
+	rpc GetConfigTypeMapping ( google.protobuf.Empty ) returns ( features.ConfigTypeMappings ) {}
+
+	// ----- Roads -----
+
+	// Returns Roads that match the given filter. Only EPSG, bounding box and ID list will be evaluated.
+	rpc GetRoads ( road.GetRoadsRequest ) returns ( road.Roads ) {}
+	// Returns a stream of Roads that match the given filter.
+	rpc GetRoadsAsStream ( road.GetRoadsRequest ) returns ( stream road.Road ) {}
+	// Returns geometric elements in a hierarchical order according to the given filter
+	rpc GetElementHierarchy ( hierarchy.HierarchyFilter ) returns ( hierarchy.ElementHierarchy ) {}
+
+	// ----- Validity Sections -----
+
+	// Returns validity-sections for objects specified in ValiditySectionRequest.
+	rpc GetValiditySections ( validitySection.ValiditySectionRequest ) returns ( validitySection.ValiditySectionResponse ) {}
+	// Changes the validity section for the given objects. Returns all affected validity sections.
+	rpc ChangeValiditySections ( validitySection.ValiditySectionChangeRequest )  returns ( validitySection.ValiditySectionResponse ) {}
+	// Resets the given objects to their default validity section. Returns the changed sections.
+	// If an reseted object is still affected by a manual object, it's section will be adjusted and set to manual again.
+	// ( Non-configured objects will be deleted. )
+	rpc ResetValiditySections ( validitySection.ValiditySectionResetRequest ) returns ( validitySection.ValiditySectionResponse ) {}
+
+	// 'Automatische AQ-Kopplung'
+	// Returns groups of VBA ValiditySections. Each group is a proposal for VBAs to be coupled
+	rpc GetAqCouplingGroups( google.protobuf.Empty ) returns ( validitySection.AqCouplingGroups ) {}
+
+	// ----- operational kilometrage conversions -----
+
+	// Converts a RoadMeter (operational meter) into a Point-Reference (contains logical meter).
+	rpc ConvertRoadMeter( road.RoadMeter ) returns (features.PointRoadReference) {}
+	// Converts a RoadMeterSection (operational meter) into a LineRoadReference (contains logical meter).
+	rpc ConvertRoadMeterSection( road.RoadMeterSection ) returns (features.LineRoadReference) {}
+
+	// ----- RDS/TMC conversions -----
+
+    // Converts each element in a set of RoadReferences to the corresponding AlertC location.
+    // (If there is no appropriate AlertC location, a <geomanager.base.Error> is returned instead) 
+	rpc ConvertToAlertC( features.RoadReferences ) returns (alertc.ConversionToAlertCResult) {}
+
+    // Converts each element in a set of AlertC locations to a corresponding RoadReference.
+    // (If there is no appropriate road net representation, a <geomanager.base.Error> is returned instead) 
+	rpc ConvertFromAlertC( alertc.AlertCLocations ) returns (alertc.ConversionFromAlertCResult) {}
+
+	// ----- MapMatching -----
+
+	// Matches the given WGS84 Geometry to a RoadReference of the actual road net.
+	// For map-matching to work properly it is necessary to provide coordinates that are not further away from a road than 100 meters.
+	// Additionally, when matching routes a quite dense sequence of coordinates should be defined.
+	rpc MatchCoordinates( features.Geometry ) returns (features.RoadReferences) {}
+
+	// ----- Geographic projection -----
+
+	// For a point on a directed road given by a geographic coordinate this method returns its
+	// offset position on the road (PointRoadReference).
+	rpc ProjectOntoRoad( road.RoadCoordinate ) returns (features.PointRoadReference) {}
+	
+	// ------ Routing --------
+	
+	// Calculates Routes in road network 
+	rpc CalculateRoutes( routing.RoutingRequest ) returns ( routing.RoutingResult ) {}
+
+	// ----- Coordinate conversion -----
+
+	// Method converts geographic coordinates to another coordinate reference system
+	rpc ConvertCoordinates( features.GeometryConversionRequest ) returns (features.Geometry) {}
+	// Method converts geographic coordinates to another coordinate reference system
+	rpc ConvertToRoadPartGeometry( road.ConvertRoadPartRequest ) returns (road.RoadPartGeometries) {}
+
+	// ----- GIP conversions -----
+
+	//Returns GIP edges with attributes from GIP
+	rpc GetGIPEdges(base.IdList) returns ( gip.GIPEdges ) {}
+
+	// Converts a Point-Reference into a GIP-Point that lies on a GIP-Link
+	rpc ConvertToGIPPoint( features.PointRoadReference ) returns (gip.GIPPoint) {}
+	// Converts a list of Line-References (RoadPath) into a GIP-Road
+	rpc ConvertToGIPRoadPath( features.RoadPath ) returns (gip.GIPRoadPath) {}
+
+    // Converts a GIP-Point into a Point-Reference
+	rpc ConvertFromGIPPoint( gip.GIPPoint ) returns (features.PointRoadReference) {}
+    // Converts a GIP-Road into a list of Line-References (RoadPath)
+	rpc ConvertFromGIPRoadPath( gip.GIPRoadPath ) returns (features.RoadPath) {}
+
+}

@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data.repl;
+option java_outer_classname = "MeasurementReplacementProto";
+
+/* State of value replacements */
+enum MeasurementReplState {
+
+ 	PLAUSIBLE = 0;                              // Specification term: 'Plausibel.'
+    VERIFY = 1;                                 // Specification term: 'Zu pruefen.' 	
+    REPLACED = 2;                               /* Specification term: 'Ersetzt.' 
+                                                 * data were written from value replacement procedure.*/    
+    NOT_PLAUSIBLE_REPL_NOT_ACTIVE = 3;          /* Specification term: 'Nicht plausibel, Ersetzung deaktiviert' 
+                                                 * Not plausible data, replacement is not activated.*/
+    NOT_PLAUSIBLE_REPL_UNSUCCESSFUL = 4;        /* Specification term: 'Nicht plausibel, Ersetzung erfolglos' 
+                                                 * Not plausible data, which could not be replaced.*/
+    NOT_PLAUSIBLE_REPL_NOT_INTENDED = 5;        /* Specification term: 'Nicht plausibel, Ersetzung nicht vorgesehen' 
+                                                 * Not plausible data, replacement is not intended.*/
+    REPL_NOT_ACTIVE = 6;                        /* Specification term: 
+                                                 * 'Ausgefallen bzw. nicht ermittelbar, Ersetzung deaktiviert' 
+                                                 * data should not be replaced.*/
+    REPL_UNSUCCESSFUL = 7;                      /* Specification term:
+                                                 * 'Ausgefallen bzw. nicht ermittelbar, Ersetzung erfolglos' 
+                                                 * data could not be replaced.*/
+    REPL_NOT_INTENDED = 8;                      /* Specification term:
+                                                 * 'Ausgefallen bzw. nicht ermittelbar, Ersetzung nicht vorgesehen' 
+                                                 * data should not be replaced, because its not intended.*/
+	NOT_EXPECTED = 9;                           // Specification term: 'Nicht erwartet.'
+ 	PASSIVATED = 10;                            // Specification term: 'Logisch passiviert.'
+
+}
+
+/* Short-term data with replaced values (output of measurement-replacement-vd) */
+message ShortTermMeasurementReplacedDataLane {
+    string id = 1;                                  // Identification of lane
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data
+                                                     * record happens to be processed by the stream processing 
+                                                     * application, i.e. when the record is being consumed. The 
+                                                     * processing time may be milliseconds, hours, or days etc. later
+                                                     * than the original event time This is something like setting a 
+                                                     * system_time from the database in old.
+                                                     * specification: 'systemzeit' */
+    google.protobuf.Timestamp event_time = 3;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or aggregation
+                                                     * time of the situation systems
+                                                     * specification: intervalbegin */
+    int32 interval_length = 4;                      // Recording interval length in seconds
+    bool v_arithmetical = 5;                        // Speeds are arithmetically averaged
+    int32 seq_number = 6;                           /* 0 means: no replacement; >0 count of sequential replacement
+                                                     * specification: 'lfdNrErsetzung' */
+    google.protobuf.Timestamp seq_begin = 7;        /* Timestamp: begin of sequential replacement. 
+                                                     * null=no replacements. Specification: 'ersetzungsbeginn' */
+    int32 q_KFZ = 8;                                // Vehicle volume
+    int32 q_PKW = 9;                                // Passenger cars volume
+    int32 q_LKW = 10;                               // Heavy vehicle (truck) volume
+    int32 v_KFZ = 11;                               // Average speed of all vehicles
+    int32 v_PKW = 12;                               // Average speed of passenger cars
+    int32 v_LKW = 13;                               // Average speed of heavy vehicle
+    float t_Netto = 14;                             // Gap time between vehicles
+    int32 b = 15;                                   // Vehicle occupancy rate in %
+    int32 s = 16;                                   // Variance of speeds
+    int32 v_KFZ_smoothed = 17;                      // Exponential smoothed mean value (vehicle volume)
+    MeasurementReplState q_KFZ_state = 18;          // State after value replacement of qKFZ
+    MeasurementReplState q_PKW_state = 19;          // State after value replacement of qPKW
+    MeasurementReplState q_LKW_state = 20;          // State after value replacement of qLKW
+    MeasurementReplState v_KFZ_state = 21;          // State after value replacement of vKFZ
+    MeasurementReplState v_PKW_state = 22;          // State after value replacement of vPKW
+    MeasurementReplState v_LKW_state = 23;          // State after value replacement of vLKW
+    MeasurementReplState t_Netto_state = 24;        // State after value replacement of tNetto
+    MeasurementReplState b_state = 25;              // State after value replacement of b
+    MeasurementReplState s_state = 26;              // State after value replacement of s
+    MeasurementReplState v_KFZ_smoothed_state = 27; // State after value replacement of vKfzSmoothed
+    int32 q_KFZ_quality = 28;                       // Quality in percent  (specification:  'Guete')
+    int32 q_PKW_quality = 29;                       // Quality in percent  (specification:  'Guete')
+    int32 q_LKW_quality = 30;                       // Quality in percent  (specification:  'Guete')
+    int32 v_KFZ_quality = 31;                       // Quality in percent  (specification:  'Guete')
+    int32 v_PKW_quality = 32;                       // Quality in percent  (specification:  'Guete')
+    int32 v_LKW_quality = 33;                       // Quality in percent  (specification:  'Guete')
+    int32 t_Netto_quality = 34;                     // Quality in percent  (specification:  'Guete')
+    int32 b_quality = 35;                           // Quality in percent  (specification:  'Guete')
+    int32 s_quality = 36;                           // Quality in percent  (specification:  'Guete')
+    int32 v_KFZ_smoothed_quality = 37;              // Quality in percent  (specification:  'Guete')
+}
+
+
+/* List of ShortTermMeasurementReplacedDataLane used e.g. to publish ShortTermMeasurementReplacedDataLane-data to a broker etc. */
+message ShortTermMeasurementReplacedDataLanes {
+    repeated ShortTermMeasurementReplacedDataLane data = 1;
+    string iid = 2;                     							// message id
+}

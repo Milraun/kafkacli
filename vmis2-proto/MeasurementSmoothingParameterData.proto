@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data.smooth;
+option java_outer_classname = "MeasurementSmoothingParameterDataProto";
+
+/* State of value smoothing*/
+
+message MeasurementSmoothingProcedure{
+	string id = 1; 					// Smoothing procedure id.
+	string name = 2;				// Smoothing procedure name.
+	repeated string instances = 3;	// Smoothing procedure instances.
+	
+}
+
+
+
+/* Measurement smoothing parameter to smooth data of lane or detection.*/
+message MeasurementSmoothingDetectionSiteParameter  {
+   string id = 1;														// detection site id.
+   bool agg_interval_15_sec = 2;											// aggregation in a 15 seconds interval.
+   repeated MeasurementSmoothingProcedure procedures_15_sec = 3;		// list of active procedures
+   bool agg_interval_30_sec = 4;											// aggregation in a 30 seconds interval.
+   repeated MeasurementSmoothingProcedure procedures_30_sec = 5;		// list of active procedures
+   bool agg_interval_1_min = 6;											// aggregation in a 1 minute interval.
+   repeated MeasurementSmoothingProcedure procedures_1_min = 7;			// list of active procedures
+   bool agg_interval_2_min = 8;											// aggregation in a 2 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_2_min = 9;			// list of active procedures
+   bool agg_interval_3_min = 10;											// aggregation in a 3 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_3_min = 11;		// list of active procedures
+   bool agg_interval_4_min = 12;											// aggregation in a 4 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_4_min = 13;		// list of active procedures
+   bool agg_interval_5_min = 14;											// aggregation in a 5 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_5_min = 15;		// list of active procedures
+   bool agg_interval_10_min = 16;											// aggregation in a 10 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_10_min = 17;		// list of active procedures
+   bool agg_interval_15_min = 18;											// aggregation in a 15 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_15_min = 19;		// list of active procedures
+   bool agg_interval_30_min = 20;											// aggregation in a 30 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_30_min = 21;		// list of active procedures
+   bool agg_interval_60_min = 22;											// aggregation in a 60 minutes interval.
+   repeated MeasurementSmoothingProcedure procedures_60_min = 23;		// list of active procedures
+   
+}
+
+/* Measurement smoothing trend extra polation parameter to smooth data of lane or detection.*/
+message MeasurementSmoothingTrendextrapolParameter  {
+	message SmoothingParameter {
+		float alpha_QKFZ_rising = 1;			// rising qKfz alpha parameter
+		float beta_QKFZ_rising = 2;				// rising qKfz beta parameter
+		float alpha_QKFZ_falling = 3;			// falling qKfz alpha parameter
+		float beta_QKFZ_falling = 4;			// falling qKfz beta parameter
+	}
+	
+	string id= 1; 			// id of the detection site
+	string instance = 2;	// instance of the smoothing procedure
+	SmoothingParameter smoothing_level_15_sec = 3;	// smoothing level for 15 seconds aggregation.
+	SmoothingParameter smoothing_level_30_sec = 4;	// smoothing level for 30 seconds aggregation.
+	SmoothingParameter smoothing_level_1_min = 5;	// smoothing level for 1 minute aggregation.
+	SmoothingParameter smoothing_level_2_min = 6;	// smoothing level for 2 minutes aggregation.
+	SmoothingParameter smoothing_level_3_min = 7;	// smoothing level for 3 minutes aggregation.
+	SmoothingParameter smoothing_level_4_min = 8;	// smoothing level for 4 minutes aggregation.
+	SmoothingParameter smoothing_level_5_min = 9;	// smoothing level for 5 minutes aggregation.
+	SmoothingParameter smoothing_level_10_min = 10;	// smoothing level for 10 minutes aggregation.
+	SmoothingParameter smoothing_level_15_min = 11;	// smoothing level for 15 minutes aggregation.
+	SmoothingParameter smoothing_level_30_min = 12;	// smoothing level for 30 minutes aggregation.
+	SmoothingParameter smoothing_level_60_min = 13;	// smoothing level for 60 minutes aggregation.
+}
+
+/* Parameter for measurement smoothing weighted moving average. */
+message MeasurementSmoothingWeightedMovingAverageParameter  {
+	
+	string id= 1; 					// id of the detection site
+	string instance = 2;			// instance of the smoothing procedure
+	repeated int32 weighting = 3;	// weightings values.
+}
+
+/* Parameter for measurement smoothing moving average. */
+message MeasurementSmoothingMovingAverageParameter  {
+	
+	string id= 1; 					// id of the detection site
+	string instance = 2;			// instance of the smoothing procedure
+	int32 interpolationPoints = 3;	// amount of interpolation points.
+}

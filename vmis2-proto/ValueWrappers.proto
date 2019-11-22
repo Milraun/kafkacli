@@ -1,0 +1,76 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.paramservice;
+
+import "google/protobuf/wrappers.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.paramservice";
+option java_outer_classname = "ValueWrappersProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.paramservice";
+
+// Type of a value (e.g. of a single parameter value)
+enum ValueType {
+    UNDEFINED_VALUE_TYPE = 0; // Default value required by the framework
+
+    INT = 1; // int value
+    LONG = 2; // long value
+    STRING = 3; // string value
+    DOUBLE = 4; // double value
+    BOOLEAN = 5; // boolean value
+
+    INT_LIST = 101; // int array/list value
+    LONG_LIST = 102; // long array/list value
+    STRING_LIST = 103; // string array/list value
+    DOUBLE_LIST = 104; // double array/list value
+    BOOLEAN_LIST = 105; // boolean array/list value
+
+    /**
+     * ValueWrapper type StringValue.
+     * To obtain all possible values user has to request the parameter service with the given parameter set id.
+     */
+    PARAMETER_SET_INSTANCE = 200;
+}
+
+// Generic value wrapper around some typified value(s)
+message ValueWrapper {
+    oneof value {
+        google.protobuf.Int32Value int_val = 1; // int value
+        google.protobuf.Int64Value long_val = 2; // long value
+        google.protobuf.StringValue string_val = 3; // string value
+        google.protobuf.DoubleValue double_val = 4; // double value
+        google.protobuf.BoolValue boolean_val = 5; // boolean value
+
+        IntsWrapper int_vals = 101; // int array/list value
+        LongsWrapper long_vals = 102; // long array/list value
+        StringsWrapper string_vals = 103; // string array/list value
+        DoublesWrapper double_vals = 104; // double array/list value
+        BooleansWrapper boolean_vals = 105; // boolean array/list value
+
+        google.protobuf.StringValue parameter_set_id_val = 200; // parameter set id string value
+    }
+}
+
+// Wrapper around a list of int32 values
+message IntsWrapper {
+    repeated int32 values = 1; // Wrapped list of integer values
+}
+
+// Wrapper around a list of int64 (long) values
+message LongsWrapper {
+    repeated int64 values = 1; // Wrapped list of long values
+}
+
+// Wrapper around a list of string values
+message StringsWrapper {
+    repeated string values = 1; // Wrapped list of string values
+}
+
+// Wrapper around a list of double values
+message DoublesWrapper {
+    repeated double values = 1; // Wrapped list of double values
+}
+
+// Wrapper around a list of bool (boolean) values
+message BooleansWrapper {
+    repeated bool values = 1; // Wrapped list of boolean values
+}

@@ -1,0 +1,51 @@
+
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "CommonControlDataProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+
+// VMIS2-S1ANF-715
+// Temporary definition of a simple time specification
+message Timespec {
+    google.protobuf.Timestamp start_time = 6;       // Start time of the validity
+    google.protobuf.Timestamp end_time = 7;         // End time of of the validity
+}
+
+// State if the calculation result is new, only updated or deleted
+message CalculationStateWrapper {
+    enum CalculationState {
+        NEW = 0;
+        UPDATED = 1;
+        DELETED = 2;
+        UNCHANGED = 3;
+    }
+}
+
+/* Unique two-part identification of a situation class, situation object,
+ * measure class or measure object */
+message TwoPartIdentification {
+    string obj_id = 1;          // Object id is created, if for example a situation class or object is created first
+    string iteration_id = 2;    /* Changed if a new iteration/version of an object (e.g. situation, measure) is
+                                 * generated (CalculationState.NEW, CalculationState.UPDATED) */
+}
+
+// properties of lifecycle algorithm, can be configured for each situation sub class and for measures
+message LifecycleProperties {
+    enum LifecycleProcessingSequence {
+        UPSTREAM = 0;                                   // Sort by validity sections kilometers upstream
+        DOWNSTREAM = 1;                                 // Sort by validity sections kilometers downstream
+        LARGETOSMALL = 2;                               // Sort by validity sections size
+    }
+    enum LifecycleMode {
+        GAP = 0;                                        // Merge on gaps
+        OVERLAP = 1;                                    // Merge when overlapping occurs
+    }
+    LifecycleProcessingSequence order = 5;              // Processing order of lifecycle algorithm
+    LifecycleMode mode = 6;                             // Merge mode in lifecycle algorithm
+    int32 threshold = 7;                                // Threshold for given lifecycle mode in percent
+}

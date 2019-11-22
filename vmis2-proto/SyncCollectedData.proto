@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data;
+option java_outer_classname = "SyncCollectedDataProto";
+
+enum TlsDataVersion {
+    VERSION_0 = 0;
+    VERSION_1 = 1;
+    VERSION_2 = 2;
+    VERSION_3 = 3;
+    VERSION_4 = 4;
+    VERSION_5 = 5;
+    VERSION_6 = 6;
+    VERSION_INCORRECT = 255;   
+}
+
+// VMIS2-S1ANF-714
+// VMIS2-S1ANF-492
+// VMIS2-S1ANF-42
+// Synchronized and collected TLS short-term traffic data of lanes
+message ShortTermCollectedDataLane {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of lane
+    int32 q_KFZ = 4;                                // Vehicle volume
+    int32 q_LKW = 5;                                // Heavy vehicle (truck) volume
+    int32 v_PKW = 6;                                // Average speed of passenger cars
+    int32 v_LKW = 7;                                // Average speed of heavy vehicle
+    float t_Netto = 8;                              // Gap time
+    int32 b = 9;                                    // Vehicle occupany rate
+    int32 s = 10;                                   // Variance
+    int32 v_KFZ_smoothed = 11;                      // Exponential smoothed mean value (vehicle volume) 
+    int32 interval_length = 12;                     // Recording interval length in seconds
+    TlsDataVersion version = 13;                    // Data version
+    bool v_arithmetically = 14;                     // True, speeds are arithmetically averaged (TLS infra structure parameter)
+    bool no_measured_data = 15;                     /* No measured data (true, false), because of errors during data input (timeout)
+                                                     * or because of infrastructure errors */   
+    bool passivated = 16;                           // logically passivated or not
+}
+
+// VMIS2-S1ANF-714
+// Synchronized and collected TLS short-term traffic categories (classes) of lanes
+message ShortTermCollectedTrafficCategoriesLane {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of lane
+    int32 num_PKW_similar_categories = 4;           // Number of car similar vehicle categories (classes)
+    int32 num_LKW_similar_categories = 5;           // Number of truck (heavy vehicle) similar vehicle categories (classes)
+    repeated int32 category_boudaries_PKW = 6;      // Category boundaries of car similar vehicle (TLS parameter)
+    repeated int32 category_boundaries_LKW = 7;     // Category boundaries of truck (heavy vehicle) similar vehicle (TLS parameter)
+    repeated int32 PKW_similar_category = 8;        // Car similar vehicle category (class)
+    repeated int32 LKW_similar_category = 9;        // Truck (heavy vehicle) similar vehicle category
+    int32 interval_length = 10;                     // Recording interval length in seconds
+}
+
+
+// VMIS2-S1ANF-714
+// VMIS2-S1ANF-492
+// VMIS2-S1ANF-42
+// Synchronized and collected OPC-UA short-term traffic categories (classes) of lanes
+message ShortTermCollectedDataOpcUaLane {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of lane
+    int32 q_PKW = 4;                                // Passenger car volume
+    int32 q_LKW = 5;                                // Heavy vehicle (truck) volume
+    float v_PKW = 6;                                // Average speed of passenger cars
+    float v_LKW = 7;                                // Average speed of heavy vehicle
+    int32 interval_length = 8;                      // Recording interval length in seconds
+    bool no_measured_data = 9;                      /* No measured data (true, false), because of errors during data input (timeout)
+                                                     * or because of infrastructure errors */
+    bool passivated = 16;                           // logically passivated or not
+}
+
+/* List of ShortTermCollectedDataLane used e.g. to publish ShortTermCollectedDataLane-data to a broker etc. */
+message ShortTermCollectedDataLanes {
+    repeated ShortTermCollectedDataLane data = 1;
+    string iid = 2;                     							// message id
+}

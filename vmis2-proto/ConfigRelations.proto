@@ -1,0 +1,18 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "google/protobuf/timestamp.proto";
+import "ConfigBase.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+// item relations info, used for extended config
+message Relation {
+
+	string type = 1;                                    // relation type (for Situation config: 'SIT_' + <name>) 
+    google.protobuf.Timestamp touched = 2;              // time of last change, for version/modification tracking
+    CfgItemRef source = 3;                              // relation source item
+    repeated CfgItemRef targets = 4;                    // related item(s)
+}
+

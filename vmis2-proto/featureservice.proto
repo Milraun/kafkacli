@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "features.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.featureservice";
+option csharp_namespace = "FeatureService";
+option java_outer_classname = "FeatureServiceProto";
+
+package eu.vmis_ehe.vmis2.geomanager.featureservice;
+
+// Interface for specific feature requests
+service FeatureService {
+
+	// Returns neighbors for states features
+	rpc GetNeighbors ( FeatureRequest ) returns ( FeatureRelations ) {}
+
+}
+message FeatureRequest {
+    features.Type type = 1;
+    repeated string id = 2;
+}
+message FeatureRelations {
+    features.Type type = 1;
+    repeated FeatureRelation feature_relation = 2;
+}
+message FeatureRelation {
+    string id = 1;
+    repeated string related = 2;
+}

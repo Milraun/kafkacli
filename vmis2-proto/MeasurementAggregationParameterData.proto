@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data.aggr;
+option java_outer_classname = "MeasurementAggregationParameterDataProto";
+
+message MeasurementAggrStepParam {
+    string id = 1;                          // Identification of detection site
+    bool aggr_step_15_s = 2;                  // Aggregation to 15 sec. intervals
+    bool aggr_step_30_s = 3;                  // Aggregation to 30 sec. intervals
+    bool aggr_step_2_m = 4;                   // Aggregation to 2 min intervals
+    bool aggr_step_3_m = 5;                   // Aggregation to 3 min intervals
+    bool aggr_step_4_m = 6;                   // Aggregation to 4 min intervals
+    bool aggr_step_10_m = 7;                  // Aggregation to 10 min intervals
+    bool aggr_step_15_m = 8;                  // Aggregation to 15 min intervals
+    bool aggr_step_30_m = 9;                  // Aggregation to 30 min intervals
+    bool aggr_step_60_m = 10;                 // Aggregation to 60 min intervals
+}

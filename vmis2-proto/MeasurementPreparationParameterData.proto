@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data.prepara;
+option java_outer_classname = "MeasurementPreparationParameterDataProto";
+
+/* Parameter for the short-term measurement preparation to analyze lane. (output) */
+message MeasurementPreparationParameterLane {
+
+	string id = 1;				// Identification of lane
+	int32 d_kfz_grenz = 2;		// parameter to compute the density
+	int32 d_kfz_max	=3;			// parameter to compute the density
+	float k1 = 4;				// parameter to compute the measurement traffic volume
+	float k2 = 5;				// parameter to compute the measurement traffic volume
+	
+	
+}
+
+/* Parameter for the short-term measurement preparation to analyze detection site. (output) */
+message MeasurementPreparationParameterDetectionSite {
+
+	string id = 1;				// Identification of lane
+	int32 amount_lane = 2;		// amount of lanes to configure different parameters, depends on the amount of active lanes.
+	int32 d_kfz_grenz = 3;		// parameter to compute the density
+	int32 d_kfz_max	= 4;		// parameter to compute the density
+	float k1 = 5;				// parameter to compute the measurement traffic volume
+	float k2 = 6;				// parameter to compute the measurement traffic volume
+	
+	
+}

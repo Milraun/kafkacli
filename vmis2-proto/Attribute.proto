@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+import "CommonControlData.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "AttributeProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+message AttributeTypeWrapper {
+    // Value type of an attribute
+    enum ValType {
+        STRING = 0;
+        BOOLEAN = 1;
+        INTEGER = 2;
+        FLOAT = 3;
+        ENUM = 4;
+    }
+    
+    enum AggregationBehavior {
+    	IGNORE = 0;
+    	DISJOINT = 1;
+    }
+}
+
+// AttributeClass represents one entry in the situation attribute catalogue
+message AttributeClass {
+
+    TwoPartIdentification two_part_id = 1;                  // Unique two-part identification of a attribute class 
+    string name = 2;                                 		// Name of the attribute class
+    string description = 3;                              	// Description of the attribute class
+    AttributeTypeWrapper.ValType val_type = 4;						// Value type of attribute class
+    repeated string enum_types = 5;                 		// Enum types, if value type is ENUM
+    AttributeTypeWrapper.AggregationBehavior agg_behavior = 6;		// enum to define the aggregation behavoir
+    bool only_measure_attribute = 7;						// flag to define that the attribute is only for measure
+}
+
+// Attribute catalogue lists all attribute classes . 
+message AttributeCatalogue {
+    repeated AttributeClass attribute_classes = 1;           // List of attribute classes
+}
+
+// Attribute
+message Attribute {
+    AttributeClass type = 1;                		// Type (description) of the attribute
+    repeated string value = 2;                             // Value of attribute in first index of the list and if available, aggregated values of attributes from displaced or merged objects, in the following indexes.
+    bool aggregated = 3;              // flag to show attribute was aggregated
+}

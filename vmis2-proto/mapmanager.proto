@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+import "base.proto";
+import "NotifierData.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.mapmanager";
+option csharp_namespace = "Mapmanager";
+
+package eu.vmis_ehe.vmis2.mapmanager;
+
+service MapManager {
+	// Returns details of all map part versions of a specific part type (e.g. LCL)
+	rpc GetAllMapPartVersions( ComponentType ) returns ( MapPartVersions ) {}
+
+	// Returns details of all map versions
+	rpc GetAllMapVersions( google.protobuf.Empty ) returns ( MapVersions ) {}
+
+	// Returns details of currently used map
+	rpc GetActiveMapVersion( google.protobuf.Empty ) returns ( MapVersion ) {}
+
+	// Imports map part (e.g. GIP edges or LCL)
+	// Details of import are provided in MapImportResult.
+	// (Synchronous execution)
+	rpc ImportMapPart( MapImportRequest ) returns ( MapImportResult ) {}
+
+	// Creates map version
+	// (Asynchronous execution)
+	// Returned <MapOperationState> provides an ID for the initiated operation
+	rpc CreateMapVersion( MapCreationRequest ) returns ( stream MapOperationState ) {}
+
+	// Checks map version (does not include a save / creation)
+	// (Asynchronous execution)
+	// Returned <MapOperationState> provides an ID for the initiated operation
+	rpc CheckMapVersion( MapCreationRequest ) returns ( stream MapOperationState ) {}
+
+
+	// Activates map version
+	// (Asynchronous execution)
+	// Returned <MapOperationState> provides an ID for the initiated operation
+	rpc ActivateMapVersion( MapVersionId ) returns ( stream MapOperationState ) {}
+
+	// Cancels pending map operation (
+	// (Synchronous execution)
+	rpc CancelMapOperation( geomanager.base.Id ) returns ( MapOperationState ) {}
+
+	// Deletes map version (not its parts!)
+	// (Synchronous execution)
+	rpc DeleteMapVersion( MapVersionId ) returns ( google.protobuf.Empty ) {}
+
+	// Deletes map part version
+	// (Synchronous execution)
+	rpc DeleteMapPartVersion( MapPartVersionId ) returns ( google.protobuf.Empty ) {}
+	
+	
+}
+
+
+
+// Contains a Component
+message ComponentType {
+	geo.notifier.data.Component component = 1;
+}
+message MapVersionId {
+	string version = 1;
+}
+
+// Definition of a map version (or a part of it) 
+message MapDataVersion {
+    string version = 1;					        // For LCL this is currently '3.2'
+    google.protobuf.Timestamp time = 2;			// (External) Creation or publication time    
+    string description = 3;
+}
+
+message MapDataVersions {
+    MapDataVersion  mapDataVersions = 1;		
+}
+
+// Specific part of the whole map imported into VMIS2 system, e.g. LCL or GIP edges
+message MapPartVersion {
+    geo.notifier.data.Component type = 1;							// e.g. 'LCL' or 'GIP-Edge'
+    MapDataVersion version = 2;
+    google.protobuf.Timestamp importTime = 3;	// Time of import by GeoManager    
+    string description = 4;
+}
+
+message MapPartVersionId {
+    geo.notifier.data.Component type = 1;							// e.g. 'LCL' or 'GIP-Edge'
+    string version = 2;
+}
+
+message MapPartVersions {
+	repeated MapPartVersion mapPartVersion = 1;
+}
+
+
+// Map operations
+enum MapValidationState {
+    UNKNOWN = 0;
+    VALID = 1;
+    INVALId =2;
+}
+
+
+// Version of a whole map present in VMIS2 system
+message MapVersion {
+    MapDataVersion version = 2;
+    bool active = 3;
+    google.protobuf.Timestamp activationTime = 4;		// Time of activation by GeoManager
+
+    repeated MapPartVersion mapPartVersion = 5;			// Map parts
+    
+    MapValidationState validationState = 6;				// VALID: map data complete 	
+    string validationComment = 7;           				
+}
+
+message MapVersions {
+	repeated MapVersion mapVersion = 1;
+}
+
+// Details of map part import request
+message MapImportRequest {
+    geo.notifier.data.Component type = 1;									// e.g. 'LCL' or 'GIP-Edge'
+	string version = 2;									// Version of map part
+	repeated geomanager.base.Property supplyFileLocations = 3;		// Use case: LCL is imported from an EXCEL sheet
+	string description = 4;				
+}
+
+// Result of a map part import
+message MapImportResult {
+ 	MapPartVersion mapPartVersion = 1;
+ 	bool failed = 2;
+ 	repeated geo.notifier.data.Notification notifications = 3;
+}
+
+// Map operations
+enum MapOperationType {
+	CREATE = 0;
+	ACTIVATION = 1;
+	DELETION = 2;
+}
+
+// Map operation state
+enum MapOperationStateType {
+	STARTED = 0;
+	RUNNING = 1;
+	CANCELLED = 2;			// By user request
+	ABORTED = 3;			// May occur for a running operation e.g. on system shutdown
+	FINISHED = 4;
+	FAILED = 5;
+}
+
+// State of map operation
+message MapOperationState {
+    MapOperationType operation = 1;
+	string operationId = 2;
+	MapOperationStateType state = 3;
+ 	MapVersion mapVersion = 4;
+ 	repeated geo.notifier.data.Notification notifications = 5;
+}
+
+// Map check types
+enum MapCheckType {
+    TUNNEL = 0;
+    LCL = 1;
+    DISTANT_DESTINATION = 2;
+    ROAD = 3;
+    NET = 4;
+    INFRASTRUCTURE = 5;
+    ROAD_UZ_RELATION = 6;
+}
+
+
+message MapCreationRequest {
+	string version = 1;
+	repeated MapPartVersionId partVersions = 2;
+	repeated MapCheckType mapChecks = 3; 		// All checks are executed if left empty
+	string description = 4;
+}
+
+

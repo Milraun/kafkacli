@@ -1,0 +1,310 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.tls.received;
+
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+
+option (.heuboe.protobuf.interface_version) = "2.0.1";
+option java_multiple_files = true;
+
+message AXLDeFehler { // Fg 2 | Id 1 | deTyp 1
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlercode = 11;
+    sint32 hersteller = 12;
+}
+
+message AXLDeFehlerList { // Liste von AXLDeFehler
+    string iid = 1;
+    repeated AXLDeFehler elements = 2;
+}
+
+message AXLErgDeFehler { // Fg 2 | Id 1 | deTyp 14
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    bytes tls_fehlerbytes = 12;
+    bytes hersteller_fehlerbytes = 13;
+}
+
+message AXLErgDeFehlerList { // Liste von AXLErgDeFehler
+    string iid = 1;
+    repeated AXLErgDeFehler elements = 2;
+}
+
+message AXLNegativeQuittung { // Fg 2 | Id 2 | deTyp 16
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlerursache = 11;
+    sint32 hersteller = 12;
+}
+
+message AXLNegativeQuittungList { // Liste von AXLNegativeQuittung
+    string iid = 1;
+    repeated AXLNegativeQuittung elements = 2;
+}
+
+message AXLPositiveQuittung { // Fg 2 | Id 2 | deTyp 28
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 quittung = 11;
+}
+
+message AXLPositiveQuittungList { // Liste von AXLPositiveQuittung
+    string iid = 1;
+    repeated AXLPositiveQuittung elements = 2;
+}
+
+message AXLKanalsteuerung { // Fg 2 | Id 2 | deTyp 29
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 kanalsteuerbyte = 11;
+}
+
+message AXLKanalsteuerungList { // Liste von AXLKanalsteuerung
+    string iid = 1;
+    repeated AXLKanalsteuerung elements = 2;
+}
+
+message AXLBetriebsparameter { // Fg 2 | Id 3 | deTyp 32
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 datenversion = 11;
+    sint32 intervalldauer = 12;
+    sint32 datenversion_einzel = 13;
+    sint32 speicherung = 14;
+}
+
+message AXLBetriebsparameterList { // Liste von AXLBetriebsparameter
+    string iid = 1;
+    repeated AXLBetriebsparameter elements = 2;
+}
+
+message AXLGeoKenndaten { // Fg 2 | Id 3 | deTyp 36
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 landeskennung = 11;
+    sint32 strassenart = 12;
+    sint32 strassennummer = 13;
+    double kilometrierung = 14;
+    sint32 fahrtrichtung = 15;
+    sint32 reservebyte = 16;
+}
+
+message AXLGeoKenndatenList { // Liste von AXLGeoKenndaten
+    string iid = 1;
+    repeated AXLGeoKenndaten elements = 2;
+}
+
+message AXLParameterAchslastGrenzwerte { // Fg 2 | Id 3 | deTyp 37
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 max_einzelachslast1 = 11;
+    sint32 max_einzelachslast = 12;
+    sint32 max_abstand_doppelachse1 = 13;
+    sint32 max_doppelachslast1 = 14;
+    sint32 max_abstand_doppelachse2 = 15;
+    sint32 max_doppelachslast2 = 16;
+    sint32 max_abstand_doppelachse3 = 17;
+    sint32 max_doppelachslast3 = 18;
+    sint32 max_abstand_dreifachachse1 = 19;
+    sint32 max_dreifachachslast1 = 20;
+    sint32 max_abstand_dreifachachse2 = 21;
+    sint32 max_dreifachachslast2 = 22;
+    repeated Fahrzeugtyp fahrzeugtypen = 23;
+    
+    message Fahrzeugtyp {
+        sint32 fahrzeugtyp_code = 1;
+        sint32 max_gesamtgewicht = 2;
+    }
+}
+
+message AXLParameterAchslastGrenzwerteList { // Liste von AXLParameterAchslastGrenzwerte
+    string iid = 1;
+    repeated AXLParameterAchslastGrenzwerte elements = 2;
+}
+
+message AXLParameterAchslastklassen5P1 { // Fg 2 | Id 3 | deTyp 38
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    repeated sint32 einzelachslastklasse_grenzen = 11;
+    repeated sint32 doppelachslastklasse_grenzen = 12;
+    repeated sint32 dreifachachslastklasse_grenzen = 13;
+    repeated sint32 fahrzeugklasse3_grenzen = 14;
+    repeated sint32 fahrzeugklasse4_grenzen = 15;
+    repeated sint32 fahrzeugklasse5_grenzen = 16;
+}
+
+message AXLParameterAchslastklassen5P1List { // Liste von AXLParameterAchslastklassen5P1
+    string iid = 1;
+    repeated AXLParameterAchslastklassen5P1 elements = 2;
+}
+
+message AXLParameterAchslastklassen8P1 { // Fg 2 | Id 3 | deTyp 39
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    repeated sint32 einzelachslastklasse_grenzen = 11;
+    repeated sint32 doppelachslastklasse_grenzen = 12;
+    repeated sint32 dreifachachslastklasse_grenzen = 13;
+    repeated sint32 fahrzeugklasse3_grenzen = 14;
+    repeated sint32 fahrzeugklasse5_grenzen = 15;
+    repeated sint32 fahrzeugklasse8_grenzen = 16;
+    repeated sint32 fahrzeugklasse9_grenzen = 17;
+}
+
+message AXLParameterAchslastklassen8P1List { // Liste von AXLParameterAchslastklassen8P1
+    string iid = 1;
+    repeated AXLParameterAchslastklassen8P1 elements = 2;
+}
+
+message AXLEinzelergebnisVersion1 { // Fg 2 | Id 4,36 | deTyp 60
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hundertstelsekunden = 5;
+    sint32 laufende_nr = 6;
+    sint32 gesamtzahl = 7;
+    sint32 fahrzeugtyp = 11;
+    sint32 fahrzeuglaenge = 12;
+    sint32 geschwindigkeit = 13;
+    sint32 fahrzeugabstand = 14;
+    sint32 gesamtgewicht = 15;
+    sint32 ueberladung = 16;
+    repeated Achslastdatengruppe achslastdatengruppen = 17;
+    
+    message Achslastdatengruppe {
+        sint32 achsart = 1;
+        sint32 achslast = 2;
+        sint32 achsabstand = 3;
+    }
+}
+
+message AXLEinzelergebnisVersion1List { // Liste von AXLEinzelergebnisVersion1
+    string iid = 1;
+    repeated AXLEinzelergebnisVersion1 elements = 2;
+}
+
+message AXLEinzelergebnisVersion2 { // Fg 2 | Id 4,36 | deTyp 61
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hundertstelsekunden = 5;
+    sint32 laufende_nr = 6;
+    sint32 gesamtzahl = 7;
+    sint32 fahrzeugtyp = 11;
+    sint32 fahrzeuglaenge = 12;
+    sint32 geschwindigkeit = 13;
+    sint32 fahrzeugabstand = 14;
+    sint32 gesamtgewicht = 15;
+    sint32 ueberladung = 16;
+    repeated Achslastdatengruppe achslastdatengruppen = 17;
+    
+    message Achslastdatengruppe {
+        sint32 achsart = 1;
+        double radlast_links = 2;
+        double radlast_rechts = 3;
+        sint32 achsabstand = 4;
+    }
+}
+
+message AXLEinzelergebnisVersion2List { // Liste von AXLEinzelergebnisVersion2
+    string iid = 1;
+    repeated AXLEinzelergebnisVersion2 elements = 2;
+}
+
+message AXLEinzelergebnisVersion3 { // Fg 2 | Id 4,36 | deTyp 62
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hundertstelsekunden = 5;
+    sint32 laufende_nr = 6;
+    sint32 gesamtzahl = 7;
+    sint32 fahrzeugtyp = 11;
+    sint32 fahrzeuglaenge = 12;
+    sint32 geschwindigkeit = 13;
+    sint32 fahrzeugabstand = 14;
+    sint32 gesamtgewicht = 15;
+    sint32 ueberladung = 16;
+    repeated Achslastdatengruppe achslastdatengruppen = 17;
+    
+    message Achslastdatengruppe {
+        sint32 achsart = 1;
+        sint32 achslast = 2;
+        sint32 achsabstand = 3;
+    }
+}
+
+message AXLEinzelergebnisVersion3List { // Liste von AXLEinzelergebnisVersion3
+    string iid = 1;
+    repeated AXLEinzelergebnisVersion3 elements = 2;
+}
+
+message AXLErgebnisVersion10 { // Fg 2 | Id 4,36 | deTyp 65
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    repeated sint32 einzelachslastklassen = 11;
+    repeated sint32 doppelachslastklassen = 12;
+    repeated sint32 dreifachachslastklassen = 13;
+    sint32 ueberladungen_klasse3 = 14;
+    sint32 ueberladungen_klasse4 = 15;
+    sint32 ueberladungen_klasse5 = 16;
+    repeated sint32 fahrzeugklassen3 = 17;
+    repeated sint32 fahrzeugklassen4 = 18;
+    repeated sint32 fahrzeugklassen5 = 19;
+}
+
+message AXLErgebnisVersion10List { // Liste von AXLErgebnisVersion10
+    string iid = 1;
+    repeated AXLErgebnisVersion10 elements = 2;
+}
+
+message AXLErgebnisVersion11 { // Fg 2 | Id 4,36 | deTyp 66
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    repeated sint32 einzelachslastklassen = 11;
+    repeated sint32 doppelachslastklassen = 12;
+    repeated sint32 dreifachachslastklassen = 13;
+    sint32 ueberladungen_klasse3 = 14;
+    sint32 ueberladungen_klasse5 = 15;
+    sint32 ueberladungen_klasse8 = 16;
+    sint32 ueberladungen_klasse9 = 17;
+    repeated sint32 fahrzeugklassen3 = 18;
+    repeated sint32 fahrzeugklassen5 = 19;
+    repeated sint32 fahrzeugklassen8 = 20;
+    repeated sint32 fahrzeugklassen9 = 21;
+}
+
+message AXLErgebnisVersion11List { // Liste von AXLErgebnisVersion11
+    string iid = 1;
+    repeated AXLErgebnisVersion11 elements = 2;
+}

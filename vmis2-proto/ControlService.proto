@@ -1,0 +1,237 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.controlservice;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/descriptor.proto";
+import "google/protobuf/timestamp.proto";
+import "Measure.proto";
+import "CommonControlData.proto";
+
+extend google.protobuf.FileOptions {
+    string interface_version = 50007;
+}
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.controlservice";
+option java_outer_classname = "ControlServiceProto";
+
+option (interface_version) = "0.0.1";
+
+service ControlService {
+
+    // Returns version information about this service 
+    rpc GetServiceVersion (google.protobuf.Empty) returns (ServiceVersion);
+
+    // Returns all situations from a certain source system
+    rpc GetSituationsOfSource(GetRequest) returns (ExternalSituations);
+
+    // Returns all measures from a certain source system
+    rpc GetMeasuresOfSource(GetRequest) returns (ExternalMeasures);
+
+    // Add or update situations
+    // This method will block until results are calculated
+    rpc WriteSituations (ExternalSituations) returns (Results);
+
+    // Delete situations
+    rpc DeleteSituations (ExternalIdentifications) returns (Results);
+
+    // Add or update measures
+    // This method will block until results are calculated
+    rpc WriteMeasures (ExternalMeasures) returns (Results);
+
+    // Delete measures
+    rpc DeleteMeasures (ExternalIdentifications) returns (Results);
+
+    // Subscribe updates on adjusted measures influenced by a external situation
+    rpc SubscribeSituation (SubscribeRequest) returns (stream AdjustedMeasuresResult);
+
+    // Subscribe updates on adjusted measures influenced by a external measure
+    rpc SubscribeMeasure (SubscribeRequest) returns (stream AdjustedMeasuresResult);
+
+}
+
+// Interface and service version data
+message ServiceVersion {
+    string interface_version = 1;              // interface version, service must set this to option's 'interface_version' above
+    string service_version = 2;                // service version, created from build info (java: maven's ${project.version})
+}
+
+message ExternalAttribute {
+    string name = 1;                                    /* name must match a name of an AttributeClass configured
+                                                         * in the situation catalogue */
+    string value = 2;                                   /* value must be of the type configured in the
+                                                         * situation catalogue */
+}
+
+// Gip-Location as external reference. Describes a line on one road
+message GipLocation {
+    string from_gip_link_id = 1;   //start gip link
+    double from_offset = 2;        //offset on the start gip link
+    string to_gip_link_id = 3;     //end gip link
+    double to_offset = 4;          //offset on the end gip link
+    string gip_version = 5;        //the gip version. Must match the gip version currently used by the GeoManager
+}
+
+//A list of gip locations
+message GipLocations {
+    repeated GipLocation gip_locations = 1;
+}
+
+//Coordinates as external reference. Describes a line on one road
+message Coordinate {
+    double from_longitude = 1;
+    double from_latitude = 2;
+    double to_longitude = 3;
+    double to_latitude = 4;
+    string road_id = 5;
+}
+
+//A list of coordinate locations
+message Coordinates {
+    repeated Coordinate coordinates = 1;
+}
+
+// Mile-Posting (Autobahnkilometer) as external reference. Describes a line on one road
+message MilePosting {
+    double from_km = 1;   //from km
+    double to_km = 2;     //to km
+    string road_id = 3;   //road id
+}
+
+//A list of mile posting locations
+message MilePostings {
+    repeated MilePosting mile_postings = 1;
+}
+
+//An external location must be either a list of gip locations or coordinate locations or mile posting locations
+message ExternalLocationRef {
+    oneof refs {
+        GipLocations gip_locations = 1;
+        Coordinates coordinates = 2;
+        MilePostings mile_postings = 3;
+    };
+}
+
+//An external situation
+message ExternalSituation {
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp start_time = 2;           // Start time of the situation
+    google.protobuf.Timestamp end_time = 3;             // Proposed end time
+    string situation_class_id = 4;                      // The situation class (VMIS2-S1ANF-641)
+    string situation_sub_class_id = 5;                  /* Sub class of a situation (VMIS2-S1ANF-641), contains the
+                                                         * situation class id, if sub class not exist */
+    repeated ExternalAttribute attributes = 6;          // Additional attributes
+    ExternalIdentification ext_id = 7;                  //External identification of the situation
+    ExternalLocationRef location = 9;                   /* location either as gip reference, as coordinates
+                                                         * or as mile postings */
+    string name = 10;                                   // Name of operator
+    string comment = 11;                                // Comment
+    bool danger_ahead = 12;                             // Danger ahead
+}
+
+//An external measure
+message ExternalMeasure {
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp start_time = 2;           // Start time of the measure. (mandatory)
+    google.protobuf.Timestamp end_time = 3;             // End time of the measure. (optional)
+    string measure_class_id = 4;                        // ID of the measure class from measrure catalogue
+    repeated ExternalAttribute attributes = 5;          // Additional attributes
+
+    ExternalIdentification ext_id = 6;                  //External idenfication of the measure
+    ExternalLocationRef location = 7;                   /* location either as gip reference, as coordinates
+                                                         * or as mile postings */
+}
+
+//Request to subscribe to a situation or measure
+message SubscribeRequest {
+    enum LocationMapping {
+        MILE_POSTING = 0; //Return locations mapped to mile posting (Autobahnkilometer)
+        COORDINATES = 1;  //Return locations mapped to coordinates
+        GIP = 2;          //Return locations mapped to gip links and offsets
+    }
+
+    ExternalIdentification ext_id = 1; //External identification of situation or measure to subscribe.
+}
+
+//Request to get Situations or Measures of a certain source_system
+message GetRequest {
+    string source_system = 1;
+}
+
+//A list of external situtations
+message ExternalSituations {
+    repeated ExternalSituation situations = 1;
+}
+
+//A list of external measures
+message ExternalMeasures {
+    repeated ExternalMeasure situations = 1;
+}
+
+//Result for one measure of a subscription
+message MeasureResult {
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data
+                                                         * record happens to be processed by the processing application,
+                                                         * i.e. when the record is being consumed. The processing time may be
+                                                         * milliseconds, hours, or days etc. later than the original event time
+                                                         * This is something like setting a system_time from the database in old
+                                                         * systems */
+    string id = 3;                                       // Id of the resulting measure
+
+    google.protobuf.Timestamp start_time = 4;            // start time of the measure.
+    google.protobuf.Timestamp end_time = 5;              // end time of the measure. (maybe empty
+    string measure_class_id = 6;                        // ID of the measure class from measrure catalogue
+    repeated ExternalAttribute attributes = 7;          // Additional attributes
+
+    ExternalLocationRef location = 8;                   /* location either gip reference, or coordinates
+                                                         * or as mile postings are filled as requested */
+
+}
+
+//Result of a subscription. Can contain multiple adjusted measures or none
+message AdjustedMeasuresResult {
+    ExternalIdentification external_identification = 1; //reference to the request parameters
+    bool measure_found = 2;                    // true if an adjusted measure has been found. It is possible that an external situation
+                                               // does not lead to an adjusted measure. In this case this will be false.
+    repeated MeasureResult adjusted_measure = 3; //The adjusted measures. One Situation can lead to multiple adjusted measures.
+}
+
+//Unique identification of an external situation or measure
+message ExternalIdentification {
+    string source_system = 1;                   /* Source (e.g. EDB, BMS2012, Polizei ...)
+                                                 * must be authorized by user management */
+    string source_system_id = 2;                /* Identifier of the object from the source system,
+                                                 * e.g. event ticket id VMIS2-S1ANF-549 */
+}
+
+//A list of external identifications
+message ExternalIdentifications {
+    repeated ExternalIdentification ids = 1; // List of external identifications
+}
+
+// Result of a post message to add data to the control algorithms
+message Results {
+    repeated WriteResult result = 1;
+}
+
+message WriteResult {
+    ExternalIdentification external_identification = 1;   // unique reference of the external system and id (must be set in input)
+    bool ok = 2;                               // if true the object was applied without error
+    Error error = 3;                           // detailed error description if something went wrong
+}
+
+//Detailed error messaage
+//TODO: Enums for typical error situations
+message Error {
+    string error = 1;
+}

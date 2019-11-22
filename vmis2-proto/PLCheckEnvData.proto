@@ -1,0 +1,736 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "EnumerationsEnvironmentData.proto";
+import "PlCheckData.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.ed;
+option java_outer_classname = "PlCheckEnvDataProto";
+
+
+/* List of FailedPlCheckData used e.g. to publish FailedPlCheckDataEnv-data to a broker etc. */
+message FailedPlCheckDataEnv {
+    repeated eu.vmis_ehe.vmis2.receiving.processing.data.FailedPlCheckData data = 1;
+    string id = 2;                                              // message id
+}
+
+/* List of FailedPlCheckDataEnv used e.g. to publish FailedPlCheckDataEnvs-data to a broker etc. */
+message FailedPlCheckDataEnvs {
+    repeated FailedPlCheckDataEnv data = 1;
+    string iid = 2;                                              // message id
+}
+
+/* Value series for input and output (specification term: 'Wertereihe') for environmental data. */
+message PlCheckEdValueSeries {
+    string id = 1;                                      // Identification of lane
+    float value = 2;                                    // Measured value
+    google.protobuf.Timestamp value_time = 3;           // value stability since
+}
+
+message PlCheckEdValueSeriesList {
+    repeated PlCheckEdValueSeries data = 1;
+    string iid = 2;
+}
+// Plausibility checked data of the air temperature FG3 type 48
+message AirTemperaturePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked air temperature in celsius FG3 type 48
+   	eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+}
+
+// Plausibility checked data of the road surface temperature FG3 type 49
+message RoadSurfaceTemperaturePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked road surface temperature in celsius FG3 type 49
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the residual salt content FG3 type 52
+message ResidualSaltContentPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked residual salt content in percent FG3 type 52
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the precipitation FG3 type 53
+message PrecipitationIntensityPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked precipitation intensity in millimeter per hour FG3 type 53
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the air pressure FG3 type 54
+message AirPressurePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked air pressure in millimeter per hour FG3 type 54
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+
+// Plausibility checked data of the relative air humidity FG3 type 55
+message RelativeAirHumidityPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked relative air humidity in percent FG3 type 55
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the wind direction FG3 type 56
+message WindDirectionPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked wind direction in degrees FG3 type 56
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the wind speed average FG3 type 57
+message WindSpeedAveragePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked wind speed average in meter per second FG3 type 56
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the snow depth FG3 type 58
+message SnowDepthPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked snow depth in centimeter FG3 type 58
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the visibility FG3 type 60
+message VisibilityPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked visibility in meter FG3 type 60
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the luminosity FG3 type 61
+message LuminosityPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked luminosity in lux FG3 type 61
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the wind speed top FG3 type 64
+message WindSpeedTopPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked wind speed top in meter per second FG3 type 64
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the freezing temperature FG3 type 65
+message FreezingTemperaturePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked freezing temperature in celsius FG3 type 65
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the dew-point temperature FG3 type 66
+message DewPointTemperaturePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked dew point temperature in celsius FG3 type 66
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+ 
+// Plausibility checked data of the ground temperature in depth 1 FG3 type 67
+message GroundTemperatureDepthOnePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked ground temperature depth one in celsius FG3 type 67
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+ 
+// Plausibility checked data of the ground temperature in depth 2 FG3 type 68
+message GroundTemperatureDepthTwoPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked ground temperature depth two in celsius FG3 type 68
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+ 
+// Plausibility checked data of the ground temperature in depth 3 FG3 type 69
+message GroundTemperatureDepthThreePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked ground temperature depth three in celsius FG3 type 69
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the road surface condition FG3 type 70
+message RoadSurfaceConditionPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    RoadSurface.Condition value = 5;				// Plausibility checked road surface condition FG3 type 70
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+ 
+// Plausibility checked data of the precipitation type FG3 type 71
+message PrecipitationTypePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    Precipitation.Type value = 5;					// Plausibility checked precipitation type FG3 type 71
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the water film thickness FG3 type 72
+message WaterFilmThicknessPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked water film thickness in millimeter FG3 type 72
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the de-icing grit concentration FG3 type 73
+message DeIcingGritConcentrationPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked de-icing grit concentration in percent FG3 type 73
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the de-icing grit concentration FG3 type 74
+message DeIcingGritPerM2PLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked de-icing grit per square meter in gram FG3 type 74
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the snow film thickness FG3 type 75
+message SnowFilmThicknessPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked snow film thickness in millimeter FG3 type 75
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the ice film thickness FG3 type 76
+message IceFilmThicknessPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked ice film thickness in millimeter FG3 type 76
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the grip FG3 type 77
+message GripPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked grip FG3 type 77
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the global solar radiation FG3 type 78
+message GlobalSolarRadiationPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked global solar radiation in watt per square meter FG3 type 78
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the road surface condition for winter services FG3 type 79
+message RoadSurfaceConditionWinterServicesPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    RoadSurfaceWinterService.Condition value = 5;	// Plausibility checked road surface condition for winter services FG3 type 79
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the nitrogen monoxide FG3 type 80
+message NitrogenMonoxidePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked nitrogen monoxide in milligram per cubic meter FG3 type 80
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the nitrogen dioxide FG3 type 81
+message NitrogenDioxidePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked nitrogen dioxide in milligram per cubic meter FG3 type 81
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the nitrogen oxide FG3 type 82
+message NitrogenOxidePLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked nitrogen oxide in parts per million (ppm) FG3 type 82
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the particulate matter 10 FG3 type 83
+message PM10PLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked particulate matter 10 in milligram per cubic meter FG3 type 83
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the particulate matter 2.5 FG3 type 84
+message PM2_5PLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked particulate matter 2.5 in milligram per cubic meter FG3 type 84
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the particulate matter 1 FG3 type 85
+message PM1PLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked particulate matter 1 in milligram per cubic meter FG3 type 85
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the  A-weighted sound pressure level FG3 type 86
+message  A_WeightedSoundPressureLevelPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked A-weighted sound pressure level in decibel FG3 type 86
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the energy equivalent continuous sound pressure level FG3 type 87
+message  EnergyEquivalentContinuousSoundPressureLevelPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked energy equivalent continuous sound pressure level in decibel FG3 type 86
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the base sound level FG3 type 88
+message BaseSoundLevelPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked base sound level in decibel FG3 type 86
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}
+
+// Plausibility checked data of the middle peak sound level FG3 type 89
+message MiddlePeakSoundLevelPLCheckedData {
+    google.protobuf.Timestamp event_time = 1;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    string id = 3;                                  // Identification of environment sensor
+    int32 intervallength = 4;						// Interval length in seconds
+    float value = 5;								// Plausibility checked middle peak sound level in decibel FG3 type 89
+    eu.vmis_ehe.vmis2.receiving.processing.data.PlCheckState state = 6;							// State of the plausibility check
+      
+}

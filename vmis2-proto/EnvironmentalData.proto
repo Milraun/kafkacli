@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "EnvironmentalDataProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+// state of value plausibility
+message EDValueStatePlausibilityWrapper {
+	enum EDValueStatePlausibility {
+		OK = 0;				// ok
+		ERROR_INFRA = 1;		// infrastructure error
+		ERROR_RANGE = 2;		// value range error
+		ERROR_LOG = 3;		// logical plausibility error
+	}
+}
+
+// state of measured environment value
+message EDMeasuredValueStateAggWrapper {
+	enum EDMeasuredValueStateAgg {
+		OK = 0;				// ok
+		REPLACED = 1;		// measured value replaced
+		MISSED = 2;			// missing measured value
+	}
+}
+
+// VMIS2-S1ANF-325
+// Wetness data
+message EDWetness {
+    // Wetness level (MARZ_2018)
+    enum WetnessLevel {
+       LEVEL_0 = 0;        // dry
+       LEVEL_1 = 1;
+       LEVEL_2 = 2;
+       LEVEL_3 = 3;
+       LEVEL_4 = 4;
+       INDETERMINABLE = 255;
+    }
+    google.protobuf.Timestamp event_time = 1;       // Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  // Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  // Identification of evironmental data detection (wetness)
+    WetnessLevel wetnessLevel = 4;                  // Wetness level
+    int32 interval_length = 5;                      // Interval length in seconds(aggregation interval)
+}
+
+/* List of EDWetness used e.g. to publish EDWetness-data to a broker etc. */
+message EDWetnessLevels {
+    repeated EDWetness data = 1;
+    string id = 2;                     // message id
+}
+
+// VMIS2-S1ANF-819
+// Visibility data
+message EDVisibility {
+    // Visibility level (MARZ_2018)
+    enum VisibilityLevel {
+      LEVEL_0 = 0;        // no visibility restriction
+      LEVEL_1 = 1;        // <= 400 m
+      LEVEL_2 = 2;        // <= 250 m
+      LEVEL_3 = 3;        // <= 120 m
+      LEVEL_4 = 4;        // <=  80 m
+      LEVEL_5 = 5;        // <=  50 m
+      INDETERMINABLE = 255;
+    }
+    google.protobuf.Timestamp event_time = 1;       // Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  // Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  // Identification of evironmental data detection (visibility)
+    VisibilityLevel visibilityLevel = 4;            // Visibility level
+    int32 interval_length = 5;                      // Interval length in seconds(aggregation interval)
+}
+
+/* List of EDVisibility used e.g. to publish EDVisibility-data to a broker etc. */
+message EDVisibilityLevels {
+    repeated EDVisibility data = 1;
+    string id = 2;                     // message id
+}
+
+// VMIS2-S1ANF-339
+// Wind data
+message EDWindSpeed {
+    google.protobuf.Timestamp event_time = 1;       							// Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  							// Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  							// Identification of evironmental data detection (visibility)
+    double speed = 4;            												// wind speed
+    EDValueStatePlausibilityWrapper.EDValueStatePlausibility speed_state_pl = 5;    	// state of values plausibility
+    EDMeasuredValueStateAggWrapper.EDMeasuredValueStateAgg speed_state = 6;    			// state of measured value
+}
+
+// VMIS2-S1ANF-339
+// NO data
+message EDNo {
+    google.protobuf.Timestamp event_time = 1;       							// Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  							// Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  							// Identification of evironmental data detection (visibility)
+    double no_value = 4;            											// NO value
+    EDValueStatePlausibilityWrapper.EDValueStatePlausibility no_value_state_pl = 5; 	// state of values plausibility
+    EDMeasuredValueStateAggWrapper.EDMeasuredValueStateAgg no_value_state = 6;    		// state of measured value
+    
+}
+
+// VMIS2-S1ANF-339
+// NO2 data
+message EDNo2 {
+    google.protobuf.Timestamp event_time = 1;       							// Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  							// Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  							// Identification of evironmental data detection (visibility)
+    double no2_value = 4;            											// NO2 value
+    EDValueStatePlausibilityWrapper.EDValueStatePlausibility no2_value_state_pl = 5;	// state of values plausibility
+    EDMeasuredValueStateAggWrapper.EDMeasuredValueStateAgg no2_value_state = 6;    		// state of measured value
+}
+
+// VMIS2-S1ANF-339
+// NOx data
+message EDNox {
+    google.protobuf.Timestamp event_time = 1;       							// Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  							// Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  							// Identification of evironmental data detection (visibility)
+    double nox_value = 4;            											// NOx value
+    EDValueStatePlausibilityWrapper.EDValueStatePlausibility nox_value_state_pl = 5;	// state of values plausibility
+    EDMeasuredValueStateAggWrapper.EDMeasuredValueStateAgg nox_value_state = 6;    		// state of measured value
+}
+
+// VMIS2-S1ANF-343
+// PM10 data
+message EDPM10 {
+    google.protobuf.Timestamp event_time = 1;       // Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  // Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  // Identification of evironmental data detection (visibility)
+    double pm10_value = 4;                          // PM10 value
+    EDMeasuredValueStateAggWrapper.EDMeasuredValueStateAgg pm10_value_state = 5;   // State of measured value
+}

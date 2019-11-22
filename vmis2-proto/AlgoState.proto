@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "Situation.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "AlgoStateProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+// VMIS2-S1ANF-642
+message SiteState {
+ string id = 1; //id of measurement site
+ Situation situation = 2;
+ Situation endedSituation = 3;
+}
+
+/* List of SiteStates used e.g. to publish AlgoState to a broker etc. */
+message AlgoState {
+ // The unique identifier of this message instance (also called 'instance identifier').
+    string iid = 1;
+    repeated SiteState siteStates = 2;
+    google.protobuf.Timestamp start_time = 3;
+}

@@ -1,0 +1,131 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.tls.send;
+
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+
+option (.heuboe.protobuf.interface_version) = "2.0.0";
+option java_multiple_files = true;
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Abruf messages
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+message SteuerSequenz { 
+    string eaId = 1;
+    int32 fg = 2;
+    int32 action = 3;
+}
+
+message SteuerSequenzList { // Liste von SteuerSequenz
+    string iid = 1;
+    repeated SteuerSequenz elements = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// FG 254
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+message SYSReset { // Fg 254 | Id 2 | deTyp 38
+    int32 grund = 1;
+}
+
+message SYSResetList { // Liste von SYSReset
+    string iid = 1;
+    repeated SYSReset elements = 2;
+}
+
+message SYSDateiAbruf { // Fg 254 | Id 3 | deTyp 40
+    string bezeichner = 1;
+}
+
+message SYSDateiAbrufList { // Liste von SYSDateiAbruf
+    string iid = 1;
+    repeated SYSDateiAbruf elements = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// FG 1
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+message LVEAbrufPufferInhalt { // Fg 1 | Id 2 | deTyp 20
+    google.protobuf.Timestamp zeitstempel = 1;
+    int32 anzahlStunden = 2;
+}
+
+message LVEAbrufPufferInhaltList { // Liste von LVEAbrufPufferInhalt
+    string iid = 1;
+    repeated LVEAbrufPufferInhalt elements = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// FG 2
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+message AXLAbrufPufferInhalt { // Fg 2 | Id 2 | deTyp 20
+    google.protobuf.Timestamp zeitstempel = 1;
+    int32 anzahlDatensaetze = 2;
+}
+
+message AXLAbrufPufferInhaltList { // Liste von AXLAbrufPufferInhalt
+    string iid = 1;
+    repeated AXLAbrufPufferInhalt elements = 2;
+}
+
+message AXLAbrufPufferinhaltErgebnismeldung { // Fg 2 | Id 2 | deTyp 21
+    google.protobuf.Timestamp zeitstempel = 1;
+    int32 hundertstelsekunden = 2;
+    int32 anzahlDatensaetze = 3;
+}
+
+message AXLAbrufPufferinhaltErgebnismeldungList { // Liste von AXLAbrufPufferinhaltErgebnismeldung
+    string iid = 1;
+    repeated AXLAbrufPufferinhaltErgebnismeldung elements = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// FG 4
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+message WZGAbrufPufferInhalt { // Fg 4 | Id 2 | deTyp 20
+    int32 folgenummer = 1;
+    int32 anzahlNachrichten = 2;
+}
+
+message WZGAbrufPufferInhaltList { // Liste von WZGAbrufPufferInhalt
+    string iid = 1;
+    repeated WZGAbrufPufferInhalt elements = 2;
+}
+
+message WZGAbrufCodedefinition { // Fg 4 | Id 3 | deTyp 21
+    int32 stellcode = 1;
+}
+
+message WZGAbrufCodedefinitionList { // Liste von WZGAbrufCodedefinition
+    string iid = 1;
+    repeated WZGAbrufCodedefinition elements = 2;
+}
+
+message WZGAbrufBilddefinition { // Fg 4 | Id 3 | deTyp 22
+    int32 stellcode = 1;
+}
+
+message WZGAbrufBilddefinitionList { // Liste von WZGAbrufBilddefinition
+    string iid = 1;
+    repeated WZGAbrufBilddefinition elements = 2;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// FG 9
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+message ZRAAbrufPufferInhalt { // Fg 9 | Id 2 | deTyp 20
+    int32 folgenummer = 1;
+    int32 anzahlNachrichten = 2;
+}
+
+message ZRAAbrufPufferInhaltList { // Liste von ZRAAbrufPufferInhalt
+    string iid = 1;
+    repeated ZRAAbrufPufferInhalt elements = 2;
+}

@@ -1,0 +1,55 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "ConfigBase.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+
+message TlsDevice {                             // Device: Main organizational unit; represents objects like VRZ, UZ, KRI, ...
+    string id = 1;
+    string name = 2;
+    ConfigItemType type = 3;
+    int32 osi7_address = 4;
+    int32 partner_id = 5;                       // from global partners lookup table
+    int32 iface_key = 1000;                     // marker for input process allocation
+    repeated TlsFg fgs = 6;
+    repeated TlsConPoint con_points = 7;        // connection points to cables
+}
+message TlsDevices {
+    repeated TlsDevice devices = 1;
+}
+
+message TlsConPoint {                           // Connection point, links devices to cables
+    string cable_id = 1;
+    int32 osi2_port = 2;
+}
+
+message TlsCable {                              // Cable: Connects devices 
+    string id = 1;
+    string name = 2;
+    repeated string device_ids = 3;             // Connection to devices
+}
+message TlsCables {
+    repeated TlsCable cables = 1;
+}
+
+message TlsFg {
+    int32 number = 1;
+    repeated TlsEa eas = 2;
+    repeated TlsCluster clusters = 8;
+}
+
+message TlsCluster {                            // Cluster definition (EAs here are duplicates of owner FG's EAs !)
+    int32 number = 1;                           // EAK number
+    TlsEa cluster_ea = 2;                       // Cluster EA; e.g. EA Nr 193
+    repeated TlsEa grouped_eas = 3;             // Cluster content EAs
+}
+
+message TlsEa {
+    string eaid = 1;
+    int32 de_nummer = 2;
+    repeated string virtual_targets = 3;        // 'virtual' eas (where this ea's data is getting copied to) 
+}
+

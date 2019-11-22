@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+import "features.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.road";
+option csharp_namespace = "Geomanager.Road";
+
+package eu.vmis_ehe.vmis2.geomanager.road;
+
+// Enumeration of junction types
+enum RoadComponentRelationType {
+	// Leaves the current Road
+	LEAVING = 0;
+	// Joins the current Road
+	JOINING = 1;
+	// Crosses the current Road
+	CROSSING = 2;
+	// Predecessor Road of the current
+	SOURCE = 3;
+	// Successor Road of the current
+	TARGET = 4;
+	OTHER = 5;
+}
+// NetLevel types
+enum NetLevel {
+	ASFINAG_ROAD = 0;
+	ASFINAG_JUNCTION = 1;
+	SERVICE_AREA = 2;
+	LEVEL_4 = 3;
+}
+// Junction
+message RoadComponentRelation {
+	// Junction ID
+	string junction_id = 1;
+	// Position on current Road
+	features.RoadReference road_reference = 2;
+	// Junction Type
+	RoadComponentRelationType type = 3;
+	// Position on related road
+	features.RoadReference related_road_reference = 4;
+}
+// Road part composed of multiple sections
+message RoadComponent {
+	string id = 1;
+	string name = 2;
+	// Route identifier (provided as attribute (ID_ASFINAG) for GIP edges)
+	string route_id = 3;
+	// Start offset of road part, may be different from 0.0
+	double start_offset = 5;
+	double end_offset = 6;
+
+	features.Geometry geometry = 4; // optional due to GeoFilter.with_geometry flag
+
+	NetLevel net_level = 11;
+	// Junctions
+	repeated RoadComponentRelation road_component_relation = 8;
+
+    // Attributes on sections of a RoadComponent
+	repeated SegmentedAttributes segmented_attributes = 12;
+}
+// Road composed of multiple RoadComponents
+message Road {
+	string id = 1;
+	string name = 2;
+
+	// Route identifier (provided as attribute (ID_ASFINAG) for GIP road network edges)
+	string routeId = 3;
+	repeated RoadComponent road_component = 4;
+}
+// A list of Roads
+message Roads {
+  	repeated Road roads = 1;
+}
+// Point on a road given by operational kilometrage value
+message RoadMeter {
+	// Route Id of road
+	string route_id = 1;
+	double meter = 2;	
+}
+// Section on a road given by operational kilometrage value
+message RoadMeterSection {
+	// Route Id of road
+	string route_id = 1;
+	double from_meter = 2;
+	double to_meter = 3;
+}
+// Section on a road given by offset value
+message RoadOffsetSection {
+    string road_id = 1;
+    double offset = 2;
+    double length = 3;
+}
+// Point on a road given by geographical coordinates
+message RoadCoordinate {
+	string route_id = 1;
+	features.Geometry point = 2;
+}
+message LaneNumberSection {
+	double lane_number = 1;
+	features.LineRoadReference lane_number_section = 2;
+}
+// Defines roads and their attributes
+message GetRoadsRequest {
+    features.GeoFilter geo_filter = 1;
+    repeated SegmentedAttributeName attributes = 2;
+}
+message SegmentedAttribute {
+    oneof value {
+        double number_value = 1;
+        string name_value = 2;
+    }
+    features.LineRoadReference road_section = 4;
+}
+message SegmentedAttributes {
+    SegmentedAttributeName name = 3;
+    repeated SegmentedAttribute attributes = 2;
+}
+enum SegmentedAttributeName {
+    Lane_number = 0;
+    Destination = 1;
+    Operational_metering = 2;
+}
+message ConvertRoadPartRequest {
+    repeated features.LineRoadReference line_road_reference = 1;
+    string target_epsg = 2;
+}
+message RoadPartGeometries {
+    repeated RoadPartGeometry road_part_geometry = 1;
+}
+message RoadPartGeometry {
+    features.LineRoadReference line_road_reference = 1;
+    features.Geometry geometry = 2;
+}
+

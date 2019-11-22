@@ -1,0 +1,148 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "ConfigBase.proto";
+import "ConfigRelations.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+
+// MQ 'MessQuerschnitt'
+message CfgMq {
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    oneof vde_sensor {
+        CfgIds vde_sensor_ids = 4;
+        CfgVdeSensors vde_sensors = 5;
+    }
+    Location location = 20;
+}
+message CfgMqs {
+    repeated CfgMq mqs = 1;
+}
+
+message CfgVdeSensor {
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    LanePos lane_pos = 4;
+    Heading heading = 5;
+    Location location = 20;
+}
+message CfgVdeSensors {
+    repeated CfgVdeSensor sensors = 1;
+}
+
+// Environment Sensor
+message CfgUdeSensor {
+
+    enum UdeType {              // enum codes correspond to TLS type
+        UNKNOWN = 0;
+        LT = 48;                // Lufttemperatur in Grad Celsius
+        FBT = 49;               // Fahrbahntemperatur in Grad Celsius
+        FBF = 50;               // Fahrbahnfeuchte in Prozent (veraltet)
+        FBO = 51;               // Zustand Fahrbahnoberflaeche (veraltet) 
+        RS = 52;                // Restsalz in Prozent
+        NI = 53;                // Niederschlagsintensitaet Millimeter pro Stunde 
+        LD = 54;                // Luftdruck in Hekto-Pascal 
+        RLF = 55;               // relative Luftfeuchte  in Prozent
+        WR = 56;                // Windrichtung in Grad
+        WGM = 57;               // mittlere Windgeschwindigkeit in Meter pro Sekunde 
+        SH = 58;                // Schneehoehe in Zentimeter
+        
+        SWE = 60;               // Sichtweite in Meter
+        HK = 61;                // Helligkeit in Lux
+        
+        NA = 63;                // Niederschlagsart (veraltet)
+        WGS = 64;               // Windgeschwindigkeit Spitze in Meter pro Sekunde
+        GT = 65;                // Gefriertemperatur in Grad Celsius
+        TPT = 66;               // Taupunkttemperatur in Grad Celsius
+        TT1 = 67;               // Tiefentemperatur in Tiefe 1 in Grad Celsius
+        TT2 = 68;               // Tiefentemperatur in Tiefe 2 in Grad Celsius
+        TT3 = 69;               // Tiefentemperatur in Tiefe 3 in Grad Celsius
+        FBZ = 70;               // Fahrbahnzustand
+        NS = 71;                // Niederschlagsart
+        WFD = 72;               // Wasserfilmdicke
+        TSK = 73;               // Taustoffkonzentration in Prozent
+        TSQ = 74;               // Taustoff je Quadratmeter in Gramm pro Quadratmeter
+        SFD = 75;               // Schneefilmdicke in Millimeter
+        EFD = 76;               // Eisfilmdicke in Millimeter
+        GR = 77;                // Griffigkeit dimensionslos
+        GLS = 78;               // Globalstrahlung in Watt pro Quadratmeter
+        FZW = 79;               // Fahrbahnzustand Winterdienst
+        NO = 80;                // Stickstoffmonoxid in Mikrogramm pro Kubikmeter
+        NO2 = 81;               // Stickstoffdioxid in Mikrogramm pro Kubikmeter
+        NOX = 82;               // Stickstoffoxide in Mikrogramm pro Kubikmeter
+        PM10 = 83;              // Schadstoffe PM10 in Mikrogramm pro Kubikmeter 
+        PM2 = 84;               // Schadstoffe PM2.5 in Mikrogramm pro Kubikmeter
+        PM1 = 85;               // Schadstoffe PM1 in Mikrogramm pro Kubikmeter
+        LA = 86;                // Laerm: A-bewerteter Schalldruckpegel in Dezibel
+        LAEQ = 387;             // Laerm: energieaequivalenter Dauerschallpegel in Dezibel
+        LA95 = 88;              // Laerm: Basispegel in Dezibel
+        LAMS = 89;              // Laerm: mittlerer Spitzenpegel in Dezibel
+        
+        LAERM = 203;            // Laerm in dbA (herstellerdefiniert)
+        
+        VNA = 240;              // Virtuelle Nässestufe
+        
+//      FSR                     // Staub, Rohdaten
+    }
+
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    UdeType type = 4;
+    Heading heading = 5;
+    Relation virtual_source = 6;
+    Location location = 20;
+}
+message CfgUdeSensors {
+    repeated CfgUdeSensor sensors = 1;
+}
+
+// Vlt Sensor
+message CfgVltSensor {
+
+    enum VltType {
+        UNKNOWN = 0;
+        
+        TUERK = 48;                     // Türkontakt
+        TMPUE = 49;                     // Temperaturüberwachung
+        LICHT = 50;                     // Licht
+        STRV = 51;                      // Stromversorgung
+        HZG = 52;                       // Heizung
+        LFTG = 53;                      // Lüftung
+        UESS = 54;                      // Überspannungsschutz
+        DVS = 55;                       // Diebstahl-/Vandalismusschutz
+        FSA = 56;                       // Fernüberwachung von Solaranlagen
+        
+        LMDM = 129;                     // Leitungsmodem
+        USVNT = 130;                    // USV NT Video
+        VEA = 220;                      // Videoencoder
+        HK = 132;                       // Höhenkontrolle
+        EXTVKP = 222;                   // Steuerung VKP (Schlüsselschalter)
+        EXTSOS = 133;                   // Brandmeldenottaster
+        ESUE = 221;                     // Erdschluss
+        
+        CO = 134;                       // CO - Wert
+        SICHT = 135;                    // Sichttrübung
+        NOTF = 136;                     // Notfall
+        ZVFZ = 137;                     // Zu viele Fahrzeuge
+        RBTR = 138;                     // Richtungsbetriebsart
+        VUE = 139;                      // VUE-Betrieb
+        
+        BRAND = 223;                    // Brandmelder
+    }
+
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    VltType type = 4;
+    Heading heading = 5;
+    Location location = 20;
+}
+message CfgVltSensors {
+    repeated CfgVltSensor sensors = 1;
+}

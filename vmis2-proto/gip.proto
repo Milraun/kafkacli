@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.gip";
+option csharp_namespace = "Geomanager.Gip";
+package eu.vmis_ehe.vmis2.geomanager.gip;
+
+// Direction
+enum Direction {
+	POSITIVE = 0;
+	NEGATIVE = 1;
+	BOTH = 2;
+}
+
+// GIP point reference
+message GIPPoint {
+	string gip_version = 1;
+	string gip_link_id = 2;
+
+	// Offset on link (meter, from
+	double offset = 3;
+}
+
+// GIP directed link
+message GIPDirectedLink {
+	string gip_link_id = 1;
+
+	// Direction:
+	// Only used for bidirectional GIP links
+	// (Positive: in line geometry direction)
+	Direction direction = 3;
+}
+
+// GIP section reference
+message GIPRoadPath {
+	string gip_version = 1;
+	repeated GIPDirectedLink gip_directed_links = 2;
+
+	// Start offset on first link
+	// Offset on link:
+	// - For unidirectional link related to driving direction
+	// - For birectional related to line geometry of link
+	double start_offset = 3;
+
+	// End offset on last link
+	double end_offset = 4;
+}
+
+message GIPRoadSections {
+	repeated GIPRoadSections gip_sections = 1;
+}
+
+message GIPEdges {
+	repeated GIPEdge gip_edges = 1;
+}
+message GIPEdge {
+	string link_objectid = 1;
+	string name1 = 2;
+	string to_node = 3;
+	string from_node = 4;
+
+	string shape = 5;
+	string oneway = 6;
+	string id_asfinag = 7;
+	string funcroadclass = 8;
+	string formofway = 9;
+	string lanes = 10;
+	string subnet_id = 11;
+}

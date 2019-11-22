@@ -1,0 +1,198 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "ParticularMatterProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+// Particular matter 10 sensor codes
+message PM10SensorWrapper {
+	enum PM10Sensor {
+	    MAIN = 0;             	        	   				// Main sensor for pm10
+	    SUB = 1;             	        	   				// Substitutes sensor for pm10
+	}    
+}
+
+// Switching state
+message SwitchingStateWrapper {
+	enum SwitchingState {
+	    OFF = 0;                                           // Switching state off
+	    ON = 1;                        				       // Switching state on
+	} 
+}
+
+// Particular matter 10 switching state
+message PM10SwitchingStateWrapper {
+	enum PM10SwitchingState {
+	    OFF = 0;                                           // Particular matter 10 switching state off
+	    ON = 1;       								       // Particular matter 10 switching state on
+	    CONSTRAINT_OFF = 2;                 		       // Particular matter 10 switching state constraint off
+	}   
+}
+
+// SWIS input values for the particular matter algo 
+message PM10SwisInputValues   {
+    google.protobuf.Timestamp event_time = 1;                      /* The point in time when an event or data record occurred,
+                                                                    * i.e. was originally created "at the source". Contains
+                                                                    * e.g. the interval time stamp of input values or 
+                                                                    * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;                  /* Processing time - The point in time when the event or data  
+                                                                    * record happens to be processed by the stream processing application, 
+                                                                    * i.e. when the record is being consumed. The processing time may be 
+                                                                    * milliseconds, hours, or days etc. later than the original event time 
+                                                                    * This is something like setting a system_time from the database in old 
+                                                                    * systems */
+    string id = 3;													// System id
+    int64 prognosis_horizon = 4;									// Prognosis horizon of SWIS values in seconds
+    double v_wind = 5;												// Wind velocity in m/s
+    int32 wind_direction = 6;										// Wind direction
+    int32 stability_class = 7;							            // Stability class referred to OENORM9440
+}
+
+// Particular matter values for the particular matter algo 
+message PM10InputValues {
+    google.protobuf.Timestamp event_time = 1;                      /* The point in time when an event or data record occurred,
+                                                                    * i.e. was originally created "at the source". Contains
+                                                                    * e.g. the interval time stamp of input values or 
+                                                                    * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;                  /* Processing time - The point in time when the event or data  
+                                                                    * record happens to be processed by the stream processing application, 
+                                                                    * i.e. when the record is being consumed. The processing time may be 
+                                                                    * milliseconds, hours, or days etc. later than the original event time 
+                                                                    * This is something like setting a system_time from the database in old 
+                                                                    * systems */
+    string id = 3;                                                  // System id
+    double pm10_measured_value = 4;                                 // measurement particular matter
+    double pm10_substitute = 5;                                     // substitute value of particular matter
+} 
+
+// Aggregated 8+1 data
+message PM10Aggregated8P1Values {
+    google.protobuf.Timestamp event_time = 1;                      /* The point in time when an event or data record occurred,
+                                                                    * i.e. was originally created "at the source". Contains
+                                                                    * e.g. the interval time stamp of input values or 
+                                                                    * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;                  /* Processing time - The point in time when the event or data  
+                                                                    * record happens to be processed by the stream processing application, 
+                                                                    * i.e. when the record is being consumed. The processing time may be 
+                                                                    * milliseconds, hours, or days etc. later than the original event time 
+                                                                    * This is something like setting a system_time from the database in old 
+                                                                    * systems */
+    string id = 3;                                                  // System id
+    string det_site_id = 4;                                         // Identification of detection site
+    int32 q_PKW = 5;                                                // Quantity of passenger cars
+    int32 q_LNF = 6;                                                // Quantity of vans
+} 
+
+// Particular matter values for the particular matter algo 
+message PM10Values {
+
+	// Pair of double value and timestamp
+	message DoubleTimestampPair {
+	    google.protobuf.Timestamp time = 1;                         // Timestamp
+	    double value = 2;                                           // Double value
+	}
+	
+    google.protobuf.Timestamp event_time = 1;                       /* The point in time when an event or data record occurred,
+                                                                    * i.e. was originally created "at the source". Contains
+                                                                    * e.g. the interval time stamp of input values or 
+                                                                    * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;                  /* Processing time - The point in time when the event or data  
+                                                                    * record happens to be processed by the stream processing application, 
+                                                                    * i.e. when the record is being consumed. The processing time may be 
+                                                                    * milliseconds, hours, or days etc. later than the original event time 
+                                                                    * This is something like setting a system_time from the database in old 
+                                                                    * systems */
+    string id = 3;													// System id
+    repeated DoubleTimestampPair pm10_measured_value = 4;   	    // measurement particular matter
+    repeated DoubleTimestampPair pm10_substitute = 5;			    // substitute value of particular matter
+    repeated DoubleTimestampPair pm10_average = 6;				    // average of particular matter
+    repeated DoubleTimestampPair pm10_average_substitute = 7;	    // average of substitute value of particular matter
+} 
+
+// Prognosis of PM10 values
+message PM10PrognosisValues{
+	 google.protobuf.Timestamp event_time = 1;          	 	    	/* The point in time when an event or data record occurred,
+                                                        		 		* i.e. was originally created "at the source". Contains
+                                                         				* e.g. the interval time stamp of input values or 
+                                                         				* aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      				/* Processing time - The point in time when the event or data  
+                                                         				* record happens to be processed by the stream processing application, 
+                                                         				* i.e. when the record is being consumed. The processing time may be 
+                                                         				* milliseconds, hours, or days etc. later than the original event time 
+                                                         				* This is something like setting a system_time from the database in old 
+                                                         				* systems */
+    google.protobuf.Timestamp switching_time = 3;                   	// Switching cycle, prognosis interval   
+    string id = 4;   													// System id
+    double prognosis_pm10 = 5;                                     		// prognosis PM10 (for switching state)
+    PM10SensorWrapper.PM10Sensor used_sensor = 6;						// Used sensor of particular matter prognosis
+    double pm10_prognosis_average = 7;									// average particular matter prognosis
+    double pm10_s_prognosis_average = 8;								// average substitute value particular matter prognosis
+    google.protobuf.Timestamp pm10_prognosis_average_time = 9; 			// timestamp average particular matter prognosis
+ 	google.protobuf.Timestamp pm10_s_prognosis_average_time = 10;		// timestamp average substitute value particular matter prognosis    
+  	int32 pm10_prognosis_horizon = 11;									// horizon particular matter prognosis
+  	int32 pm10_s_prognosis_horizon = 12;								// horizon substitute value particular matter prognosis
+  	double pm10_prognosis_horizon_average = 13;							// average horizon particular matter prognosis
+  	double pm10_s_prognosis_horizon_average = 14;						// average horizon substitute value particular matter prognosis
+  	SwitchingStateWrapper.SwitchingState system_switching_state =15;		// switching state of system due to all data
+  	PM10SwitchingStateWrapper.PM10SwitchingState pm10_switching_state = 16;	// switching state due to PM10-prognosis
+}
+
+// Prognosis of 8+1 long term data
+message PM10Prognosis8P1Values {
+	 google.protobuf.Timestamp event_time = 1;          		 	/* The point in time when an event or data record occurred,
+                                                        		 	* i.e. was originally created "at the source". Contains
+                                                         			* e.g. the interval time stamp of input values or 
+                                                         			* aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      			/* Processing time - The point in time when the event or data  
+                                                         			* record happens to be processed by the stream processing application, 
+                                                         			* i.e. when the record is being consumed. The processing time may be 
+                                                         			* milliseconds, hours, or days etc. later than the original event time 
+                                                         			* This is something like setting a system_time from the database in old 
+                                                         			* systems */
+    google.protobuf.Timestamp switching_time = 3;                   // Switching cycle, prognosis interval   
+	google.protobuf.Timestamp measured_values_time = 4;             // Timestamp of measured input values               		                                  
+    string id = 5;                                                  // System id
+    string det_site_id = 6;                                         // Identification of detection site
+    int32 q_PKW = 7;                                                // Quantity of passenger cars
+    int32 q_LNF = 8;                                                // Quantity of vans
+    double factor = 9;                                              // Extrapolation from traffic time series
+    int32 prognosis_q_PKW = 10;   								    // Quantity prognosis of passenger cars within switching interval
+    int32 prognosis_q_LNF = 11;   						            // Quantity prognosis of vans within switching interval
+}
+
+// Traffic time series data structure from VMIS1 - traffic time series of light traffic of one detection site
+message PM10TrafficTimeSeries {
+    google.protobuf.Timestamp event_time = 1;                       // Contains e.g. the interval time stamp or aggregation time
+    google.protobuf.Timestamp processing_time = 2;                  // Creation time of event/message, also called system_time in old systems
+    string id = 3;                                                  // System ID 
+    string det_site_id = 4;                                         // Identification of detection site
+    string event_id = 5;                                            // Day event id
+    repeated int32 q_PKW = 6;                                       // Traffic time series q_PKW (half hour interval)
+}
+
+// Immission from traffic and SWIS
+message PM10Immission {
+     google.protobuf.Timestamp event_time = 1;                      /* The point in time when an event or data record occurred,
+                                                                    * i.e. was originally created "at the source". Contains
+                                                                    * e.g. the interval time stamp of input values or 
+                                                                    * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;                  /* Processing time - The point in time when the event or data  
+                                                                    * record happens to be processed by the stream processing application, 
+                                                                    * i.e. when the record is being consumed. The processing time may be 
+                                                                    * milliseconds, hours, or days etc. later than the original event time 
+                                                                    * This is something like setting a system_time from the database in old 
+                                                                    * systems */
+    google.protobuf.Timestamp switching_time = 3;                   // Switching cycle, prognosis interval                                                                
+    google.protobuf.Timestamp swis_time = 4;                        // Timestamp of SWIS data
+    string id = 5;                                                  // System ID 
+    PM10SwisInputValues swisInput = 6;                              // Used SWIS data
+    double tau = 7;                                                 // Tau value (calculated from SWIS data)
+    int32 prognosis_q_PKW = 8;                                      // Quantity prognosis of passenger cars within switching interval
+    int32 prognosis_q_LNF = 9;                                      // Quantity prognosis of vans within switching interval
+    double e_total = 10;                                            // Total emmission from traffic prognosis
+    double immission = 11;                                          // Immission from e_total and tau value
+    SwitchingStateWrapper.SwitchingState switching_state_imm = 12;  // Switching state due to prognosis of immission
+}

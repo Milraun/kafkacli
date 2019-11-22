@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+import "base.proto";
+import "road.proto";
+import "features.proto";
+import "ConfigBase.proto";
+import "ConfigAqData.proto";
+import "ConfigMqUqVq.proto";
+
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.validitySection";
+option csharp_namespace = "Geomanager.ValiditySection";
+
+package eu.vmis_ehe.vmis2.geomanager.validitySection;
+
+// Possible object types for validity section requests
+enum ValiditySectionType {
+	MQ = 0;
+	AQ = 1;
+	UDE_SENSOR = 2;
+}
+// Request for a specific object type.
+message ValiditySectionRequest {
+	ValiditySectionType type = 1; // mandatory: type of objects. Will default to MQ
+	repeated string object_ids = 2;	// optional: ids of objects. Returns all object of the specific type if empty
+	repeated string road_ids = 3; // optional: only objects that lie on mentioned roads will be returned.
+	oneof object_types { // optional: a more detailed definition of object types.
+		AqTypes aq_types = 4; // for AQs use enum AqType (config-service)
+		UdeTypes ude_types = 5; // for UDEs use enum UdeType (config-service)
+	}
+}
+message AqTypes {
+	repeated configservice.CfgAq.AqType type = 1;
+}
+message UdeTypes {
+	repeated configservice.CfgUdeSensor.UdeType type = 1;
+}
+message ValiditySectionResponse {
+	repeated ValiditySection validity_sections = 1;
+}
+// Validity section for one object
+message ValiditySection {
+	string id = 1; // object id
+	string name = 2; // object name
+	ValiditySectionType type = 3; // object type
+	oneof object_type { // filled if object is aq or ude
+	    configservice.CfgAq.AqType aq_type = 7;
+	    configservice.CfgUdeSensor.UdeType ude_type = 8;
+    }
+	features.PointRoadReference road_reference = 4;
+	repeated Section sections = 5; // road sections
+	bool manual = 6;
+}
+// Object that describes a line part including metering and coordinates. (The target road id can be found within LineRoadReference.)
+message Section {
+	features.LineRoadReference line_road_reference = 1;
+	MapReference map_reference = 2;
+}
+// Coordinates and version of the references map. EPSG is 31287 (Austria Lambert).
+message MapReference {
+	features.Coordinate from_coord = 1; // first coordinate of a road part
+	features.Coordinate to_coord = 2; // last coordinate of a road part
+	string map_version = 3;
+}
+
+// Group of VBA ValiditySections
+// Used as coupling proposal
+message AqCouplingGroup {
+	repeated ValiditySection validity_sections = 1;
+}
+
+message AqCouplingGroups {
+	repeated AqCouplingGroup aq_coupling_groups = 1;
+}
+// Request to change an existing validity section
+message ValiditySectionChangeRequest {
+    ValiditySectionType type = 1;
+    repeated ValiditySectionChange section = 2;
+}
+message ValiditySectionChange {
+    string id = 1;
+    configservice.CfgUdeSensor.UdeType ude_type = 2;
+    repeated road.RoadOffsetSection section = 3;
+}
+message ValiditySectionResetRequest {
+    repeated string ids = 1;
+    ValiditySectionType type = 2;
+}

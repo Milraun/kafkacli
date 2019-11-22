@@ -24,7 +24,7 @@
     "await-timeout": "^0.6.0",
     "chalk": "^2.4.2",
     "clear": "^0.1.0",
-    "commander": "^3.0.2",
+    "commander": "^4.0.1",
     "dotenv": "^8.2.0",
     "envalid": "^5.0.0",
     "express": "^4.17.1",
@@ -33,10 +33,11 @@
     "figlet": "^1.2.4",
     "kafkajs": "^1.11.0",
     "path": "^0.12.7",
-    "pino": "^5.13.5",
-    "pino-pretty": "^3.2.2",
+    "pino": "^5.14.0",
+    "pino-pretty": "^3.4.0",
+    "readline-sync": "^1.4.10",
     "rxjs": "^6.5.3",
-    "sass": "^1.23.1",
+    "sass": "^1.23.7",
     "socket.io": "^2.3.0",
     "yaml": "^1.7.2"
   },
@@ -44,12 +45,13 @@
     "@types/clear": "^0.1.0",
     "@types/express": "^4.17.2",
     "@types/figlet": "^1.2.0",
-    "@types/node": "^12.11.1",
-    "@types/pino": "^5.8.12",
+    "@types/node": "^12.12.11",
+    "@types/pino": "^5.8.13",
+    "@types/readline-sync": "^1.4.3",
     "@types/yaml": "^1.2.0",
     "nodemon": "^1.19.4",
-    "protobufjs": "git+https://github.com/protobufjs/protobuf.js.git#4d490eb1bf71f5c5c4c9d253a2ffd36edea12386",
-    "ts-node": "^8.4.1",
-    "typescript": "^3.6.4"
+    "protobufjs": "git+https://github.com/protobufjs/protobuf.js.git#4d490eb1bf71f5c5c4c9d253a2ffd36edea1238",
+    "ts-node": "^8.5.2",
+    "typescript": "^3.7.2"
   }
 }

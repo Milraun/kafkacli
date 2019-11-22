@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "base.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.hierarchy";
+option csharp_namespace = "Geomanager.Hierarchy";
+
+package eu.vmis_ehe.vmis2.geomanager.hierarchy;
+
+// A filter to limit the requested objects
+message HierarchyFilter {
+	// Selects objects that match the given Types. Available types are MQ, AQ
+	repeated HierarchyType types = 1;
+	// Selects objects that match the given IDs
+	repeated string ids = 2;
+	// Selects objects that match the given properties (not implemented)
+	repeated base.Property properties = 3;
+}
+// Root object of HierarchicalElements. Contains a list
+message ElementHierarchy {
+	repeated HierarchicalElement elements = 1;
+}
+// An HierarchicalElement with id, name, type and child elements.
+message HierarchicalElement {
+	string id = 1;
+	string name = 2;
+	HierarchyType type = 3;
+	repeated HierarchicalElement children = 4;
+}
+enum HierarchyType {
+	MQ = 0;
+	AQ = 1;
+	UDE_SENSOR = 2;
+	TUNNEL = 3;
+	ROAD = 4;
+}

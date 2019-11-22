@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "Measure.proto";
+import "GeoReference.proto";
+import "CommonControlData.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "ControlSignProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+// Types of the control sign
+enum ControlSignType{
+		LOCATION_INDEPENDENT = 0;	//location independent control sign type
+		LOCATION_DEPENDENT = 1;		//location dependent control sign type
+	}
+
+
+/* List of control signs used e.g. to publish ControlSigns to a broker etc. */
+message ControlSigns {
+ 	string iid = 1;                                         // message id
+ 	repeated ControlSign control_signs = 2;								//List of control signs 
+}
+
+// Type of a control sign
+message ControlSign{
+	TwoPartIdentification id = 1;								//two part id of the control sign
+	string name = 2;											//name of the control sign
+	ControlSignType type	= 3; 								//type of the control sign
+	repeated string measure_class_ids = 4;		//measures classes which are linked to the control sign
+	repeated ValiditySection validity_section = 5;						//validity section of control sign
+	MainFunnel main_funnel = 6;									//main funnel of the control sign
+	NoMainFunnel prev_funnel = 7;								//prev funnel of the control sign
+	NoMainFunnel next_funnel = 8;								//next funnel of the control sign
+  
+}
+
+// Main funnel of a control sign
+message MainFunnel{
+	ListTagPanelContent sba_control_sign_specification = 1;				//List of device panel tags, to make the relation between control sign and device panel.
+	ListTagPanelContent wtv_control_sign_specification = 2;				//List of device panel tags, to make the relation between control sign and device panel.
+}
+
+// No main funnel, previous or next funnel, of a control sign
+message NoMainFunnel{
+	repeated ListTagPanelContent sba_control_sign_specification = 1;				//List of level of lists of device panel tags, to configure the device panel tags for an predecessor or successor of an sba display panel.
+	repeated ListTagPanelContent wtv_control_sign_specification = 2;				//List of level of lists of device panel tags, to configure the device panel tags for an predecessor or successor of an wtv display panel.
+	double length_in_km = 3;														//length of the funnel in kilometer.
+}
+
+message ListTagPanelContent{
+    repeated TagPanelContent tag_panel_content = 1;
+}
+
+ 
+
+// List of device panel tags, to make the relation between control sign and device panel.
+message TagPanelContent {
+	string tag = 1;
+	PanelContent panel_content = 2; 
+}
+
+
+// Control sign of a measure
+message ControlSignMeasure {
+    TwoPartIdentification measure_id =  1;                                          // Reference to the measure object
+    string measure_class_id = 2;                                                    // Measure class of the measure
+    LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 3;    // Logical operating mode 
+    google.protobuf.Timestamp processing_time = 4;                                  // Contains time stamp of last change of the control sign
+    repeated DevicePanelContent control_recommendation = 5;                         // Automatically computed control recommendation
+    repeated DevicePanelContent control_correction = 6;                             // Manually corrections by the operator (empty = no corrections)
+}
+
+// List of the Control signs for measures
+message ControlSignMeasures {
+    string iid = 1;                                         // message id
+	repeated ControlSignMeasure control_sign_measures = 2;	// list of control signs for measures
+}
+
+// Specification of panel content
+message DevicePanelContent {
+    string panel_id = 1;                                            // Reference to the device panel
+    PanelContent content = 2;                                       // content of the panel
+}
+
+// Content of a variable traffic panel or a display panel
+message PanelContent  {
+    TlsSpecification specification = 1;                             // Specification of the panel content
+    string freetext = 2;                                            // Only for display principle c and d, tlsCode has to be 0
+    repeated TlsSpecification component_specifications = 3;         // Specification of each component (only for display principle e: roadside variable message sign (WWW)), tlsCode has to be 0
+    bool required = 4;                                              // Marker of an important control measure specification
+    int32 priority = 5;                                             // Default: -1; otherwise a special given priority
+}
+
+// TLS Specification
+message TlsSpecification {
+    int32 tls_code = 1;                         // TLS code to display
+    int32 tls_function_byte = 2;                // Off, on, flashing light
+}
+
+// Result of sign overlay algorithm for one variable traffic panel 
+message ResultingPanelContent {
+    TwoPartIdentification measure_id =  1;                                          // id of measure which was reason for panel content
+    string measure_class_id = 2;                                                    // measure class of measure which was reason for panel content
+    LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 3;    // Logical operating mode of measure
+    DevicePanelContent device_panel_content = 4;                                    // panel content
+}

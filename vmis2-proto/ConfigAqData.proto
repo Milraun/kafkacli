@@ -1,0 +1,288 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "ConfigBase.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+// AQ 'AnzeigeQuerschnitt'
+message CfgAq {
+
+    enum AqType {
+        UNKNOWN = 0;
+        STANDARD = 1;          // standard' AQ containing A- B- and C- WVZs
+        WWW = 2;               // Wechselwegweiser
+        WTA = 3;               // text display
+        WTV = 4;               // fully graphical display
+        INFO = 5;              // info board
+        LSA = 6;               // traffic signal
+    }
+
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    AqType type = 4;
+    Heading heading = 5;
+    oneof wzg {
+        CfgIds wzg_ids = 6;
+        CfgWzgs wzgs = 7;
+    }
+    Location location = 20;
+}
+message CfgAqs {
+    repeated CfgAq aqs = 1;
+}
+
+// AQ's variable message sign (WZG)
+message CfgWzg {
+
+    enum WzgType {
+        UNKNOWN = 0;
+        WZG_A = 1;             // WZG type A
+        WZG_B = 2;             // WZG type B
+        WZG_C = 3;             // WZG type C
+        WZG_ZA = 4;            // WZG type ZA
+        BLINKER = 5;           // WZG type blinker
+        FAILSAFE = 6;          // WZG type failSafe
+        PRISM = 7;             // prisma
+        WTA = 8;               // WTA
+        WTV = 9;               // WTV
+        
+        LSA = 10;              // traffic signal
+        DLZ = 11;              // 'Dauerlichtzeichen'
+        WWW = 12;              // WWW group root
+        WWW_V = 13;            // One member of a WWW group
+    }
+
+    enum DisplayType {
+        UNKNOWN_DISPLAY_TYPE = 0;
+        A = 1;
+        B = 2;
+        C = 3;
+        D = 4;
+        E = 5;
+    }
+
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    WzgType type = 4;
+    LanePos lane_pos = 5;
+    Heading heading = 6;
+    repeated WzgSymbol symbols = 7;                 // optional, for WZGs that can display one of several predefined symbols
+    repeated WzgFont fonts = 8;                    	// optional, for WZGs that can display arbitrary text
+    repeated string www_wzg_ids = 9;                // optional, for WWW root WZGs: The list of WZG ids for its group 
+    repeated WwwProgram www_programs = 10;          // optional, for WWW root WZGs: Predefined 'program's for its group
+    DisplayType display_type = 11;
+    Location location = 20;
+}
+message CfgWzgs {
+    repeated CfgWzg wzgs = 1;
+}
+
+// WZG symbol definition (for WZGs that can display one of several predefined symbols)
+message WzgSymbol {
+
+    enum TrafficSignificance {      // enum constants correspond to TLS WVZ codes (for now).
+    
+        NONE = 0;
+        DANGER = 1;
+        UNEVEN_SURFACE = 2;
+        SLIPPERINESS_RISK = 3;
+        SKIDDING_RISK = 4;
+        ROAD_NARROWS = 5;
+        ROAD_NARROWS_RIGHT = 6;
+        ROAD_NARROWS_LEFT = 7;
+        ROADWORKS = 8;
+        CONGESTION = 9;
+        ONCOMING_TRAFFIC = 10;
+        SNOWFALL = 11;
+        TRAFFIC_SIGNALS = 12;
+        
+        reserved 13 to 19;
+        
+        SPEED_LIMIT_20_KMH = 20;
+        SPEED_LIMIT_30_KMH = 21;
+        SPEED_LIMIT_40_KMH = 22;
+        SPEED_LIMIT_50_KMH = 23;
+        SPEED_LIMIT_60_KMH = 24;
+        SPEED_LIMIT_70_KMH = 25;
+        SPEED_LIMIT_80_KMH = 26;
+        SPEED_LIMIT_90_KMH = 27;
+        SPEED_LIMIT_100_KMH = 28;
+        SPEED_LIMIT_110_KMH = 29;
+        SPEED_LIMIT_120_KMH = 30;
+        NO_PASSING = 31;
+        NO_PASSING_TRUCKS = 32;
+        SPEED_LIMIT_130_KMH = 33;
+        
+        reserved 34 to 37;
+        
+        NO_VEHICLES_SMOG = 38;
+        NO_VEHICLES = 39;
+        END_SPEED_LIMIT_20_KMH = 40;
+        END_SPEED_LIMIT_30_KMH = 41;
+        END_SPEED_LIMIT_40_KMH = 42;
+        END_SPEED_LIMIT_50_KMH = 43;
+        END_SPEED_LIMIT_60_KMH = 44;
+        END_SPEED_LIMIT_70_KMH = 45;
+        END_SPEED_LIMIT_80_KMH = 46;
+        END_SPEED_LIMIT_90_KMH = 47;
+        END_SPEED_LIMIT_100_KMH = 48;
+        END_SPEED_LIMIT_110_KMH = 49;
+        END_SPEED_LIMIT_120_KMH = 50;
+        END_NO_PASSING = 51;
+        END_NO_PASSING_TRUCKS = 52;
+        END_ALL_PROHIBITIONS = 53;
+        END_SPEED_LIMIT_130_KMH = 54;
+
+        reserved 55 to 60;
+
+        YELLOW_BLINKER = 61;
+        ADD_TEXT_CONGESTION = 62;
+        ADD_TEXT_CONGESTION_RISK = 63;
+        ADD_TEXT_FOG = 64;
+        ADD_TEXT_WETNESS = 65;
+        ADD_TEXT_ACCIDENT = 66;
+        ADD_TEXT_VISIBILITY = 67;
+        
+        reserved 68;
+        
+        ADD_TEXT_ROAD_GRAVEL = 69;
+        ADD_TEXT_MOWING = 70;
+        ADD_TEXT_OZONE = 71;
+        ADD_TEXT_NOISE_PROTECTION = 72;
+        
+        reserved 73;
+        
+        ADD_TEXT_600M = 74;
+        
+        reserved 75 to 77;
+        
+        ADD_TEXT_200M = 78;
+        ADD_TEXT_300M = 79;
+        ADD_TEXT_400M = 80;
+        ADD_TEXT_500M = 81;
+        ADD_TEXT_1000M = 82;
+        ADD_TEXT_1500M = 83;
+        ADD_TEXT_2000M = 84;
+        ADD_TEXT_2500M = 85;
+        ADD_TEXT_3000M = 86;
+        ADD_TEXT_4000M = 87;
+        ADD_TEXT_5000M = 88;
+
+        reserved 89;
+
+        ADD_TEXT_NEXT_200M  = 90;
+        ADD_TEXT_NEXT_500M  = 91;
+        ADD_TEXT_NEXT_1000M = 92;
+        ADD_TEXT_NEXT_1500M = 93;
+        ADD_TEXT_NEXT_2000M = 94;
+        ADD_TEXT_NEXT_2500M = 95;
+        ADD_TEXT_NEXT_3000M = 96;
+        ADD_TEXT_NEXT_4000M = 97;
+        ADD_TEXT_NEXT_5000M = 98;
+
+        reserved 99;
+
+        ADD_TEXT_2_8T = 100;
+        ADD_TEXT_4T = 101;
+        ADD_TEXT_7_5T = 102;
+        ADD_TEXT_UNEXPECTED_BLACK_ICE = 103;
+        ADD_SIGN_TRUCKS_ONLY = 104;
+        ADD_SIGN_CARS_ONLY = 105;
+        ADD_SIGN_CONGESTION_RISK = 106;
+        RED = 107;
+        YELLOW = 108;
+        GREEN = 109;
+        RED_YELLOW = 110;
+        RED_X = 111;
+        GREEN_ARROW_DOWN = 112;
+        GREEN_ARROW_LEFT = 113;
+        GREEN_ARROW_RIGHT = 114;
+        
+        reserved 115 to 120;
+        
+        RECOMMENDED_SPEED_30_KMH = 121;
+        RECOMMENDED_SPEED_40_KMH = 122;
+        RECOMMENDED_SPEED_50_KMH = 123;
+        RECOMMENDED_SPEED_60_KMH = 124;
+        RECOMMENDED_SPEED_70_KMH = 125;
+        RECOMMENDED_SPEED_80_KMH = 126;
+        RECOMMENDED_SPEED_90_KMH = 127;
+        RECOMMENDED_SPEED_100_KMH = 128;
+        RECOMMENDED_SPEED_110_KMH = 129;
+        RECOMMENDED_SPEED_120_KMH = 130;
+        RECOMMENDED_SPEED_130_KMH = 131;
+        
+        reserved 132 to 140;
+
+        END_RECOMMENDED_SPEED_30_KMH = 141;
+        END_RECOMMENDED_SPEED_40_KMH = 142;
+        END_RECOMMENDED_SPEED_50_KMH = 143;
+        END_RECOMMENDED_SPEED_60_KMH = 144;
+        END_RECOMMENDED_SPEED_70_KMH = 145;
+        END_RECOMMENDED_SPEED_80_KMH = 146;
+        END_RECOMMENDED_SPEED_90_KMH = 147;
+        END_RECOMMENDED_SPEED_100_KMH = 148;
+        END_RECOMMENDED_SPEED_110_KMH = 149;
+        END_RECOMMENDED_SPEED_140_KMH = 150;
+        END_RECOMMENDED_SPEED_130_KMH = 151;
+        
+        reserved 152 to 214;
+
+        ADD_TEXT_NEXT_1700M = 215;
+        ADD_TEXT_NEXT_1800M = 216;
+        ADD_TEXT_NEXT_1900M = 217;
+        ADD_TEXT_NEXT_2100M = 218;
+
+        reserved 219 to 224;
+
+        ADD_TEXT_3_5T = 225;
+        ADD_TEXT_DISTANCE = 226;
+        ADD_TEXT_WRONG_WAY_DRIVER = 227;
+        ADD_TEXT_SLIPPERINESS_RISK = 228;
+        ADD_TEXT_SLIPPERINESS = 229;
+        ADD_TEXT_IG_LUFT = 230;
+        ADD_TEXT_SPOT_CHECK = 231;
+        ADD_TEXT_OIL_SPILL = 232;
+        ADD_TEXT_BREAKDOWN = 233;
+        ADD_TEXT_CROSSWIND = 234;
+        ADD_TEXT_TUNNEL_CLOSED = 235;
+        ADD_TEXT_DETOUR = 236;
+
+        reserved 237 to 240;
+        
+        PRISM_1 = 241;
+        PRISM_2 = 242;
+        PRISM_3 = 243;
+        PRISM_4 = 244;
+        
+        reserved 245 to 255;
+    }
+
+    int32 code = 1;                                 // This particular symbol's code, must be unique for one WZG
+    
+    oneof name {                                    // Symbol's name, either
+        TrafficSignificance significance = 2;       //  a traffic relevant constant, or
+        string plaintext = 3;                       //  a simple text (for custom symbols)
+    }
+}
+
+// WZG font definition (for WZGs that can display arbitrary text)
+message WzgFont {
+    string id = 1;
+    string name = 2;
+}
+
+// WWW program definition: A named list of symbol codes for a WWW group's list of WZGs
+message WwwProgram {
+    string id = 1;
+    string name = 2;
+    repeated WwwCode codes = 3;
+}
+message WwwCode {
+    string wzgId = 1;
+    int32 symbol_code = 2;
+}

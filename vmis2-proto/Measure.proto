@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "GeoReference.proto";
+import "CommonControlData.proto";
+import "Attribute.proto";
+import "EDBInterface.proto"; //Attributes used for new EDB-Handling
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "MeasureProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+
+// VMIS2-S1ANF-452
+// Temporary definition of a logical operation mode
+message LogicalOperatingModeWrapper {
+    enum LogicalOperatingMode {
+        NORMAL = 0;
+        PRIORITISED = 1;
+        EXTERNAL = 2;
+    }
+}
+
+// VMIS2-S1ANF-797
+// Temporary definition of a simple standardized description of measures
+message StandardDescription {
+    string description = 1;
+}
+
+// Advances Definition of situation subclass IDs with negation
+message SituationSubClassIDs {
+    repeated string situation_sub_class_ids = 1;
+    repeated string negation_situation_sub_class_ids = 2;
+}
+
+// VMIS2-S1ANF-562
+// Measure class represents one entry in the meassure catalogue
+message MeasureClass {
+    enum LogicalOperation {
+        OR = 0; // Logical OR operation
+        AND = 1; // Logical AND operation
+    }
+    TwoPartIdentification two_part_id = 1;                              // Unique two-part identification of a measure class
+    string display_name = 2;                                            // Display name
+    string description = 3;                                             // Decription of the measure class
+    Timespec validity_timespec = 4;                                     // Time specification for the validity of the measure class
+    LogicalOperation evaluation_timespec = 5;                           /* If a time specification and situations are assigned to a
+                                                                         * measure, it must be determined wether all situation
+                                                                         * objects and related situations are present and the time
+                                                                         * specification is valid (logical AND operation) or wether
+                                                                         * the situations are  present or the time specification
+                                                                         * exists and is valid(logical OR operation). */
+    SituationSubClassIDs situation_sub_classes = 6;                     // Related sub class ids
+    LogicalOperation evaluation_sub_classes = 7;                        /* If several situations are assigned to a measure, it must
+                                                                         * be determined whether all situation objects of all
+                                                                         * situations must be present for the creation of a
+                                                                         * corresponding measure object(logical AND operation) or
+                                                                         * whether the measure is triggered (logical OR operation)
+                                                                         * if only one situation object exists */
+    repeated ValiditySection sections_of_use = 8;                       // if empty:all, if not:only these areas
+    repeated ValiditySection sections_of_not_use = 9;                   // if not empty subtract these areas
+    repeated string complete_eliminate_measures = 10;                   /* List of measurekey(s): if the following measures have a
+                                                                         * common validity area they must be completely ignored */
+    repeated string cutting_valid_sections_measures = 11;               /* List of measurekey(s): If the following measures have a
+                                                                         * common validity area, the valid area must be clipped */
+    string stVO_paragraph = 12;                                         // StVO-Paragraph
+    repeated TwoPartIdentification attribute_class = 13;                // Additional attribute types
+    StandardDescription standard_description = 14;                      // Standardized description of measures
+    // Logical operating mode
+    LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 15;
+    bool approval_requirement = 16;                         /* True, if measure objects of this measure (class)
+                                                             * have to be enabled */
+    bool changeable = 17;                                   /* True, if the operator is able to change measure objects
+                                                             * of this measure (class) */                                                         
+    LifecycleProperties lifecycle = 18;                     // Properties of lifecycle algorithm for measures of that class
+    bool down_stream_main_funnel = 19;						/* True, if the main funnel of the default sign of the measure,  
+    														 * should be placed to the down stream display panel.*/
+    string measure_category = 20; 							// measure category to group measures.
+}
+
+// VMIS2-S1ANF-570
+// Measure catalogue lists all measures in priority sequence. (the first is the most important)
+message MeasureCatalogue {
+    repeated MeasureClass measure_classes = 1;              // List of measures
+}
+
+// Release state for measures requiring release
+message ReleaseStateWrapper {
+    enum ReleaseState {
+        NOT_RELEASED = 0;
+        RELEASED = 1;
+    }
+}
+
+// VMIS2-S1ANF-165
+// VMIS2-S1ANF-629
+// Attributes of manual measure objects or measures requiring approval
+message ManApprovalMeasure {
+    string name = 1;                                // Name of operator
+    string comment = 2;                             // Comment
+    // Release state
+    ReleaseStateWrapper.ReleaseState release_state = 3;
+    Timespec timespec = 4;                          // Time specifiation of the measure object
+}
+
+// VMIS2-S1ANF-569
+message DisplacedMeasure {
+    enum DisplacedType {
+        EXCLUDE_SPATIALLY = 0;                          /* If measure objects exlcude spatially, then the lower-level
+                                                         * measure object is clipped in the spatial overlap area. */
+        EXCLUDE_COMPLETELY = 1;                         /* If measure objects are completely excluded, then the
+                                                         * lower-level measure object is completely removed and not
+                                                         * considered further for the further calculation steps if there
+                                                         * is a spatial overlap */
+        MAY_OVERLAP = 2;                                /* If measures objects are allowed to overlap, then these
+                                                         * measures may exist simultaneously and will neither be clipped
+                                                         * nor completely removed.*/
+    }
+    TwoPartIdentification meausre_two_part_id = 1;
+    DisplacedType displaced_type = 2;
+}
+
+// VMIS2-S1ANF-561
+// VMIS2-S1ANF-569
+/* Attributes of the measure objects after measure selection or
+ * attributes of merged measure objects */
+message Measure {
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * aggregation time of the measure */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data  
+                                                         * record happens to be processed by the processing application, 
+                                                         * i.e. when the record is being consumed. The processing time may be 
+                                                         * milliseconds, hours, or days etc. later than the original event time 
+                                                         * This is something like setting a system_time from the database in old 
+                                                         * systems */    
+    TwoPartIdentification two_part_id = 3;              // Unique two-part identification of a measure object
+    string description = 4;                             // Description/explanation of the measure object
+    // Unique two-part identification of the associated measure class (VMIS2-S1ANF-562) 
+    TwoPartIdentification measure_class_two_part_id = 5;
+    // Logical operating mode (MeasureClass)
+    LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 6;
+    Timespec validity_timespec = 7;                     // Time specification for the validity of the measure object
+    repeated ValiditySection validity_sections = 8;     // Area of validity
+    // Unique two-part identification of situation objects (cause of measure objects)
+    repeated TwoPartIdentification situation_two_part_ids = 9;
+    string source = 10;                                 // Source system name
+    string source_system_id = 11;                       /* Optional identifier of the object from the source system,
+                                                         * e.g. event ticket id */
+    bool approval_requirement = 12;                     /* True, if measure objects of this measure (class)
+                                                         * have to be enabled */
+    ManApprovalMeasure manual_approval_measure = 13;    /* Additional attributes for a manual measure or a measure
+                                                         * requiring approval */
+    StandardDescription standard_description = 14;      // Optional standardized description of measures
+    repeated Attribute attributes = 15;          // Optional additional attributes
+    repeated DisplacedMeasure displacedMeasures = 16;   /* Displaced measures with displaced classification
+                                                         * (DisplacedType) */
+    repeated ValiditySection original_validity_sections = 17;     // Original area of validity
+    EDBAttributes edb_attributes = 20;                  // edb attributes for new EDB-Handling.
+}
+
+/* List of Measures used e.g. to publish Situations to a broker etc. */
+message Measures {
+    repeated Measure measures = 1; //List of Measures
+    string iid = 2;                     // message id
+}
+
+/* Measure that shouldn't be taken into account while determining control signs*/
+message SuppressedMeasure {
+    string id = 1;                              // object id of measure to suppress
+    google.protobuf.Timestamp time = 2;         // timestamp when measure was set to suppressed
+    string user = 3;                            // user who suppressed the measure
+    bool active = 4;							// flag if measure should be suppressed or not
+}

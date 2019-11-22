@@ -1,0 +1,128 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "google/protobuf/empty.proto";
+
+import "ConfigVersions.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+option java_outer_classname = "ConfigVersionServiceProto";
+
+option (.heuboe.protobuf.interface_version) = "1.13.0";
+
+service ConfigVersionService {
+
+    // Creates one new TLS Base Config from (Excel) without default data (doesn't change service's current data) 
+    // Pushes messages for warnings
+    rpc ImportBaseData (ImportBaseDataRequest) returns (ImportBaseDataResponse) {}
+    
+    // Creates new manual data for new base versions (can use existing manual data a source)
+    // Pushes messages for warnings
+    rpc CreateManualData (CreateManualDataRequest) returns (google.protobuf.Empty) {}
+    
+    // Activates new base- and manual data versions
+    // Can be called without manual versions in STAGING mode only
+    // Pushes messages for warnings & data model changes
+    rpc ActivateVersions (ActivateVersionsRequest) returns (ActivateVersionsResponse) {}
+
+    // Creates defaults for manual data for a new base version (needs GeoManager to do so)
+    // Can be called in STAGING mode only
+    // Pushes messages for warnings & data model changes
+    rpc InitVersions (InitVersionsRequest) returns (google.protobuf.Empty) {}
+
+    // Merges manual data according to input into current manual data.
+    // Pushes messages for warnings & data model changes
+    rpc MergeManualData (MergeManualDataRequest) returns (MergeManualDataResponse) {}
+    
+    // Converts snapshot manual data blocks into final ones
+    // Basically activates current state as new master version
+    rpc PersistSnapshots (PersistSnapshotsRequest) returns (google.protobuf.Empty) {}
+
+    // Dismiss snaphot manual data blocks (fall back to non-snapshot data)
+    // Pushes messages for warnings & data model changes
+    rpc DismissSnapshots (DismissSnapshotsRequest) returns (google.protobuf.Empty) {}
+
+    // Reports which data versions are currently available in service's DB
+    rpc GetKnownVersions (google.protobuf.Empty) returns (GetKnownVersionsResponse) {}
+
+    // Reports which data versions are currently in use, including snapshot states for manual data
+    rpc GetCurrentVersions (google.protobuf.Empty) returns (GetCurrentVersionsResponse) {}
+
+    // Deletes saved versions from DB (doesn't affect service's current versions: can't delete active ones)
+    rpc DeleteVersions (DeleteVersionsRequest) returns (google.protobuf.Empty) {}
+}
+
+message ImportBaseDataRequest {
+    string base_version_id = 1;
+    string tls_data_path = 2;
+}
+message ImportBaseDataResponse {
+    string uz_id = 1;
+    string uz_name = 2;
+}
+
+message CreateManualDataRequest {
+    message Descriptor {
+        VersionKey new_version = 1;
+        string ancestor_base_version_id = 2;            // Optional ancestor info; creates new empty version if missing
+        string ancestor_manual_version_id = 3;
+    }
+    repeated Descriptor versions = 1;
+}
+
+message ActivateVersionsRequest {                       // Can be called without versions to load a previously activated
+    string master_version_id = 1;                       //   master version
+    repeated VersionKey versions = 2;
+}
+message ActivateVersionsResponse {
+    repeated VersionDesc versions = 1;                  // returns activated versions, together with snapshot info
+}
+
+message InitVersionsRequest {
+    repeated BaseVersionKey versions = 1;
+}
+
+message MergeManualDataRequest {
+    enum MergeType {
+        NEWEST = 0;
+        OVERRIDE = 1;
+    }
+    MergeType type = 1;
+    repeated VersionKey versions = 2;
+}
+message MergeManualDataResponse {
+    repeated VersionDesc versions = 1;
+}
+
+message PersistSnapshotsRequest {
+    string master_version_id = 1;
+    repeated VersionKey versions = 2;
+}
+
+message DismissSnapshotsRequest {
+    string master_version_id = 1;
+    repeated VersionKey versions = 2;
+}
+
+message GetKnownVersionsResponse {
+    message UzInfo {
+        BaseVersionKey key = 1;
+        string uz_name = 2;
+        bool has_base_data = 3;
+        bool has_extended_data = 4;
+    }
+    repeated UzInfo base_versions = 1;
+    repeated VersionDesc manual_versions = 2;
+}
+
+message GetCurrentVersionsResponse {
+    string master_version_id = 1;
+    repeated VersionDesc versions = 2;
+}
+
+message DeleteVersionsRequest {
+    repeated BaseVersionKey base_versions = 1;
+    repeated VersionKey manual_versions = 2;
+}

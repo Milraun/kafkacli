@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "TrafficTimeSeriesProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+//VMIS2-S1ANF-339
+//Traffic time series data structure from VMIS1
+message TrafficTimeSeries {
+    google.protobuf.Timestamp event_time = 1;       // Contains e.g. the interval time stamp or aggregation time
+    google.protobuf.Timestamp processing_time = 2;  // Creation time of event/message, also called system_time in old systems
+    string id = 3;                                  // ID 
+   	string event_id = 4;                            // Day event id
+    repeated TTSQuantities q = 5;                   // Quantity of all TrafficTimeSeries
+}
+
+// Traffic prognosis quantities from traffic time series
+message TTSQuantities {
+    int32 q_LKW = 1;                                // Quantity of trucks
+    int32 q_PKW = 2;                                // Quantity of cars
+    double q_LKW_factor = 3;                        // Quantity factor for trucks
+    double q_PKW_factor = 4;                        // Quantity factor for cars
+}

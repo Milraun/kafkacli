@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "EDBProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+
+
+/* Object for EDB specific attributes of Situations and Measures */
+message EDBAttributes {
+    int32 id = 1;                               //EDB ticket id
+    EDBType edb_type = 2;                       
+    EDBEventLocation edb_location = 3;
+    EDBInvolvedPersons involved_persons = 4;
+    EDBRoadClosings road_closing = 5;
+    EDBDetour detour = 6;    
+}
+/* Fields for specific EDB Type attributes */
+message EDBType {
+    
+    enum Type { 
+        UNKOWN = 0;
+        UNFALL = 1;
+        PANNE = 2;
+        VERKEHRSUEBERLASTUNG = 3;
+        SONDERTRANSPORT = 4;
+        HOEHENKONTROLLE = 5;
+        TEILE_AUF_DER_FAHRBAHN = 6;
+        GEISTERFAHRER = 7;
+        BRAND = 8;
+        NATUREREIGNIS = 9;
+        ANLAGENSTOERUNG = 10;
+        SONSTIGES = 11;
+    }
+    string cause_detail = 1;
+    string extension = 2;
+    google.protobuf.Timestamp  start_time = 3;
+    google.protobuf.Timestamp planed_end_time = 4;
+}
+
+/* Fields for EDB Location */
+message EDBEventLocation {
+    string road_name = 1;
+    string road_direction = 2;
+    double kilometer = 3;
+    bool building_site = 4;
+
+    enum LocationType {
+        UNKOWN = 0;
+        KILOMETER = 1;
+        TUNNEL = 2;
+        ABSCHNITT = 3;
+        ANSCHLUSSSTELLE = 4;
+        BRUECKE = 5;
+        KOLLEKTORFAHRBAHN = 6;
+        NEBENANLAGE = 7;
+        AUTOBAHN_NACHBARLAND = 8;
+    }
+    repeated EDBProperty additional_type_properties = 5;
+}
+
+/* Fields for EDB involved persons */
+message EDBInvolvedPersons {
+    bool no_involved = 1;
+    uint32 pkw = 2;
+    uint32 lkw = 3;
+    uint32 dangerous_goods = 4;
+    uint32 bus = 5;
+    uint32 bike = 6;
+    uint32 asfinag = 7;
+    uint32 other = 8;
+
+    uint32 injured = 9;
+    uint32 dead = 10;
+}
+
+/* Fields for EDB Road Closing */
+message EDBRoadClosings {
+    string road_name = 1;
+    string road_direction = 2;
+    double kilometer = 3;
+
+    enum LocationType {
+        UNKOWN = 0;
+        TUNNEL_TOTALSPERRE = 1;
+        TUNNEL_FAHRSTREIFEN = 2;
+        TUNNEL_INKL_ABSCHNITT = 3;
+        TUNNELKETTE = 4;
+        FREILAND_FAHRSTREIFEN_ALLE = 5;
+        FREILAND_ABSCHNITT = 6;
+        RAMPENSPERRE = 7;
+        BLOCKABFERTIGUNG = 8;
+        BLOCKABFERTIGUNG_FREILAND = 9;
+        WECHSELSEITIGE_ANHALTUNG_TUNNEL = 10;
+        WECHSELSEITIGE_ANHALTUNG_FREILAND = 11;
+        FAHRVERBOT = 12;
+        SCHNEEKETTENPFLICHT = 13;
+    }
+    repeated EDBProperty additional_type_properties = 4;
+}
+
+/* Fields for detour attributes */
+message  EDBDetour {
+    enum Type {
+        UNKOWN = 0;
+        ABLEITUNG = 1;
+        UMLEITUNG = 2;
+        EMPFEHLUNG = 3;
+    }
+    enum CarType {
+        UNKOWN_CAR_TYPE = 0;
+        ALLE = 1;
+        PKW = 2;
+        FZG_3_5T = 3;
+        FZG_7_5T = 4;
+        LKW_3_5T = 5;
+        LKW_7_5T = 6;
+    }
+
+    string road_name = 1;
+    string road_direction = 2;
+    repeated EDBProperty additional_type_properties = 3;
+}
+
+/* Additional definied attributes for non static fields in edb which are depending of a specific type selection */
+message EDBProperty {
+    string name = 1;
+    string value = 2;
+}

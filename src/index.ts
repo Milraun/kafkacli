@@ -10,6 +10,7 @@ import { ITopicMetadata } from "kafkajs";
 import pino from "pino";
 import protobuf from "protobufjs";
 import { printMessage } from "./utils"
+import * as readlineSync  from "readline-sync";
 
 const log = pino({
   prettyPrint: {
@@ -84,8 +85,50 @@ program
   .description("List topics matching regexp")
   .action(async function (regex, cmdObj) {
     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-    let topics = await kf.deleteTopics(new RegExp(regex), kafkaConfig);
+    let topics = await kf.listTopics(new RegExp(regex), kafkaConfig);
+    log.info("ATTENTION: the following topics will be deleted!")
+    printTopics(topics, false);
+    let answer = readlineSync.keyInYN("Do you really want to delete these topics ?");
+    if(answer === true) {
+      log.info("Deleting topics !");
+      await kf.deleteTopics(new RegExp(regex), kafkaConfig);
+      log.info("Topics are marked for deletion !");
+    }
   });
+
+// program
+//   .command("tailTopics <regexp>")
+//   .description(
+//     "Tail topics per regexp. Show numOffsets for all partitions or all if omitted"
+//   )
+//   .option("-f, --follow", "follow. Stay online an show incoming messages")
+//   .option("-l, --lines <numLines>", "number of messages per partition", 1)
+//   .option(
+//     "-k, --keyFilter <regexp>",
+//     "regular expression to filter the key with"
+//   )
+//   .action(async function (regex, cmdObj) {
+//     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+//     await kf.tailTopics(
+//       new RegExp(regex),
+//       kafkaConfig,
+//       cmdObj.parent.protobuf,
+//       cmdObj.lines,
+//       cmdObj.follow,
+//       cmdObj.keyFilter
+//     );
+//   });
+
+function splitPartitions(value?: string, dummyPrevious?: any): number[] {
+  if(value) {
+    let partitions: number[] = [];
+    value.split(",").forEach(s => partitions.push(parseInt(s)));
+    return partitions;
+  }
+  else {
+    return [];
+  }
+}
 
 program
   .command("tailTopics <regexp>")
@@ -95,39 +138,18 @@ program
   .option("-f, --follow", "follow. Stay online an show incoming messages")
   .option("-l, --lines <numLines>", "number of messages per partition", 1)
   .option(
-    "-kf, --keyFilter <regexp>",
+    "-k, --keyFilter <regexp>",
     "regular expression to filter the key with"
   )
-  .action(async function (regex, cmdObj) {
-    let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-    await kf.tailTopics(
-      new RegExp(regex),
-      kafkaConfig,
-      cmdObj.parent.protobuf,
-      cmdObj.lines,
-      cmdObj.follow,
-      cmdObj.keyFilter
-    );
-  });
-
-program
-  .command("tailTopicsObservable <regexp>")
-  .description(
-    "Tail topics per regexp. Show numOffsets for all partitions or all if omitted"
-  )
-  .option("-f, --follow", "follow. Stay online an show incoming messages")
-  .option("-l, --lines <numLines>", "number of messages per partition", 1)
-  .option(
-    "-kf, --keyFilter <regexp>",
-    "regular expression to filter the key with"
-  )
+  .option("-p, --partitions <partitions>", "partitions to tail as comma seperated list. If omitted all partitions are used", splitPartitions )
   .action(async function (regex, cmdObj) {
     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
     let observable = await kf.tailTopicsObservable(
       new RegExp(regex),
       kafkaConfig,
       cmdObj.lines,
-      cmdObj.follow
+      cmdObj.follow,
+      cmdObj.partitions || undefined
     );
     let proto = await readProtoDef(cmdObj.parent.protobuf);
     let root = protobuf.Root.fromJSON(proto);

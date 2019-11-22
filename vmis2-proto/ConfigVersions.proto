@@ -1,0 +1,25 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+
+message VersionKey {                                    // Version info for one UZ
+    string uz_id = 1;
+    string base_version_id = 2;
+    string manual_version_id = 3;
+}
+
+message VersionDesc {                                   // key & snapshot info
+    string uz_id = 1;
+    string base_version_id = 2;
+    string manual_version_id = 3;
+    bool snapshot = 4;
+}
+
+message BaseVersionKey {                                // One UZ's base version info
+    string uz_id = 1;
+    string base_version_id = 2;
+}
+

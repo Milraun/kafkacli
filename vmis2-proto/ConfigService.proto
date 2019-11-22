@@ -1,0 +1,152 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "google/protobuf/empty.proto";
+
+import "ConfigBase.proto";
+import "ConfigMqUqVq.proto";
+import "ConfigAqData.proto";
+import "ConfigDevicesData.proto";
+import "ConfigTlsPhys.proto";
+import "ConfigTlsData.proto";
+import "ConfigRelations.proto";
+import "ConfigVersions.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+option java_outer_classname = "ConfigServiceProto";
+
+option (.heuboe.protobuf.interface_version) = "1.13.0";
+
+service ConfigService {
+
+    // Returns version information about this service 
+    rpc GetServiceVersion(google.protobuf.Empty) returns (ServiceVersion) {}
+
+    // Returns a list of all config items of a given type, optionally filtered by type and/or uz
+    rpc GetAllItems(GetAllItemsRequest) returns (GetItemsReply) {}
+
+    // Returns a list of config items by type and ids.
+    // Should some of the ids given are invalid, returns items for the valid ones only;
+    // for the invalid ones, appropriate error messages will be returned instead. 
+    rpc GetItems(GetItemsRequest) returns (GetItemsReply) {}
+    
+    // Returns a list of relation infos by relation type and item ids.
+    // Should some of the ids given are invalid, returns items for the valid ones only;
+    // for the invalid ones, appropriate error messages will be returned instead. 
+    rpc GetItemRelations(GetItemRelationsRequest) returns (GetItemRelationsReply) {}
+    
+    // Sets a bunch of manual item relations (relations that shadow existing ones).
+    // Throws exceptions for invalid items.
+    rpc SetManualRelations(SetItemRelationsRequest) returns (google.protobuf.Empty) {}
+
+    // Removes manual relations by type and/or ids
+    rpc ClearManualRelations(ClearItemRelationsRequest) returns (google.protobuf.Empty) {}
+    
+    // Returns a partial DAG of TLS world's nodes 
+    rpc GetTlsNodes( GetTlsNodesRequest ) returns (GetItemsReply) {} 
+
+    // Returns config data as XML/UTF8
+    rpc GetXml(GetXmlRequest) returns (stream GetXmlReply);
+}
+
+// Interface and service version data
+message ServiceVersion {
+    string interface_version = 1;              // interface version, service must set this to option's 'interface_version' above
+    string service_version = 2;                // service version, created from build info (java: maven's ${project.version}) 
+    string config_version = 3;                 // active config version
+}
+
+message GetAllItemsRequest {
+    ConfigItemType type = 1;                    // the config item type; determines which one of reply's oneof result will be used 
+    string uz_id = 2;                           // Optional: Filter results by UZ
+    string item_type = 3;                       // Optional: Filter results by type where appropriate (e.g. CfgUdeSensor by UdeType)
+    repeated ChildOpt child_opts = 4;           // Optional: Determines if items should include their children, child ids, or nothing
+    repeated BaseVersionKey versions = 5;       // Optional: When specified, only items from given versions will be returned
+}
+
+message GetItemsRequest {
+    ConfigItemType type = 1;                    // the config item type; determines which one of reply's result oneof will be used 
+    repeated string ids = 2;                    // ids of items that should be returned
+    repeated ChildOpt child_opts = 3;           // Optional: Determines how child items should be included (default: ids only)
+    repeated BaseVersionKey versions = 4;       // Optional: When specified, only items from given versions will be returned
+}
+
+message ChildOpt {                              // Determines how an item's children are included for 'getItem' requests
+
+    enum Mode {
+        CHILD = 0;                              // include child as object
+        ID = 1;                                 // include child's id only
+        NONE = 2;                               // don't include anything
+    }
+	string parent_type = 1;                     // the type of item this description applies to (all item types if empty)
+	repeated string child_type = 2;             // the type of child that should be included (all child types if empty)
+	Mode mode = 3;
+}
+
+message GetItemsReply {
+    oneof result {
+        TlsNodes nodes = 1;
+    
+        TlsDevices devices = 2;
+        TlsCables cables = 3;
+
+        CfgUzs uzs = 4;
+        CfgMqs mqs = 5;
+        CfgAqs aqs = 6;
+        
+        CfgVdeSensors vde_sensors = 7;
+        CfgUdeSensors ude_sensors = 8;
+        CfgVltSensors vlt_sensors = 9;
+        CfgWzgs wzgs = 10;
+        
+        CfgKris kris = 11;
+        CfgRouteStations route_stations = 12;
+    }
+    repeated string errors = 1000;              // a list of errors that where encountered while fulfilling the request, usually empty
+                                                //   if filled, signifies other results might be incomplete
+}
+
+message GetItemRelationsRequest {
+
+    string type = 1;                            // requested relation type
+    repeated string ids = 2;                    // relation source item ids; type depends on requested relation type
+}                                               //   if 'ids' is empty, returns all relations for 'type'
+
+message GetItemRelationsReply {
+
+    repeated Relation relations = 1; 
+    repeated string errors = 1000;              // a list of errors that where encountered while fulfilling the request, usually empty
+                                                //   if filled, signifies other results might be incomplete
+}
+
+message SetItemRelationsRequest {
+
+    enum Mode {                                 // Determines what happens with existing relations: 
+        ADD = 0;                                //   Add new relations, replace old ones where type/source id match
+        REPLACE = 1;                            //   For each relation type encountered, wipe all old relations of this kind, then add new ones
+        MERGE = 2;                              //   For each relation, if there's an existing one, compare field 'touched', and keep the newer one
+    }
+    repeated Relation relations = 1;
+    Mode mode = 2; 
+} 
+
+message ClearItemRelationsRequest {             // Filter: Wipes only those relations that match. If both type and source_ids are
+    repeated string types = 1;                  //         empty, all manual relations will be removed
+    repeated string source_ids = 2;
+}
+
+message GetTlsNodesRequest {
+	repeated string ids = 1;                    // ids of nodes to return
+	int32 recurse_level = 2;                    // 0: No children, 1: Direct children only, ..., -1: All descendants 
+	repeated ConfigItemType types = 3;          // Optional child type filter, if set returns children of given types only
+}
+
+message GetXmlRequest {
+    string uz_id = 1;
+    string base_version_id = 2;
+}
+message GetXmlReply {
+	string xml_data = 1;
+}

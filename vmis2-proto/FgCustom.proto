@@ -1,0 +1,337 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.tls.received;
+
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+
+option (.heuboe.protobuf.interface_version) = "2.0.1";
+option java_multiple_files = true;
+
+message LVEGeisterfahrer { // Fg 1 | Id 4 | deTyp 163
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 status = 12;
+    sint32 fahrzeugklasse = 13;
+    sint32 v_kfz = 14;
+    sint32 belegung = 15;
+    sint32 nettozeitluecke = 16;
+    sint32 fahrzeuglaenge = 17;
+}
+
+message LVEGeisterfahrerList { // Liste von LVEGeisterfahrer
+    string iid = 1;
+    repeated LVEGeisterfahrer elements = 2;
+}
+
+message LVEErgebnisAbstandswarnung { // Fg 1 | Id 4 | deTyp 190
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fahrzeugtyp = 11;
+    sint32 geschwindigkeit = 12;
+    sint32 nettozeitluecke = 13;
+}
+
+message LVEErgebnisAbstandswarnungList { // Liste von LVEErgebnisAbstandswarnung
+    string iid = 1;
+    repeated LVEErgebnisAbstandswarnung elements = 2;
+}
+
+message LVEBetriebsparameterAbstandswarnung { // Fg 1 | Id 4 | deTyp 191
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 aktiv = 11;
+    sint32 nettozeitluecke = 12;
+}
+
+message LVEBetriebsparameterAbstandswarnungList { // Liste von LVEBetriebsparameterAbstandswarnung
+    string iid = 1;
+    repeated LVEBetriebsparameterAbstandswarnung elements = 2;
+}
+
+message UFDLaerm { // Fg 3 | Id 4 | deTyp 203
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
+}
+
+message UFDLaermList { // Liste von UFDLaerm
+    string iid = 1;
+    repeated UFDLaerm elements = 2;
+}
+
+message SLTProgrammanforderungenZul { // Fg 4 | Id 3 | deTyp 120
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 anzeigeprinzip = 11;
+    bytes code = 12;
+}
+
+message SLTProgrammanforderungenZulList { // Liste von SLTProgrammanforderungenZul
+    string iid = 1;
+    repeated SLTProgrammanforderungenZul elements = 2;
+}
+
+message SLTProgrammanforderungen { // Fg 4 | Id 5 | deTyp 120
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 anzeigeprinzip = 11;
+    bytes code = 12;
+}
+
+message SLTProgrammanforderungenList { // Liste von SLTProgrammanforderungen
+    string iid = 1;
+    repeated SLTProgrammanforderungen elements = 2;
+}
+
+message SLTProgrammanforderungenAntwort { // Fg 4 | Id 6 | deTyp 120
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 anzeigeprinzip = 11;
+    bytes code = 12;
+}
+
+message SLTProgrammanforderungenAntwortList { // Liste von SLTProgrammanforderungenAntwort
+    string iid = 1;
+    repeated SLTProgrammanforderungenAntwort elements = 2;
+}
+
+message SLTProgrammDefinition { // Fg 4 | Id 3 | deTyp 172
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 anzeigeprinzip = 11;
+    sint32 stellcode = 12;
+    bytes code = 13;
+}
+
+message SLTProgrammDefinitionList { // Liste von SLTProgrammDefinition
+    string iid = 1;
+    repeated SLTProgrammDefinition elements = 2;
+}
+
+message VLTAlarmEncoder { // Fg 6 | Id 4 | deTyp 128
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTAlarmEncoderList { // Liste von VLTAlarmEncoder
+    string iid = 1;
+    repeated VLTAlarmEncoder elements = 2;
+}
+
+message VLTLeistungsmodem { // Fg 6 | Id 4 | deTyp 129
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTLeistungsmodemList { // Liste von VLTLeistungsmodem
+    string iid = 1;
+    repeated VLTLeistungsmodem elements = 2;
+}
+
+message VLTNTVideoUSV { // Fg 6 | Id 4 | deTyp 130
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTNTVideoUSVList { // Liste von VLTNTVideoUSV
+    string iid = 1;
+    repeated VLTNTVideoUSV elements = 2;
+}
+
+message VLTAlarmEncoderErdschluss { // Fg 6 | Id 4 | deTyp 131
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTAlarmEncoderErdschlussList { // Liste von VLTAlarmEncoderErdschluss
+    string iid = 1;
+    repeated VLTAlarmEncoderErdschluss elements = 2;
+}
+
+message VLTHoehenkontrolle { // Fg 6 | Id 4 | deTyp 132
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTHoehenkontrolleList { // Liste von VLTHoehenkontrolle
+    string iid = 1;
+    repeated VLTHoehenkontrolle elements = 2;
+}
+
+message VLTBrandmeldung { // Fg 6 | Id 4 | deTyp 133
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTBrandmeldungList { // Liste von VLTBrandmeldung
+    string iid = 1;
+    repeated VLTBrandmeldung elements = 2;
+}
+
+message VLTCO2WertUeberschreitung { // Fg 6 | Id 4 | deTyp 134
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTCO2WertUeberschreitungList { // Liste von VLTCO2WertUeberschreitung
+    string iid = 1;
+    repeated VLTCO2WertUeberschreitung elements = 2;
+}
+
+message VLTSichttruebung { // Fg 6 | Id 4 | deTyp 135
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTSichttruebungList { // Liste von VLTSichttruebung
+    string iid = 1;
+    repeated VLTSichttruebung elements = 2;
+}
+
+message VLTNotfall { // Fg 6 | Id 4 | deTyp 136
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTNotfallList { // Liste von VLTNotfall
+    string iid = 1;
+    repeated VLTNotfall elements = 2;
+}
+
+message VLTZuVieleFahrzeuge { // Fg 6 | Id 4 | deTyp 137
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTZuVieleFahrzeugeList { // Liste von VLTZuVieleFahrzeuge
+    string iid = 1;
+    repeated VLTZuVieleFahrzeuge elements = 2;
+}
+
+message VLTRichtungsbetriebsart { // Fg 6 | Id 4 | deTyp 138
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTRichtungsbetriebsartList { // Liste von VLTRichtungsbetriebsart
+    string iid = 1;
+    repeated VLTRichtungsbetriebsart elements = 2;
+}
+
+message VLTUeBetrieb { // Fg 6 | Id 4 | deTyp 139
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTUeBetriebList { // Liste von VLTUeBetrieb
+    string iid = 1;
+    repeated VLTUeBetrieb elements = 2;
+}
+
+message VLTSchluesselschalter { // Fg 6 | Id 4 | deTyp 222
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTSchluesselschalterList { // Liste von VLTSchluesselschalter
+    string iid = 1;
+    repeated VLTSchluesselschalter elements = 2;
+}
+
+message VLTBrandmelder { // Fg 6 | Id 4 | deTyp 223
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    sint32 zustand = 12;
+}
+
+message VLTBrandmelderList { // Liste von VLTBrandmelder
+    string iid = 1;
+    repeated VLTBrandmelder elements = 2;
+}
+
+message DaSYSFehlerDUE { // Fg 254 | Id 1 | deTyp 131
+    string id = 1;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlercode = 11;
+    sint32 hersteller = 12;
+}
+
+message DaSYSFehlerDUEList { // Liste von DaSYSFehlerDUE
+    string iid = 1;
+    repeated DaSYSFehlerDUE elements = 2;
+}

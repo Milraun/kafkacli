@@ -1,0 +1,68 @@
+// -----------------------------------------------------------------------------------------------------------------------------------
+//    Structures/Definitions used for DB storage and broker communication
+// -----------------------------------------------------------------------------------------------------------------------------------
+
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "google/protobuf/timestamp.proto";
+import "ConfigBase.proto";
+import "ConfigVersions.proto";
+import "ConfigTlsData.proto";
+import "ConfigRelations.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+
+message BaseData {                                      // TLS config, stored by UZ
+	string iid = 1;
+    BaseVersionKey key = 2;
+    string uz_name = 3;
+    repeated TlsNode nodes = 4;
+}
+
+message ExtendedData {                                  // Default relations (calculated), stored by UZ
+	string iid = 1;
+    BaseVersionKey key = 2;
+    repeated Relation relations = 3;
+}
+
+message ManualData {                                    // User manipulated Item relations, stored by UZ
+	string iid = 1;
+    VersionDesc key = 2;
+    repeated Relation relations = 3;
+}
+
+message VersionDescriptor {
+    string master_version_id = 1;
+    repeated VersionKey versions = 2;
+    google.protobuf.Timestamp timestamp = 3;            // time of activation, for tracking
+}
+
+message ItemUpdates {                                   // pushed on base data updates (configuration change)
+    repeated CfgItemRef new_items = 1;
+    repeated CfgItemRef changed_items = 2;
+    repeated CfgItemRef removed_items = 3;
+}
+
+message RelationUpdates {                               // pushed on manual data updates (configuration change, and user interaction)
+    message Update {
+        string type = 1;                                // relation type
+        repeated string new_relations = 2;
+        repeated string changed_relations = 3;
+        repeated string removed_relations = 4;
+    }
+    repeated Update updates = 1;
+}
+
+// global partner lookup table
+message Partners {
+    string version_id = 1;
+    repeated Partner partners = 2;
+}
+
+message Partner {
+    int32 partnerId = 1;
+    string partnerName = 2;
+}

@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data.los;
+option java_outer_classname = "LosDataProto";
+
+// Level of service (Z..) for the traffic conditons
+enum LosType {
+    Z0 = 0;     // undetermined
+    Z1 = 1;     // free flow
+    Z2 = 2;     // turbulent traffic
+    Z3 = 3;     // heavy traffic
+    Z4 = 4;     // risk of congestion
+    Z5 = 5;     // congestion
+}
+
+// Level of service of detection site
+// VMIS2-S1ANF-311
+message LosDetSite {
+    string id = 1;                                  // Identification of detection site
+    google.protobuf.Timestamp event_time = 2;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 3;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    int32 interval_length = 4;                      // Interval length in seconds
+    string algo_name = 5;                           // Smoothing procedure.
+    string algo_instance = 6;                       // Smoothing instance.    
+    LosType los_type = 7;                           // Level of service (Z1-Z5)
+    int32 los_type_quality = 8;                     // Quality of LOS level (type)
+}
+
+// Level of service of lane calculated on the basis of pl-checked, analysed and smoothed short term vehicle data 
+// VMIS2-S1ANF-311
+message LosLane {
+    string id = 1;                                  // Identification of lane site
+    google.protobuf.Timestamp event_time = 2;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 3;  /* Processing time - The point in time when the event or data  
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    int32 interval_length = 4;                      // Interval length in seconds
+    string algo_name = 5;                           // Smoothing procedure.
+    string algo_instance = 6;                       // Smoothing instance.    
+    LosType los_type = 7;                           // Level of service (Z1-Z5)
+    int32 los_type_quality = 8;                     // Quality of LOS level (type)
+}
+
+/* List of LosLane used e.g. to publish LosLane-data to a broker etc. */
+message LosLanes {
+    repeated LosLane data = 1;
+    string iid = 2;                     // message id
+}
+
+/* List of LosDetSite used e.g. to publish LosDetSite-data to a broker etc. */
+message LosDetSites {
+    repeated LosDetSite data = 1;
+    string iid = 2;                     // message id
+}

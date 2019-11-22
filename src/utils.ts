@@ -192,7 +192,7 @@ export function printMessage (
     });
   }
 
-  log.info(decodedMessage);
+  log.info("\n" + decodedMessage);
 }
 
 export default {

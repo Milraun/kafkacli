@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.ed;
+option java_outer_classname = "EnumEDProto";
+
+message Precipitation{
+
+	/* Types of precipitation. WMO = World Meteorological Organization; */
+	enum Type {
+	   	WMO_NONE = 0;	// None percipitation.
+		WMO_1 = 1;		// Other classification of WMO_1
+		WMO_2 = 2;		// Other classification of WMO_2
+		WMO_3 = 3;		// Other classification of WMO_3
+		WMO_4 = 4;		// Other classification of WMO_4
+		WMO_5 = 5;		// Other classification of WMO_5
+		WMO_6 = 6;		// Other classification of WMO_6
+		WMO_7 = 7;		// Other classification of WMO_7
+		WMO_8 = 8;		// Other classification of WMO_8
+		WMO_9 = 9;		// Other classification of WMO_9
+		WMO_10 = 10;	// Other classification of WMO_10
+		WMO_11 = 11;	// Other classification of WMO_11
+		WMO_12 = 12;	// Other classification of WMO_12
+		WMO_13 = 13;	// Other classification of WMO_13
+		WMO_14 = 14;	// Other classification of WMO_14
+		WMO_15 = 15;	// Other classification of WMO_15
+		WMO_16 = 16;	// Other classification of WMO_16
+		WMO_17 = 17;	// Other classification of WMO_17
+		WMO_18 = 18;	// Other classification of WMO_18
+		WMO_19 = 19;	// Other classification of WMO_19
+		WMO_20 = 20;	// Other classification of WMO_20
+		WMO_21 = 21;	// Other classification of WMO_21
+		WMO_22 = 22;	// Other classification of WMO_22
+		WMO_23 = 23;	// Other classification of WMO_23
+		WMO_24 = 24;	// Other classification of WMO_24
+		WMO_25 = 25;	// Other classification of WMO_25
+		WMO_26 = 26;	// Other classification of WMO_26
+		WMO_27 = 27;	// Other classification of WMO_27
+		WMO_28 = 28;	// Other classification of WMO_28
+		WMO_29 = 29;	// Other classification of WMO_29
+		WMO_30 = 30;	// Other classification of WMO_30
+		WMO_31 = 31;	// Other classification of WMO_31
+		WMO_32 = 32;	// Other classification of WMO_32
+		WMO_33 = 33;	// Other classification of WMO_33
+		WMO_34 = 34;	// Other classification of WMO_34
+		WMO_35 = 35;	// Other classification of WMO_35
+		WMO_36 = 36;	// Other classification of WMO_36
+		WMO_37 = 37;	// Other classification of WMO_37
+		WMO_38 = 38;	// Other classification of WMO_38
+		WMO_39 = 39;	// Other classification of WMO_39
+		PRECIPITATION_ALL_KINDS = 40;   // Precipitation of all kinds
+		LIGHT_PRECIPITATION = 41;		// Light or medium precipitation of all kinds (<50 particles / minute)
+		HEAVY_PRECIPITATION = 42;		// Heavy precipitation of all kinds (> 50 particles / minute)
+		PRECIPITATION_WMO_43 = 43;	// Other classification of precipitation WMO_43
+		PRECIPITATION_WMO_44 = 44;	// Other classification of precipitation WMO_44
+		PRECIPITATION_WMO_45 = 45;	// Other classification of precipitation WMO_45
+		PRECIPITATION_WMO_46 = 46;	// Other classification of precipitation WMO_46
+		PRECIPITATION_WMO_47 = 47;	// Other classification of precipitation WMO_47
+		PRECIPITATION_WMO_48 = 48;	// Other classification of precipitation WMO_48
+		PRECIPITATION_WMO_49 = 49;	// Other classification of precipitation WMO_49
+		DRIZZLE = 50;
+		DRIZZLE_WMO_51 = 51;	// Other classification of drizzle WMO_51
+		DRIZZLE_WMO_52 = 52;	// Other classification of drizzle WMO_52
+		DRIZZLE_WMO_53 = 53;	// Other classification of drizzle WMO_53
+		DRIZZLE_WMO_54 = 54;	// Other classification of drizzle WMO_54
+		DRIZZLE_WMO_55 = 55;	// Other classification of drizzle WMO_55
+		DRIZZLE_WMO_56 = 56;	// Other classification of drizzle WMO_56
+		DRIZZLE_WMO_57 = 57;	// Other classification of drizzle WMO_57
+		DRIZZLE_WMO_58 = 58;	// Other classification of drizzle WMO_58
+		DRIZZLE_WMO_59 = 59;	// Other classification of drizzle WMO_59
+			RAIN = 60;
+		RAIN_WMO_61 = 61;	// Other classification of rain WMO_61
+		RAIN_WMO_62 = 62;	// Other classification of rain WMO_62
+		RAIN_WMO_63 = 63;	// Other classification of rain WMO_63
+		RAIN_WMO_64 = 64;	// Other classification of rain WMO_64
+		RAIN_WMO_65 = 65;	// Other classification of rain WMO_65
+		RAIN_WMO_66 = 66;	// Other classification of rain WMO_66
+		RAIN_WMO_67 = 67;	// Other classification of rain WMO_67
+		RAIN_WMO_68 = 68;	// Other classification of rain WMO_68
+		RAIN_WMO_69 = 69;	// Other classification of rain WMO_69
+		SNOW = 70;			// Snow or frozen precipitate
+		SNOW_WMO_71 = 71;	// Other classification of snow WMO_71
+		SNOW_WMO_72 = 72;	// Other classification of snow WMO_72
+		SNOW_WMO_73 = 73;	// Other classification of snow WMO_73
+		SLEET_WMO_74 = 74;	// Other classification of sleet WMO_74
+		SLEET_WMO_75 = 75;	// Other classification of sleet WMO_75
+		SLEET_WMO_76 = 76;	// Other classification of sleet WMO_76
+		HAIL_WMO_77 = 77;	// Other classification of hail WMO_77
+		HAIL_WMO_78 = 78;	// Other classification of hail WMO_78
+		HAIL_WMO_79 = 79;	// Other classification of hail WMO_79
+		WMO_80 = 80;	// Other classification of WMO_80
+		WMO_81 = 81;	// Other classification of WMO_81
+		WMO_82 = 82;	// Other classification of WMO_82
+		WMO_83 = 83;	// Other classification of WMO_83
+		WMO_84 = 84;	// Other classification of WMO_84
+		WMO_85 = 85;	// Other classification of WMO_85
+		WMO_86 = 86;	// Other classification of WMO_86
+		WMO_87 = 87;	// Other classification of WMO_87
+		WMO_88 = 88;	// Other classification of WMO_88
+		WMO_89 = 89;	// Other classification of WMO_89
+		WMO_90 = 90;	// Other classification of WMO_90
+		WMO_91 = 91;	// Other classification of WMO_91
+		WMO_92 = 92;	// Other classification of WMO_92
+		WMO_93 = 93;	// Other classification of WMO_93
+		WMO_94 = 94;	// Other classification of WMO_94
+		WMO_95 = 95;	// Other classification of WMO_95
+		WMO_96 = 96;	// Other classification of WMO_96
+		WMO_97 = 97;	// Other classification of WMO_97
+		WMO_98 = 98;	// Other classification of WMO_98
+		WMO_99 = 99;	// Other classification of WMO_99
+		DOWNPOUR = 100;	/* Downpour (sudden, heavy precipitation: transition
+						dry rain and at the same time rainfall intensity>
+						17 mm / h)*/
+		reserved 101 to 127; 
+		reserved 128 to 254; 
+		INDETERMINATE = 255;
+	  }
+ }
+ 
+ message RoadSurface {
+	  // Road surface conditions
+	  enum Condition {
+	  	DRY = 0;				/* The road surface is completely dry (<approx. 10
+								ml / m2 = 0.01 mm), free of snow and ice. */
+	  	NOT_DRY = 1;			/* Road surface is humid or wet, or covered in snow or ice. The
+								Wetting or coverage exceeds about 10 ml / m2 = 0.01 mm. */	
+	  	reserved 2 to 31;  
+	  	WET = 32;				/*The road surface is wet with liquid water
+								or aqueous solution (humid or wet, not frozen)*/
+	  	reserved 33 to 63;
+	  	FROZEN = 64; 			/*The road surface is complete or partial
+								covered with frozen water or aqueous solution in solid state.*/
+	  	SNOW = 65;				/* The road surface is covered with snow or snow slush. 
+	  							(Mixture of liquid and frozen water or aqueous solution.) */
+	  	ICE = 66;				//Road is covered with ice (solid, frozen water or frozen aqueous solution)
+	  	HOARFROST = 67; 		/*The road surface is covered with by sublimation of the
+								Water vapor arising from the surrounding air
+								Ice deposits of crystalline structure ("Hoarfrost")*/
+	  	reserved 68 to 127;
+	  	reserved 128 to 254;
+	  	INDETERMINATE = 255; 	// Road surface condition is indeterminate.		
+	  }
+ 
+}
+ 
+ message RoadSurfaceWinterService {
+   // Road surface conditions
+	  enum Condition {
+	  	DRY = 0;				//The road surface is visually dry.
+	  	reserved 1 to 15; 
+	  	HUMID = 16;				/*On the road surface is a water film of
+								at least 0.01 mm available */
+	  	reserved 17 to 31;
+	  	WET = 32;				/*On the road surface is a water film of
+								at least 0.2 mm available */
+	  	reserved 33 to 47;
+	  	WATERY = 48;			/*On the road surface is a water film of
+								at least 2 mm available */
+	  	reserved 49 to 63;
+	  	SLIPPERY = 64;			/*Ice, snow and frost or aqueous solutions in the solid
+								Condition also next to water or aqueous solutions
+								are on the road surface.*/
+	  }
+  }

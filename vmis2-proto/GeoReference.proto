@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "GeoReferenceProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+// Temporary definition of a geo reference type
+message GeoReferenceTypeWrapper {
+    enum GeoReferenceType {
+        POINT = 0;
+        LINE = 1;
+        NET = 2;
+    }
+}
+
+// Logical validity section
+message ValiditySection {
+    double log_km_from = 1;
+    double log_km_to = 2;
+    string road_id = 3;
+    string map_version = 4;
+}

@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+import "base.proto";
+import "ConfigBase.proto";
+import "ConfigService.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.features";
+option csharp_namespace = "Geomanager.Features";
+
+package eu.vmis_ehe.vmis2.geomanager.features;
+
+//A single GeoFeature. It describes a geographical object of a specific type and it's relation to similar objects and a road graph.
+message GeoFeature {
+	string id = 1;
+	string name = 2;
+	Type type = 3;
+	Geometry geometry = 4;
+	RoadReference road_reference = 5;
+	repeated base.Property properties = 6;
+	repeated string successors = 7;
+	repeated string predecessors = 8;
+}
+//A list of GeoFeature
+message GeoFeatures {
+	repeated GeoFeature features = 1;
+}
+//An object to request features on specific roads
+message FeaturesOnRoadsRequest {
+	repeated RoadMetering road_metering = 1;
+	string epsg = 2;
+	Type type = 3;
+}
+message RoadMetering {
+	string road_id = 1;
+	oneof metering {
+		LineOffset line_offset = 2;
+		LineMetering line_metering = 3;
+	}
+}
+//A road to GeoFeature map
+message FeaturesOnRoadsResponds {
+	repeated FeaturesOnRoad features = 1;
+}
+message FeaturesOnRoad {
+    string road_id = 1;
+    repeated GeoFeature features = 2;
+}
+//GeoFeature types
+enum Type {
+	MQ = 0;
+	AQ = 1;
+	UDE_SENSOR = 2;
+	TUNNEL = 3;
+}
+message ConfigTypeMappings {
+    repeated ConfigTypeMapping mapping = 1;
+}
+message ConfigTypeMapping {
+    configservice.ConfigItemType cfgType = 1;
+    Type geoType = 2;
+}
+
+message Types {
+	repeated Type types = 1;
+}
+//A geometry object containing coordinate, the epsg code and the type of geometry
+message Geometry {
+	GeoType geotype = 1;
+	repeated Coordinate coordinates = 2;
+	// We assume that the representation 'EPSG:<srid>' is used, 
+	// where <srid> is a valid 'Spatial Reference Identifier'  
+	string epsg = 3;
+}
+//Geometry types
+enum GeoType {
+	POINT = 0;
+	LINE = 1;
+	POLYGON = 2;
+}
+
+message Coordinate {
+	double longitude = 1;
+	double latitude = 2;
+}
+
+message GeometryConversionRequest {
+	Geometry source_geometry = 1;
+	string targetEpsg = 2;
+}
+
+// Road reference type
+enum RoadReferenceType {
+	RRT_POINT = 0;
+	RRT_LINE = 1;
+}
+
+// Point road reference
+message PointRoadReference {
+// ID of a Road object
+	string road_id = 1;
+
+	// May be used as logical kilometrage
+	// Value ranges do not exhibit deficiencies of operational kilometrage
+	// (as gaps or negative values)
+	double offset = 2;
+
+	//Operational kilometrage, unit: meter
+	double metering = 3;
+}
+
+// Line road reference with logical and operational metering on a road.
+message LineRoadReference {
+	string road_id = 1;
+	LineOffset line_offset = 2;
+	LineMetering line_metering = 3;
+}
+// Object that contains logical metering for lines. It contains an offset and a length.
+message LineOffset {
+	double offset = 1;
+	double length = 2;
+}
+// Object that contains operational metering for lines. It contains a from- and a to-meter.
+message LineMetering {
+	double from_metering = 1;
+	double to_metering = 2;
+}
+
+// General road reference
+message RoadReference {
+	// This is used to identify a RoadReference in conversion operations:
+	// These may be executed for a list of RoadReferences. The result provides
+	// an object for each input RoadReference. To match them the id is used.
+	// (In other contexts it shall be ignored.)
+	string id = 2;
+	oneof road_reference {
+		PointRoadReference point_reference = 3;
+		LineRoadReference line_reference = 4;
+	}
+}
+
+// A set of RoadReference
+message RoadReferences {
+	repeated RoadReference road_references = 1;
+}
+
+// (Connected) path in road network described by LineRoadReference parts
+message RoadPath {
+	repeated LineRoadReference line_road_references = 1;
+}
+
+//Available keys to be used when addressing properties
+enum PropertyKeys {
+	Road = 0; // case sensitive
+	AqType = 1;
+	UdeType = 3;
+	Heading = 4; // cardinal direction of point objects
+	UzId = 5;
+	Lanes = 6;
+	MainRoad = 7; // true if feature lies on a road with NetLevel.ASFINAG_ROAD
+}
+// -------- Filter --------
+
+// A filter to specify a set of GeoFeatures.
+message GeoFilter {
+	Rectangle bbox = 1;
+
+	// EPSG-code of provided Rectangle and requested Geometries
+	string epsg = 2;
+	repeated Type types = 3;
+	repeated string ids = 4;
+
+	// If properties are defined, all requested objects have to match at least on of the properties values
+	repeated base.Property properties = 5;
+
+	// True if geometry shall be included. True is default.
+	bool ignore_geometry = 6;
+}
+// A bounding box to be used within GeoFilter
+message Rectangle {
+	Coordinate bottom_left = 1;
+	Coordinate upper_right = 2;
+}

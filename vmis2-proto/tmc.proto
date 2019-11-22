@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+import "base.proto";
+import "features.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.alertc";
+option csharp_namespace = "Geomanager.Alertc";
+
+package eu.vmis_ehe.vmis2.geomanager.alertc;
+
+
+// AlertC direction
+enum AlertCDirection {
+  ALC_BOTH = 0;
+  ALC_POSITIVE = 1;
+  ALC_NEGATIVE = 2;
+  ALC_NONE = 3;
+}
+
+
+// AlertC point
+message AlertCPoint {
+    string lcl_version = 1;
+	int32 location_code = 2;
+	AlertCDirection direction = 3;
+}
+
+
+// AlertC point with distance
+message AlertCPointWithOffset {
+	AlertCPoint alert_c_point = 1;
+	double distance = 3;
+}
+
+// AlertC linear
+message AlertCLinear {
+    string lcl_version = 1;
+	int32 primary_code = 2;
+	int32 secondary_code = 3;
+	AlertCDirection direction = 4;
+	
+	// If a location related event affects both directions, 
+	// this shall be encoded here: attribute 'direction' is not suited.
+	bool both_directions_affected = 5;
+}
+
+
+// AlertC linear with distances
+message AlertCLinearWithDistance {
+    AlertCLinear alert_c_linear = 1;
+	double primary_distance = 2;
+	double secondary_distance = 3;
+}
+
+// AlertC direction
+enum AlertCLocationType {
+  ALC_POINT = 0;
+  ALC_POINT_WITH_OFF = 1;
+  ALC_LINEAR = 2;
+  ALC_LINEAR_WITH_DIST = 3;
+}
+
+// Any AlertC location 
+message AlertCLocation {
+	AlertCLocationType loc_type = 1;
+	string id = 2;
+	AlertCPoint point = 3;
+	AlertCPointWithOffset point_with_offs = 4;
+	AlertCLinear linear = 5;
+	AlertCLinearWithDistance linear_with_dist = 6;
+}
+
+//A list of AlertCLocation
+message AlertCLocations {
+	repeated AlertCLocation alert_c_locations = 1;
+}
+message AlertCLocationEntry {
+    string road_id = 1;
+    AlertCLocation location = 2;
+}
+message RoadReferenceEntry {
+    string alertc_id = 1;
+    features.RoadReference location = 2;
+}
+message AlertCErrorEntry {
+    string road_id = 1;
+    base.Error error = 2;
+}
+
+// To-AlertC conversion is requested for a list of RoadReference. For each RoadReference
+// a result is provided, either in member locations or in errors
+message ConversionToAlertCResult {
+	repeated AlertCLocationEntry locations = 1;
+	repeated AlertCErrorEntry errors = 2;
+}
+
+// From-AlertC conversion is requested for a list of AlertCLocation. For each AlertCLocation
+// a result is provided, either in member locations or in errors
+message ConversionFromAlertCResult {
+	repeated RoadReferenceEntry locations = 1;
+	repeated AlertCErrorEntry errors = 2;
+}

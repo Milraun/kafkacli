@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.base";
+option csharp_namespace = "Geomanager.Base";
+
+package eu.vmis_ehe.vmis2.geomanager.base;
+
+// Contains versions of interface and server
+message Version {
+	string server_version = 1;
+	string interface_version = 2;
+}
+// A String-List meant to be used for object IDs
+message IdList {
+	repeated string ids = 1;
+}
+// A String meant to be used for type ID
+message Id {
+	string id = 1;
+}
+// Objects that stores a name and a value.
+message Property {
+    string name = 1;
+    string value = 2;
+}
+// Contains an object id and an error message
+message Error {
+	string id = 1;
+	string description = 2;
+}
+// Interface and service version data
+message ServiceVersion {
+
+    // interface (specification) version, service must set this to option's 'interface_version' above
+    string interface_version = 1;
+
+    // service (implementation) version, created from build info (java: maven's ${project.version})
+    string service_version = 2;
+
+}

@@ -1,0 +1,56 @@
+//
+// Types and messages used to store the 'TLS-World': 
+// TLS configuration data from some external source parsed into the DAG of nodes that define the TLS device hierarchy.
+// This DAG forms the base of all data served by the VMIS2 config service.
+//	
+// @author Chris Becker, Heusch Boesefeldt GmbH, christian.becker@heuboe.de
+
+
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "ConfigBase.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+// One node of the TLS world DAG, uniquely identified by its type and id.
+// Has a list of attribute values (as parsed from input), and some children
+message TlsNode {
+
+	enum Attr {             // attribute types
+        LOC = 0;            // TLS_LOC
+        DIST = 1;           // TLS_DIST
+        FG = 2;             // TLS_FG
+        DE = 3;             // TLS_DE
+        OSI2PORT = 4;       // TLS_PORT
+        OSI2ADR = 5;        // TLS_SLAVE
+        EAK = 6;            // TLS_EAK
+        EA = 7;             // TLS_EA
+        
+        VENDOR = 8;         // TLS_HERSTELLER
+        TYPE = 9;           // TLS_TYP
+        
+        REF = 10;           // TLS_REF
+        HEADING = 11;       // TLS_FAHRTR
+        LANE = 12;          // TLS_FAHRSTREIFEN
+        
+        WZG_TYPE = 13;
+        WZG_CODES = 14;
+        WZG_DISPTYPE = 15;
+        
+        IFACEKEY = 16;		// TLS_IFACEKEY
+	}
+    ConfigItemType type = 1;
+    string id = 2;
+    string name = 3;
+    int32 data_row = 4;                 // row number from original data source, used for error tracking
+
+    repeated string attributes = 5;     // attribute values (offsets correspond to Attr enum field values)
+    repeated string child_ids = 6;      // child node ids
+    repeated string tags = 7;           // tags, used to mark nodes
+}
+message TlsNodes {
+	repeated TlsNode nodes = 1;
+}
+

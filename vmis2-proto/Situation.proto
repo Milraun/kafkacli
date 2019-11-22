@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "GeoReference.proto";
+import "CommonControlData.proto";
+import "Attribute.proto";
+import "EDBInterface.proto"; //Attributes used for new EDB-Handling
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "SituationProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+
+
+// VMIS2-S1ANF-622
+message MergedTypeWrapper {
+    enum MergedType {
+        COMPLETELY = 0;
+        PARTIALLY = 1;
+        DISPLACED = 2;
+    }
+}
+
+// Value type of an attribute
+message ValTypeWrapper {
+    enum ValType {
+        STRING = 0;
+        BOOLEAN = 1;
+        INTEGER = 2;
+        FLOAT = 3;
+        ENUM = 4;
+    }
+}
+
+
+
+// VMIS2-S1ANF-788
+// VMIS2-S1ANF-789
+// Siuation class represents one entry in the situation catalogue
+message SituationClass {
+    message SituationSubClass {
+        TwoPartIdentification two_part_id = 1;              // Unique two-part identification of a situation sub class
+        string display_name = 2;                            // Display name
+        string description = 3;                             // Decription of the situation class
+        bool merge_situations = 4;                          // true, if neighboured situations of this sub class has to 
+                                                            // be merged (see VMIS2-S1ANF-559)
+        LifecycleProperties lifecycle = 5;                  // Properties of lifecycle algorithm for situations of that sub class
+        
+    }
+    TwoPartIdentification two_part_id = 1;                  // Unique two-part identification of a situation class
+    string description = 2;                                 // Decription of the situation class
+    bool conflict_adjustment = 3;                           /* True, if conflicts of situation objects of this situation 
+                                                             * class have to be resolved */
+    // Type of geo reference (point, line, net)
+    GeoReferenceTypeWrapper.GeoReferenceType geo_ref_type = 4;
+    repeated SituationSubClass sub_classes = 5;             // Associated sub classes
+    repeated TwoPartIdentification attribute_class = 6;     // Additional attribute types
+    string display_name = 7;                                // Displayname of the situation class
+    double situation_merge_gap_in_km = 8;                   // Maximum gap between situations to merge (VMIS2-S1ANF-559)
+}
+
+// VMIS2-BR-83
+// VMIS2-S1ANF-788
+// Situation catalogue lists all situation classes in priority sequence. (the first is the most important)
+message SituationCatalogue {
+    repeated SituationClass situation_classes = 1;           // List of situation classes
+}
+// VMIS2-S1ANF-549
+// VMIS2-S1ANF-622
+// Attributes of an external or a manual situation
+message ExManSituation {
+    string source = 1;                              // Souce (e.g. EDB, BMS2012, Polizei ...)
+    string name = 2;                                // Name of operator
+    string comment = 3;                             // Comment
+    bool danger_ahead = 4;                          // Danger ahead
+    EDBAttributes edb_attributes = 10;              // Attributes for new EDB handling
+}
+
+// VMIS2-S1ANF-622
+// Source situation object which has entered in a merged situation object
+message SourceSituation {
+    TwoPartIdentification two_part_id = 1;          // Iteration id
+    MergedTypeWrapper.MergedType merge_type = 2;    // Merging type
+    repeated ValiditySection validity_section = 3;  // Area of validity
+}
+
+// VMIS2-S1ANF-548
+// VMIS2-S1ANF-549
+// VMIS2-S1ANF-105
+// VMIS2-S1ANF-622
+// VMIS2-S1ANF-560
+/* The result of a situation detection algorithm or
+ * the result of merging situation objects */
+message Situation {
+    // Different types of situations that are stored in the situation message
+    enum SituationType {
+        CALCULATED = 0; 
+        EXTERNAL = 1;
+        MANUAL = 2;
+        MERGED = 3;
+    }
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data  
+                                                         * record happens to be processed by the stream processing application, 
+                                                         * i.e. when the record is being consumed. The processing time may be 
+                                                         * milliseconds, hours, or days etc. later than the original event time 
+                                                         * This is something like setting a system_time from the database in old 
+                                                         * systems */
+    TwoPartIdentification two_part_id = 3;              // Unique two-part identification of a situation
+    SituationType situation_type = 4;                   // Type of situation
+    google.protobuf.Timestamp start_time = 5;           // Start time of the situation
+    google.protobuf.Timestamp end_time = 6;             // Proposed end time
+    string situation_class_id = 7;                      // The situation class (VMIS2-S1ANF-641)
+    string situation_sub_class_id = 8;                  /* Sub class of a situation (VMIS2-S1ANF-641), contains the
+                                                         * situation class id, if sub class not exist */
+    float result_quality = 9;                           // Quality based on input data: 0..1 aka 0..100%
+    float algorithm_quality = 10;                       // Quality based on the algorithm: 0..1 aka 0..100%
+    string algorithm_name = 11;                         // Name of the algorithm
+    // Status of the situation
+    CalculationStateWrapper.CalculationState calculation_state = 12;
+    repeated Attribute attributes = 13;                 // Additional attributes
+    repeated string situation_ref = 14;                 // Causal links to other situation objects
+    repeated google.protobuf.Timestamp check_time = 15; // List contains times when the equal state was detected
+    ExManSituation external_manual_situation = 16;      // Additional attributes if an external or a manual situation
+                                                        // has been enforced
+    string source_system_id = 17;                       /* Identifier of the object from the source system,
+                                                         * e.g. event ticket id VMIS2-S1ANF-549 */
+    repeated SourceSituation source_situations = 18;    /* VMIS2-S1ANF-622: References to the merged situation objects
+                                                         * (which were displaced if necessary) */
+    string explanation = 19;                            /* Components of an explanation (VMIS2-S1ANF-105): For each
+                                                         * situation object the system must document the reasons why 
+                                                         * it was created */
+    repeated ValiditySection validity_sections = 20;    // Area of validity
+}
+
+// VMIS2-S1ANF-559
+/* The result of merging situation objects */
+message MergedSituation {
+    // Different types of MergedSituations
+    enum Type {
+        MERGE = 0;                                      // MergedSituation was created because referenced situations were merged
+        WRAP = 1;                                       // Situations of situation classes whose conflicts must not be adjusted and 
+                                                        // situation sub classes whose must not be merged will be wrap in a 
+                                                        // MergedSituation (id and all other attributes are copied to this MergedSituation)
+    }
+    google.protobuf.Timestamp event_time = 1;           /* The point in time when an event or data record occurred,
+                                                         * i.e. was originally created "at the source". Contains
+                                                         * e.g. the interval time stamp of input values or 
+                                                         * merging time of the situation */
+    google.protobuf.Timestamp processing_time = 2;      /* Processing time - The point in time when the event or data  
+                                                         * record happens to be processed by the processing application, 
+                                                         * i.e. when the record is being consumed. The processing time may be 
+                                                         * milliseconds, hours, or days etc. later than the original event time 
+                                                         * This is something like setting a system_time from the database in old 
+                                                         * systems */
+    TwoPartIdentification two_part_id = 3;              // Unique two-part identification of a situation
+    google.protobuf.Timestamp start_time = 4;           // Start time of the situation
+    google.protobuf.Timestamp end_time = 5;             // Proposed end time
+    string situation_class_id = 6;                      // The situation class (VMIS2-S1ANF-641)
+    string sub_class_id = 7;                            // Sub class of a situation (VMIS2-S1ANF-641)
+    Type type = 8;                                      // Type of this merged situation
+    repeated SourceSituation source_situations = 9;     /* VMIS2-S1ANF-622: References to the merged situation objects
+                                                         * (which were displaced if necessary) */
+    repeated ValiditySection validity_sections = 10;    // Area of validity
+    repeated Attribute attributes = 11;                 // Additional attributes
+    EDBAttributes edb_attributes = 20;                  // Attributes for new EDB handling
+}
+
+/* List of Situations used e.g. to publish Situations to a broker etc. */
+message Situations {
+    repeated Situation situations = 1; // List of Situations
+    string iid = 2;                    // message id
+}
+
+/* List of MergedSituations used e.g. to publish Situations to a broker etc. */
+message MergedSituations {
+    repeated MergedSituation mergedSituations = 1;
+    string iid = 2;                     // message id
+}

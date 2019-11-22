@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "MeasuredValueState.proto";
+import "VehicleType.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "AnalyticalDataProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+
+// State of 8 + 1 measured values
+message MeasuredValue8p1StateWrapper{
+	enum MeasuredValue8p1State {
+		OK = 0;				
+		IMPLAUSIBLE = 1;		
+		NOT_EXPECTED = 254;	
+	}
+}
+
+// VMIS2-S1ANF-339
+// Aggregated values of lanes (8 + 1 data)
+message LongTerm8p1DataLane {
+	// Hourly volume and speed data
+	message QVInputValues {
+	    VehicleTypeWrapper.VehicleType type = 1;            	// Vehicle class
+	    int32 q = 2;                                    // Hourly volume
+	    int32 v = 3;                                    // Average speed
+	    MeasuredValue8p1StateWrapper.MeasuredValue8p1State q_state = 4;        // Hourly volume state
+	    MeasuredValue8p1StateWrapper.MeasuredValue8p1State v_state = 5;        // Average speed state
+	}
+	
+    google.protobuf.Timestamp event_time = 1;       // Creation time of event/message, also called system_time in old systems
+    google.protobuf.Timestamp processing_time = 2;  // Contains e.g. the interval time stamp or aggregation time
+    string id = 3;                                  // Identification of lane
+    repeated QVInputValues vehicle_values = 4;      // Hourly volume, speed data and states for each vehicle class
+    int32 interval_length = 13;                     // Interval length in seconds(aggregation interval)
+}

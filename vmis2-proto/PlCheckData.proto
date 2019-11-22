@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data;
+option java_outer_classname = "PlCheckDataProto";
+
+/* States of pl-checks. */
+enum PlCheckState {
+    /* Specification term: 'Nicht ermittelbar.' */
+    INDETERMINATE = 0;
+    /* Specification term: 'Ausgefallen / nicht verfuegbar.' */
+    NOT_AVAILABLE = 1;
+    /* Specification term: 'Nicht erwartet.' */
+    NOT_EXPECTED = 2;
+    /* Specification term: 'Nicht plausibel.' */
+    NOT_PLAUSIBLE = 3;
+    /* Specification term: 'Logisch passiviert.' */
+    PASSIVATED = 4;
+    /* Specification term: 'Plausibel.' */
+    PLAUSIBLE = 5;
+    /* Specification term: 'Zu pruefen.' */
+    VERIFY = 6;
+}
+
+/* Category of pl-checks. */
+enum PlCheckCategory {
+    /* Specification term: 'Differenzialkontrolle' */
+    DIFFERENTIAL_CONTROL = 0;
+    /* Specification term: 'Logische Pruefung' */
+    LOGICAL_CHECK = 1;
+    /* Specification term. 'Belegungsabhängig' */
+    OCCUPANCY_DEPENDENT = 2;
+    /* Specification term: 'Ersatzwertermittlung' */
+    REPLACEMENT_VALUE_COMPARISON = 3;
+    /* Specification term: 'Wertebereich' */
+    VALUE_RANGE = 4;
+    /* Specification term: 'OPC-UA' */
+    OPC_UA_CHECK = 5;
+    /* Specification term: 'TLS Spezifisch' */
+    TLS_DATA_CHECK = 6;
+    /* Specification term: 'Anstiegs-Abfalls-Kontrolle' */
+    RISE_FALL_CONTROL = 7;
+    /* Specification term: 'Bewertung des Alters' */
+    AGE_VALUATION = 8;
+    /* Specification term: 'Zeitabhängige Prüfungen' */
+    TIME_DEPENDENT = 9;
+    /* Specification term: 'Logische/Physikalische Pruefung' */
+    LOGICAL_PHYSICAL = 10;
+    /* Specification term: 'Detektorvergleich standortbezogen' */
+    DET_SITE_COMPARISON_SITE_SPEC = 11;
+    /* Specification term: 'Detektor-Längsabgleich' */
+    DET_SITE_LONGITUD_HARMON  = 12;
+};
+
+/* Short-term data with PL recognition. (input and output) */
+message ShortTermPlCheckedDataLane {
+    string id = 1;                                  // Identification of lane
+    google.protobuf.Timestamp event_time = 2;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or 
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 3;  /* Processing time - The point in time when the event or data
+                                                     * record happens to be processed by the stream processing application, 
+                                                     * i.e. when the record is being consumed. The processing time may be 
+                                                     * milliseconds, hours, or days etc. later than the original event time 
+                                                     * This is something like setting a system_time from the database in old 
+                                                     * systems */
+    int32 interval_length = 4;                      // Recording interval length in seconds
+    bool v_arithmetical = 5;                        // Speeds are arithmetically averaged
+    bool passivated = 6;                            // logically passivated or not
+    int32 q_KFZ = 7;                                // Vehicle volume
+    int32 q_PKW = 8;                                // Passenger cars volume
+    int32 q_LKW = 9;                                // Heavy vehicle (truck) volume
+    int32 v_KFZ = 10;                               // Average speed of all vehicles
+    int32 v_PKW = 11;                               // Average speed of passenger cars
+    int32 v_LKW = 12;                               // Average speed of heavy vehicle
+    float t_Netto = 13;                             // Gap time between vehicles
+    int32 b = 14;                                   // Vehicle occupancy rate in %
+    int32 s = 15;                                   // Variance of speeds
+    int32 v_KFZ_smoothed = 16;                      // Exponential smoothed mean value (vehicle volume)
+    PlCheckState q_KFZ_state = 17;                  // State of plausibility of qKFZ
+    PlCheckState q_PKW_state = 18;                  // State of plausibility of qPKW
+    PlCheckState q_LKW_state = 19;                  // State of plausibility of qLKW
+    PlCheckState v_KFZ_state = 20;                  // State of plausibility of vKFZ
+    PlCheckState v_PKW_state = 21;                  // State of plausibility of vPKW
+    PlCheckState v_LKW_state = 22;                  // State of plausibility of vLKW
+    PlCheckState t_Netto_state = 23;                // State of plausibility of tNetto
+    PlCheckState b_state = 24;                      // State of plausibility of b
+    PlCheckState s_state = 25;                      // State of plausibility of s
+    PlCheckState v_KFZ_smoothed_state = 26;         // State of plausibility of vKfzSmoothed
+}
+
+/* Output of failed PL Checks */
+message FailedPlCheckData {
+    string id = 1;                                  // Identification of lane
+    google.protobuf.Timestamp event_time = 2;       /* The point in time when an event or data record occurred,
+                                                     * i.e. was originally created "at the source". Contains
+                                                     * e.g. the interval time stamp of input values or
+                                                     * aggregation time of the situation */
+    google.protobuf.Timestamp processing_time = 3;  /* Processing time - The point in time when the event or data
+                                                     * record happens to be processed by the stream processing
+                                                     * application, i.e. when the record is being consumed. The
+                                                     * processing time may be milliseconds, hours, or days etc. later
+                                                     * than the original event time This is something like setting a
+                                                     * system_time from the database in old systems */
+    bool passivated = 4;                            // logically passivated or not
+    int32 number = 5;                               /* Order within the lane and interval begin;
+                                                     * should indicate the order of problem detection.*/
+    PlCheckCategory plcheck_category = 6;           // Category of the pl check
+    string plcheck_name = 7;                        // Name of the pl check
+    PlCheckState plcheck_state = 8;                 // State, set by pl check
+    repeated string specific_values = 9;            // specific values, concerned to pl state
+    string plain_text = 10;                         // Failed test as plain text.
+}
+
+/* Value series for input and output (specification term: 'Wertereihe'). */
+message PlCheckValueSeries {
+    string id = 1;                                      // Identification of lane
+    int32 q_KFZ = 2;                                    // Vehicle volume
+    google.protobuf.Timestamp q_KFZ_time = 3;           // Vehicle volume
+    int32 q_PKW = 4;                                    // Passenger cars volume
+    google.protobuf.Timestamp q_PKW_time = 5;           // Passenger cars volume
+    int32 q_LKW = 6;                                    // Heavy vehicle (truck) volume
+    google.protobuf.Timestamp q_LKW_time = 7;           // Heavy vehicle (truck) volume
+    int32 v_KFZ = 8;                                    // Average speed of all vehicles
+    google.protobuf.Timestamp v_KFZ_time = 9;           // Average speed of all vehicles
+    int32 v_PKW = 10;                                   // Average speed of passenger cars
+    google.protobuf.Timestamp v_PKW_time = 11;          // Average speed of passenger cars
+    int32 v_LKW = 12;                                   // Average speed of heavy vehicle
+    google.protobuf.Timestamp v_LKW_time = 13;          // Average speed of heavy vehicle
+    float t_Netto = 14;                                 // Gap time between vehicles
+    google.protobuf.Timestamp t_Netto_time = 15;        // Gap time between vehicles
+    int32 b = 16;                                       // Vehicle occupancy rate in %
+    google.protobuf.Timestamp b_time = 17;              // Vehicle occupancy rate in %
+    int32 s = 18;                                       // Variance of speeds
+    google.protobuf.Timestamp s_time = 19;              // Variance of speeds
+    int32 v_KFZ_smoothed = 20;                          // Exponential smoothed mean value (vehicle volume)
+    google.protobuf.Timestamp v_KFZ_smoothed_time = 21; // Exponential smoothed mean value (vehicle volume)
+}
+
+/* List of ShortTermPlCheckedDataLane used e.g. to publish ShortTermPlCheckedDataLane-data to a broker etc. */
+message ShortTermPlCheckedDataLanes {
+    repeated ShortTermPlCheckedDataLane data = 1;
+    string iid = 2;                     				// message id
+}
+
+/* List of FailedPlCheckData for one lane id */
+message FailedPlCheckDataLane {
+    repeated FailedPlCheckData data = 1;
+    string id = 2;                     					// Identification of lane
+}
+
+/* List of FailedPlCheckDataLane used e.g. to publish FailedPlCheckDataLanes-data to a broker etc. */
+message FailedPlCheckDataLanes {
+    repeated FailedPlCheckDataLane data = 1;
+    string iid = 2;                     				// message id
+}
+
+/* List of PlCheckValueSeries used e.g. to publish FailedPlCheckDataLane-data to a broker etc. */
+message PlCheckValueSeriesLanes {
+    repeated PlCheckValueSeries data = 1;
+    string iid = 2;                     				// message id
+}

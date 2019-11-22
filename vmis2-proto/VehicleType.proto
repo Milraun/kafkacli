@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.control.data;
+option java_outer_classname = "VehicleTypeProto";
+option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+
+// vehicle class type
+message VehicleTypeWrapper {
+	enum VehicleType {
+	    BUS = 0;        // bus
+	    MR = 1;         // motorbike
+	    PKW = 2;        // passenger car
+	    LNF = 3;        // van
+	    LKW = 4;        // heavy vehicle
+	    LKWA = 5;       // heavy vehicle with trailer
+	    SZ = 6;         // tractor trailer
+	    PKWA = 7;       // passenger car with trailer
+	    NKFZ = 8;       // non vehicle
+	} 
+}   

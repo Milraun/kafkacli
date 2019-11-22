@@ -1,0 +1,86 @@
+syntax = "proto3";
+package eu.vmis_ehe.vmis2.configservice;
+
+import "ConfigBase.proto";
+import "ConfigMqUqVq.proto";
+import "ConfigAqData.proto";
+
+option java_multiple_files = true;
+option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+
+// standard UZ
+message CfgUz {
+    string id = 1;
+    string name = 2;
+    oneof mq {
+        CfgIds mq_ids = 3;
+        CfgMqs mqs = 4;
+    }    
+    oneof aq {
+        CfgIds aq_ids = 5;
+        CfgAqs aqs = 6;
+    }    
+    oneof ude_sensor {
+        CfgIds ude_sensor_ids = 7;
+        CfgUdeSensors ude_sensors = 8;
+    }    
+    oneof vlt_sensor {
+        CfgIds vlt_sensor_ids = 9;
+        CfgVltSensors vlt_sensors = 10;
+    }
+    oneof kri {
+        CfgIds kri_ids =11;
+        CfgKris kris = 12;
+    }
+    oneof route_station {
+        CfgIds route_station_ids = 13;
+        CfgRouteStations route_stations = 14;
+    }    
+    Location location = 20;
+}
+message CfgUzs {
+    repeated CfgUz uzs = 1;
+}
+
+// Kri
+message CfgKri {
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    oneof route_station {
+        CfgIds route_station_ids = 4;
+        CfgRouteStations route_stations = 5;
+    }
+    bool kri2C = 6;
+    Location location = 20;
+}
+message CfgKris {
+    repeated CfgKri kris = 1;
+}
+
+// Route Station
+message CfgRouteStation {
+    string id = 1;
+    string name = 2;
+    string uz_id = 3;
+    oneof vde_sensor {
+        CfgIds vde_sensor_ids = 5;
+        CfgVdeSensors vde_sensors = 6;
+    }
+    oneof wzg {
+        CfgIds wzg_ids = 7;
+        CfgWzgs wzgs = 8;
+    }
+    oneof ude_sensor {
+        CfgIds ude_sensor_ids = 9;
+        CfgUdeSensors ude_sensors = 10;
+    }    
+    oneof vlt_sensor {
+        CfgIds vlt_sensor_ids = 11;
+        CfgVltSensors vlt_sensors = 12;
+    }    
+    Location location = 20;
+}
+message CfgRouteStations {
+    repeated CfgRouteStation route_stations = 1;
+}

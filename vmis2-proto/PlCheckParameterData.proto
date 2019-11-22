@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package eu.vmis_ehe.vmis2.receiving.processing.data;
+option java_outer_classname = "PlCheckParameterDataProto";
+
+/* Pl-check parameter for value range (specification term: "Differenzialkontrolle") */
+message PlCheckParamDifferentialControl {
+    int32 q_KFZ_min_val = 1;                        /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 q_KFZ_max_stability = 2;                  // Max stability of values in minutes.
+    bool q_KFZ_check = 3;                           // should qKFZ be checked or not.
+    int32 q_LKW_min_val = 4;                        /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 q_LKW_max_stability = 5;                  // Max stability of values in minutes.
+    bool q_LKW_check = 6;                           // should qLKW be checked or not.
+    int32 q_PKW_min_val = 7;                       /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 q_PKW_max_stability = 8;                 // Max stability of values in minutes.
+    bool q_PKW_check = 9;                          // should qPKW be checked or not.
+    int32 v_KFZ_min_val = 10;                       /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 v_KFZ_max_stability = 11;                 // Max stability of values in minutes.
+    bool v_KFZ_check = 12;                          // should vKFZ be checked or not.
+    int32 v_LKW_min_val = 13;                       /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 v_LKW_max_stability = 14;                 // Max stability of values in minutes.
+    bool v_LKW_check = 15;                          // should vLKW be checked or not.
+    int32 v_PKW_min_val = 16;                       /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 v_PKW_max_stability = 17;                 // Max stability of values in minutes.
+    bool v_PKW_check = 18;                          // should vPKW be checked or not.
+    int32 s_min_val = 19;                           /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 s_max_stability = 20;                     // Max stability of values in minutes.
+    bool s_check = 21;                              // should s be checked or not.
+    int32 b_min_val = 22;                           /* Result stability will be proofed only for value series, which
+                                                     * single values exceed this boundary value. */
+    int32 b_max_stability = 23;                     // Max stability of values in minutes.
+    bool b_check = 24;                              // should b be checked or not.
+}
+
+/* Pl-check parameter for value range (specification term: "Logische Pruefung") */
+message PlCheckParamLogicalCheck {
+    int32 vLimit = 1;                               // logical limit for vKFZ in km/h
+    int32 bLimit = 2;                               // logical limit for b in %
+}
+
+message OccupancyDependentRange {
+    int32 b_from = 1;                               // lower limit of occupancy rate (incl.)
+    int32 b_to = 2;                                 // upper limit of occupancy rate (incl.)
+    double quotientqb_from = 3;                     // lower limit of q/b
+    double quotientqb_to = 4;                       // upper limit of q/b
+}
+
+/* Pl-check parameter for value range (specification term: "Belegungsabhängig") */
+message PlCheckParamOccupancyDependent {
+    bool check_active = 1;                          // yes/no to activate/deactivate this pl check.
+    int32 range_count = 2;                          // Count of parametrized value ranges.
+    repeated OccupancyDependentRange ranges = 3;    // list of parametrized value ranges.
+}
+
+/* Pl-check parameter for value range (specification term: "Ersatzwertermittlung") */
+message PlCheckParamReplacementValue {
+    bool check_active = 1;                          // yes/no to activate/deactivate this pl check.
+    int32 max_abs_diff_q_KFZ = 2;                   /* max absolute deviation between measured value and calculated 
+                                                     * replacement value. */
+    int32 max_abs_diff_q_LKW = 3;                   /* max absolute deviation between measured value and calculated 
+                                                     * replacement value. */
+    int32 max_abs_diff_q_PKW = 4;                   /* max absolute deviation between measured value and calculated 
+                                                     * replacement value. */
+    int32 max_abs_diff_v_KFZ = 5;                   /* max absolute deviation between measured value and calculated 
+                                                     * replacement value. */
+    int32 max_abs_diff_v_LKW = 6;                   /* max absolute deviation between measured value and calculated 
+                                                     * replacement value. */
+    int32 max_abs_diff_v_PKW = 7;                   /* max absolute deviation between measured value and calculated 
+                                                     * replacement value. */
+}
+
+/* Pl-check parameter for value range (specification term: "Wertebereich") */
+message PlCheckParamValueRange {
+    int32 q_KFZ_max = 1;                            // Max vehicle volume
+    int32 q_KFZ_min = 2;                            // Min vehicle volume
+    int32 q_LKW_max = 3;                            // Max heavy vehicle (truck) volume
+    int32 q_LKW_min = 4;                            // Min heavy vehicle (truck) volume
+    int32 q_PKW_max = 5;                            // Max passenger cars volume
+    int32 q_PKW_min = 6;                            // Min passenger cars volume
+    int32 v_KFZ_max = 7;                            // Max average speed of all vehicles
+    int32 v_KFZ_min = 8;                            // Min average speed of all vehicles
+    int32 v_PKW_max = 9;                            // Max average speed of passenger cars
+    int32 v_PKW_min = 10;                           // Min average speed of passenger cars
+    int32 v_LKW_max = 11;                           // Max average speed of heavy vehicle
+    int32 v_LKW_min = 12;                           // Min average speed of heavy vehicle
+    float t_Netto_max = 13;                         // Max gap time between vehicles
+    float t_Netto_min = 14;                         // Min gap time between vehicles
+    int32 b_max = 15;                               // Max vehicle occupany rate in %
+    int32 b_min = 16;                               // Min vehicle occupany rate in %
+    int32 s_max = 17;                               // Max variance of speeds
+    int32 s_min = 18;                               // Min variance of speeds
+    int32 v_KFZ_smoothed_max = 19;                  // Max exponential smoothed mean value (vehicle volume)
+    int32 v_KFZ_smoothed_min = 20;                  // Min exponential smoothed mean value (vehicle volume)
+    bool set_state_unplausible = 21;                // States suspicious values as 'unplausible', else as 'verify' 
+}

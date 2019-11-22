@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geo.notifier.data";
+option csharp_namespace = "GeoNotifier.Data";
+
+import "google/protobuf/wrappers.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+
+option (.heuboe.protobuf.interface_version) = "1.2.5";
+
+
+package eu.vmis_ehe.vmis2.geo.notifier.data;
+
+/**
+// gRPC GeoManager's message declaration. Will be sebd either via broker or via stream to client(s) 
+ * 
+ * @author Frank Lautenbach, frank.lautenbach@heuboe.de
+ */
+
+// The message itself
+message Notification {
+    google.protobuf.Int64Value timestamp = 9;	// Creation time
+    Level level = 1;                            // Log level like Info, Warn and so on
+    Source source = 2;                          // Creator of the message
+    Topic topic = 3;                            // Main subject
+    Action action = 4;							// Operation within the geo manager, eg import
+    Component component = 5;                    // One of five parts eg GIP
+    Properties properties = 6;                  // A customizable list with key/value pairs
+    google.protobuf.StringValue object_id = 7;  // Related object, may be empty
+    google.protobuf.StringValue message = 8;    // Detailed message part, may be empty
+}
+
+// Log levels
+enum Level { 
+    ERROR = 0; 
+    WARNING = 1;
+    INFO = 2;
+}
+
+// Sender
+enum Source { 
+    GEOSERVER = 0; 
+}
+
+// Operation at sender
+enum Action { 
+    KS_CHECK = 0;  // consistency checks 
+    PL_CHECK = 1;  // plausibility checks
+    RESTART = 2;
+    ACTIVATION = 3;
+    UNUSED = 4;
+}
+
+// Messages main topic
+enum Topic { 
+    IMPORT = 0; 
+    UPDATE = 1;
+    MAP_OPERATION = 2;
+    PROGRESS = 3;
+    SYSTEM = 4;
+}
+
+// Senders component
+enum Component { 
+
+    // Map import/update components
+    GIP = 0; 
+    OPERATION_RESOURCE = 1;
+    LCL = 2;
+    TUNNEL = 3;
+    DISTANT_DESTINATION = 4;
+    VALIDITY_SECTION = 5;
+    ROAD_UZ_RELATION = 6;
+    
+    // Map activation components
+    MAP = 7;
+    ROAD = 8;
+    MAIN_ROAD = 9;
+}
+
+// List of service related key/value pairs
+message Properties {
+    repeated Property property = 1;
+}
+
+// A key / value pair
+message Property {
+    string key = 1; 
+    string value = 2;
+}

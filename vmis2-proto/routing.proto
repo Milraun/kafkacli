@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+import "base.proto";
+import "features.proto";
+import "road.proto";
+
+option java_multiple_files = true;
+option java_package = "eu.vmis_ehe.vmis2.geomanager.routing";
+option csharp_namespace = "Geomanager.Routing";
+
+package eu.vmis_ehe.vmis2.geomanager.routing;
+
+
+// Route definition
+message RouteDefinition {
+
+	// Only used in context of a routing request  
+    string id = 1;
+
+    // Start point
+    features.PointRoadReference from_point = 2;
+    
+    // Target point
+	features.PointRoadReference to_point = 3;
+	
+	// Via points
+    repeated features.PointRoadReference via_points = 4;
+    
+    // Road class: a route may be restricted to roads of certain road classes
+    // If this set is empty, all road classes are admitted
+    // (In the context of 'Steuerung' a restriction to { ASFINAG_ROAD, ASFINAG_JUNCTION } seems to be adequate ) 
+    repeated road.NetLevel netLevel = 5;
+}
+
+// Route
+message Route {
+	
+	// ID of related route definition  
+    string id = 1;
+    
+    // Route length
+    double length = 2;
+
+    // Sequence of aligned LineRoadReferences making up the route
+	features.RoadPath roadPath = 3;
+}
+
+
+
+// Routing request
+message RoutingRequest {
+	// A set of route definitions
+	// (IDs of route definitions have to be unique) 
+	repeated RouteDefinition route_definition = 1;
+}
+
+// Error: related to a not locatable route definition 
+message RoutingError {
+	// ID of route definition 
+    string routeId = 1;
+    // Error descritpion
+    base.Error error = 2;
+}
+
+
+// Result of a routing rquest
+message RoutingResult {
+	// Routes
+	repeated Route route = 1;
+	
+	// Errors related to not locatable route definitions
+	// ( For each route definition of a routing request 
+	//   there is either exactly one route or exactly one routing error.)
+	repeated RoutingError error = 2;
+}
+
+
