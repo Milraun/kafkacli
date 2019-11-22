@@ -143,54 +143,65 @@ export async function getTopicOffsets (
   }
 }
 
-export async function tailTopics (
+/**
+ * Tailing topics selected by a regular expression 
+ * returning a rxjs Observable.
+ * @param topics the topics regex
+ * @param kafkaCliConfig the config object needed to initialize kafka
+ * @param numMessages number of messages to go back from tail for each partition
+ * @param follow keep listening and show new message as they appear
+ * @param partitions list of partitions to use. If undefined all partitiions are used.
+ */
+export async function tailTopicsObservable (
   topics: RegExp,
   kafkaCliConfig: any,
-  protoDefinitionFile: string,
   numMessages?: number,
   follow?: boolean,
-  keyFilter?: RegExp
-): Promise<any> {
+  partitions?: number[]
+): Promise<Observable<EachMessagePayload>> {
   const kafka = new Kafka(kafkaCliConfig);
   const consumer = kafka.consumer({ groupId: kafkaCliConfig.groupId });
   await consumer.connect();
   try {
     let topicsMeta = await listTopics(topics, kafkaCliConfig);
 
-    log.info(
-      `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} ` +
-      (keyFilter ? `keyFilter = ${keyFilter}` : "")
-    );
-    topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
-
     let partitionOffsetsPerTopic: { [id: string]: TopicOffsets[] } = {};
     let endOffsetPerTopicPartition: { [topicPartition: string]: number } = {};
     let finishedTopicPartitions: { [topicPartition: string]: number } = {};
 
-    let proto = await readProtoDef(protoDefinitionFile);
-    let root = protobuf.Root.fromJSON(proto);
-
     topicsMeta.forEach(async tm => {
       let partitionOffsets = await getTopicOffsets(tm.name, kafkaCliConfig);
-      partitionOffsetsPerTopic[tm.name] = partitionOffsets;
-      partitionOffsets.forEach(
-        to =>
+      partitionOffsetsPerTopic[tm.name] = partitionOffsets.filter(to => !partitions || partitions.includes(to.partition));
+      partitionOffsets
+        .filter(to => !partitions || partitions.includes(to.partition))
+        .forEach(
+        to => {
           (endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
             +to.high || 0)
+        }
       );
     });
+
+    log.info(
+      `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} `
+    );
+    topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
+    if( partitions ) {
+      let sPart = partitions.join(",");
+      log.info(`Using partitions: ${sPart}`);
+    }
     await consumer.subscribe({ topic: topics });
+
+    const subject = new Subject<EachMessagePayload>();
+    const observable = subject.asObservable();
+
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        if (
-          !keyFilter ||
-          !message.key ||
-          message.key.toString().match(keyFilter)
-        ) {
-          printMessage(topic, partition, message, root);
+        let topicPartition = topic + "/" + partition;
+        if (!finishedTopicPartitions[topicPartition]) {
+          subject.next({ topic, partition, message });
         }
         if (!follow) {
-          let topicPartition = topic + "/" + partition;
           if (
             !finishedTopicPartitions[topicPartition] &&
             endOffsetPerTopicPartition[topicPartition]
@@ -207,6 +218,7 @@ export async function tailTopics (
           ) {
             consumer.disconnect();
             consumer.stop();
+            subject.complete();
           }
         }
       }
@@ -242,13 +254,18 @@ export async function tailTopics (
         }
       });
     });
+    return observable;
+  } catch (e) {
+    log.error(e);
+    throw e;
   } finally {
     //    consumer.disconnect();
   }
 }
 
+//TODO: new method readTopics to read the complete or parts of the topic, for all or selected partitions with filters on key and message (and headers)
 /**
- * Tailing topics selected by a regular expression 
+ * Read topics selected by a regular expression 
  * returning a rxjs Observable.
  * @param topics the topics regex
  * @param kafkaCliConfig the config object needed to initialize kafka
@@ -256,7 +273,7 @@ export async function tailTopics (
  * @param follow keep listening and show new message as they appear
  * @param partitions list of partitions to use. If undefined all partitiions are used.
  */
-export async function tailTopicsObservable (
+export async function readTopicsObservable (
   topics: RegExp,
   kafkaCliConfig: any,
   numMessages?: number,
@@ -441,7 +458,6 @@ export default {
   deleteTopicsServer,
   getTopicOffsets,
   testProduce,
-  tailTopics,
   tailTopicsObservable,
   publish
 };

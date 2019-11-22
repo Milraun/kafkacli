@@ -96,28 +96,6 @@ program
     }
   });
 
-// program
-//   .command("tailTopics <regexp>")
-//   .description(
-//     "Tail topics per regexp. Show numOffsets for all partitions or all if omitted"
-//   )
-//   .option("-f, --follow", "follow. Stay online an show incoming messages")
-//   .option("-l, --lines <numLines>", "number of messages per partition", 1)
-//   .option(
-//     "-k, --keyFilter <regexp>",
-//     "regular expression to filter the key with"
-//   )
-//   .action(async function (regex, cmdObj) {
-//     let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-//     await kf.tailTopics(
-//       new RegExp(regex),
-//       kafkaConfig,
-//       cmdObj.parent.protobuf,
-//       cmdObj.lines,
-//       cmdObj.follow,
-//       cmdObj.keyFilter
-//     );
-//   });
 
 function splitPartitions(value?: string, dummyPrevious?: any): number[] {
   if(value) {
