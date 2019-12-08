@@ -263,6 +263,18 @@ export async function tailTopicsObservable (
   }
 }
 
+export interface PartitionDescription {
+  readonly partition: number;
+  readonly from: number; //-1 = beginning
+  readonly to: number; //-1 = end
+}
+
+export interface TopicDescription {
+  readonly topic: string; //The topic name
+  readonly partitions?: PartitionDescription[]; //Partitions and offset to read. If empty read the whole topic
+}
+
+
 //TODO: new method readTopics to read the complete or parts of the topic, for all or selected partitions with filters on key and message (and headers)
 /**
  * Read topics selected by a regular expression 
@@ -273,40 +285,48 @@ export async function tailTopicsObservable (
  * @param follow keep listening and show new message as they appear
  * @param partitions list of partitions to use. If undefined all partitiions are used.
  */
+/*
 export async function readTopicsObservable (
-  topics: RegExp,
+  topics: TopicDescription[],
   kafkaCliConfig: any,
-  numMessages?: number,
-  follow?: boolean,
-  partitions?: number[]
+  keyFilter?: RegExp,
+  messageFilter?: RegExp
 ): Promise<Observable<EachMessagePayload>> {
+
+  if( !topics ) {
+    log.info("No topic descriptions submitted! Do nothing.");
+  }
+
   const kafka = new Kafka(kafkaCliConfig);
   const consumer = kafka.consumer({ groupId: kafkaCliConfig.groupId });
   await consumer.connect();
   try {
-    let topicsMeta = await listTopics(topics, kafkaCliConfig);
-
     let partitionOffsetsPerTopic: { [id: string]: TopicOffsets[] } = {};
     let endOffsetPerTopicPartition: { [topicPartition: string]: number } = {};
     let finishedTopicPartitions: { [topicPartition: string]: number } = {};
 
-    topicsMeta.forEach(async tm => {
-      let partitionOffsets = await getTopicOffsets(tm.name, kafkaCliConfig);
-      partitionOffsetsPerTopic[tm.name] = partitionOffsets.filter(to => !partitions || partitions.includes(to.partition));
+    topics.forEach(async tm => {
+      let partitionOffsets = await getTopicOffsets(tm.topic, kafkaCliConfig);
+      partitionOffsetsPerTopic[tm.topic] = partitionOffsets.filter(to => !tm.partitions || tm.partitions.find(pd => to.partition === pd.partition));
       partitionOffsets
-        .filter(to => !partitions || partitions.includes(to.partition))
+        .filter(to => !tm.partitions || tm.partitions.find(pd => to.partition === pd.partition))
         .forEach(
         to => {
-          (endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
+          (endOffsetPerTopicPartition[tm.topic + "/" + to.partition] =
             +to.high || 0)
         }
       );
     });
 
+    let kfText = keyFilter?"with keyFilter: " + keyFilter:"without keyfilter";
+    let mfText = messageFilter?"with messageFilter: " + messageFilter:"without messagfilter";
     log.info(
-      `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} `
+      `Reading topics ${kfText} and ${mfText}`
     );
-    topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
+    topics.forEach(tm => log.info(`  Topic: ${tm.topic}`));
+    //TODO: Print partition info
+
+//DRAN: ab hier gehts weiter    
     if( partitions ) {
       let sPart = partitions.join(",");
       log.info(`Using partitions: ${sPart}`);
@@ -383,7 +403,7 @@ export async function readTopicsObservable (
     //    consumer.disconnect();
   }
 }
-
+*/
 export interface PublishDescription {
   protobufType: string;
   topic: string;

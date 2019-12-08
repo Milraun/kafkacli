@@ -4,6 +4,7 @@ import {
   KafkaMessage,
   IHeaders
 } from "kafkajs";
+import { getTopicOffsets } from "./kafkafunctions";
 
 const TS_LITERAL = "#TS(";
 const X_PROTO_HEADER = "X-Protobuf-Type";
@@ -195,8 +196,66 @@ export function printMessage (
   log.info("\n" + decodedMessage);
 }
 
+/**
+ * prints a message received via kafka. Checks if the message is known protobuf type and decodes it if necessary
+ * Creates one Json-Object with topic, partition, headers and message as members so that the output can be
+ * filtered by e.g. jq
+ * @param topic the received topic
+ * @param partition  the partition
+ * @param message  the message containing the key, the message value and headers
+ * @param root  the protobuf.Root object to decode a protobuf message
+ */
+export function printMessageJson (
+  topic: string,
+  partition: number,
+  message: KafkaMessage,
+  root: protobuf.Root
+): void {
+  let date = new Date(+message.timestamp);
+  let header =
+    (message.headers &&
+      message.headers[X_PROTO_HEADER] &&
+      message.headers[X_PROTO_HEADER].toString()) ||
+    null;
+  let decodedMessage = message.value.toString();
+  if (header) {
+    let protoMessage = root.lookupType(header);
+    if (protoMessage) {
+      let decodedProtoMessage = protoMessage.toObject(
+        protoMessage.decode(message.value)
+      );
+
+      decodedMessage = replaceTimeStampInObject(decodedProtoMessage);
+
+    }
+  }
+
+  let outHeaders: {[key: string]: string} = {};
+  if (message.headers) {
+    let headers = message.headers as IHeaders;
+    Object.entries(headers).forEach(([k, e]) => {
+      let v = e.toString();
+      outHeaders[k] = v;
+    });
+  }
+
+
+  let out = {
+    topic: topic,
+    time: date.toLocaleDateString,
+    key: message.key,
+    partition: partition,
+    offset: message.offset,
+    headers: outHeaders,
+    message: decodedMessage,
+  };
+
+  console.log(JSON.stringify(out, null, 2));
+}
+
 export default {
   printMessage,
+  printMessageJson,
   replaceTimeStampInObject,
   replaceProtoTimeStampsInObject
 }

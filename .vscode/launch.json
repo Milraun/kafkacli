@@ -37,10 +37,9 @@
       "program": "${workspaceFolder}\\src\\index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "args": [
-        "--config=testConfig.json",
+        "--config=config.json",
         "listTopics",
-        "Situation",
-        "--verbose"
+        ".*"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"
@@ -98,13 +97,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "kafkacli tailTopicsObservable",
+      "name": "kafkacli tailTopics",
       "program": "${workspaceFolder}\\src\\index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "args": [
-        "--config=tcVBox.json",
-        "tailTopicsObservable",
-        "^tammi.*"
+        "--config=config.json",
+        "tailTopics",
+        "--json",
+        "^VMIS_2_tls_LVEErgebnis"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"

@@ -5,212 +5,183 @@ import "google/protobuf/timestamp.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
 
-option (.heuboe.protobuf.interface_version) = "2.0.1";
+option (.heuboe.protobuf.interface_version) = "1.0.2";
 option java_multiple_files = true;
 
 message VLTDeFehler { // Fg 6 | Id 1 | deTyp 1
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 fehlercode = 11;
-    sint32 hersteller = 12;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 fehlercode = 4;
+    sint32 hersteller = 5;
 }
 
 message VLTDeFehlerList { // Liste von VLTDeFehler
-    string iid = 1;
-    repeated VLTDeFehler elements = 2;
+    repeated VLTDeFehler elements = 1;
 }
 
 message VLTErgDeFehler { // Fg 6 | Id 1 | deTyp 14
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 hersteller = 11;
-    bytes tls_fehlerbytes = 12;
-    bytes hersteller_fehlerbytes = 13;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 hersteller = 4;
+    bytes tls_fehlerbytes = 5;
+    bytes hersteller_fehlerbytes = 6;
 }
 
 message VLTErgDeFehlerList { // Liste von VLTErgDeFehler
-    string iid = 1;
-    repeated VLTErgDeFehler elements = 2;
+    repeated VLTErgDeFehler elements = 1;
 }
 
 message VLTNegativeQuittung { // Fg 6 | Id 2 | deTyp 16
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 fehlerursache = 11;
-    sint32 hersteller = 12;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 fehlerursache = 4;
+    sint32 hersteller = 5;
 }
 
 message VLTNegativeQuittungList { // Liste von VLTNegativeQuittung
-    string iid = 1;
-    repeated VLTNegativeQuittung elements = 2;
+    repeated VLTNegativeQuittung elements = 1;
 }
 
 message VLTKanalsteuerung { // Fg 6 | Id 2 | deTyp 29
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 kanalsteuerbyte = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 kanalsteuerbyte = 4;
 }
 
 message VLTKanalsteuerungList { // Liste von VLTKanalsteuerung
-    string iid = 1;
-    repeated VLTKanalsteuerung elements = 2;
+    repeated VLTKanalsteuerung elements = 1;
 }
 
 message VLTBetriebsparameter { // Fg 6 | Id 3 | deTyp 32
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 erfassungsperiodendauer = 11;
-    sint32 uebertragungsverfahren = 12;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 erfassungsperiodendauer = 4;
+    sint32 uebertragungsverfahren = 5;
 }
 
 message VLTBetriebsparameterList { // Liste von VLTBetriebsparameter
-    string iid = 1;
-    repeated VLTBetriebsparameter elements = 2;
+    repeated VLTBetriebsparameter elements = 1;
 }
 
 message VLTGeoKenndaten { // Fg 6 | Id 3 | deTyp 36
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 landeskennung = 11;
-    sint32 strassenart = 12;
-    sint32 strassennummer = 13;
-    double kilometrierung = 14;
-    sint32 fahrtrichtung = 15;
-    sint32 reservebyte = 16;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 landeskennung = 4;
+    sint32 strassenart = 5;
+    sint32 strassennummer = 6;
+    double kilometrierung = 7;
+    sint32 fahrtrichtung = 8;
+    sint32 reservebyte = 9;
 }
 
 message VLTGeoKenndatenList { // Liste von VLTGeoKenndaten
-    string iid = 1;
-    repeated VLTGeoKenndaten elements = 2;
+    repeated VLTGeoKenndaten elements = 1;
 }
 
 message VLTTuerkontakt { // Fg 6 | Id 4 | deTyp 48
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTTuerkontaktList { // Liste von VLTTuerkontakt
-    string iid = 1;
-    repeated VLTTuerkontakt elements = 2;
+    repeated VLTTuerkontakt elements = 1;
 }
 
 message VLTTemperaturueberwachung { // Fg 6 | Id 4 | deTyp 49
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTTemperaturueberwachungList { // Liste von VLTTemperaturueberwachung
-    string iid = 1;
-    repeated VLTTemperaturueberwachung elements = 2;
+    repeated VLTTemperaturueberwachung elements = 1;
 }
 
 message VLTLicht { // Fg 6 | Id 4 | deTyp 50
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTLichtList { // Liste von VLTLicht
-    string iid = 1;
-    repeated VLTLicht elements = 2;
+    repeated VLTLicht elements = 1;
 }
 
 message VLTStromversorgung { // Fg 6 | Id 4 | deTyp 51
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTStromversorgungList { // Liste von VLTStromversorgung
-    string iid = 1;
-    repeated VLTStromversorgung elements = 2;
+    repeated VLTStromversorgung elements = 1;
 }
 
 message VLTHeizung { // Fg 6 | Id 4 | deTyp 52
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTHeizungList { // Liste von VLTHeizung
-    string iid = 1;
-    repeated VLTHeizung elements = 2;
+    repeated VLTHeizung elements = 1;
 }
 
 message VLTLueftung { // Fg 6 | Id 4 | deTyp 53
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTLueftungList { // Liste von VLTLueftung
-    string iid = 1;
-    repeated VLTLueftung elements = 2;
+    repeated VLTLueftung elements = 1;
 }
 
 message VLTUeberspannungsschutz { // Fg 6 | Id 4 | deTyp 54
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTUeberspannungsschutzList { // Liste von VLTUeberspannungsschutz
-    string iid = 1;
-    repeated VLTUeberspannungsschutz elements = 2;
+    repeated VLTUeberspannungsschutz elements = 1;
 }
 
 message VLTDiebstahlschutz { // Fg 6 | Id 4 | deTyp 55
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
 }
 
 message VLTDiebstahlschutzList { // Liste von VLTDiebstahlschutz
-    string iid = 1;
-    repeated VLTDiebstahlschutz elements = 2;
+    repeated VLTDiebstahlschutz elements = 1;
 }
 
 message VLTLokaleEnergieversorgung { // Fg 6 | Id 4 | deTyp 57
     string id = 1;
-    sint32 jobnummer = 2;
-    google.protobuf.Timestamp tls_time = 3;
-    google.protobuf.Timestamp process_time = 4;
-    sint32 zustand = 11;
-    double ladespannung = 12;
-    double ladestrom = 13;
+    google.protobuf.Timestamp tls_time = 2;
+    google.protobuf.Timestamp process_time = 3;
+    sint32 zustand = 4;
+    double ladespannung = 5;
+    double ladestrom = 6;
 }
 
 message VLTLokaleEnergieversorgungList { // Liste von VLTLokaleEnergieversorgung
-    string iid = 1;
-    repeated VLTLokaleEnergieversorgung elements = 2;
+    repeated VLTLokaleEnergieversorgung elements = 1;
 }
+

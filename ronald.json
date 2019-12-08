@@ -1,0 +1,8 @@
+{
+  "brokers": [
+    "ronald-w7:9092"
+  ],
+  "clientId": "JayBeesTestClientId-Test-VBox",
+  "groupId": "JayBeesTestGroupId-Test-VBox",
+  "logLevel": 2
+}
