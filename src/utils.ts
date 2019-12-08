@@ -230,7 +230,7 @@ export function printMessageJson (
     }
   }
 
-  let outHeaders: {[key: string]: string} = {};
+  let outHeaders: { [key: string]: string } = {};
   if (message.headers) {
     let headers = message.headers as IHeaders;
     Object.entries(headers).forEach(([k, e]) => {
@@ -239,11 +239,10 @@ export function printMessageJson (
     });
   }
 
-
   let out = {
     topic: topic,
     time: date.toLocaleDateString,
-    key: message.key,
+    key: message.key.toString(),
     partition: partition,
     offset: message.offset,
     headers: outHeaders,

@@ -134,6 +134,14 @@ export async function getTopicOffsets (
   kafkaCliConfig: any
 ): Promise<Array<TopicOffsets>> {
   const kafka = new Kafka(kafkaCliConfig);
+  return await getTopicOffsetsServer(topic, kafka);
+}
+
+export async function getTopicOffsetsServer (
+  topic: string,
+  kafka: Kafka
+): Promise<Array<TopicOffsets>> {
+
   const adminClient = kafka.admin();
   await adminClient.connect();
   try {
@@ -160,33 +168,53 @@ export async function tailTopicsObservable (
   partitions?: number[]
 ): Promise<Observable<EachMessagePayload>> {
   const kafka = new Kafka(kafkaCliConfig);
-  const consumer = kafka.consumer({ groupId: kafkaCliConfig.groupId });
+  return await tailTopicsObservableServer(topics, kafka, kafkaCliConfig.groupId, numMessages, follow, partitions);
+}
+
+/**
+ * Tailing topics selected by a regular expression 
+ * returning a rxjs Observable.
+ * @param topics the topics regex
+ * @param kafka an intitialized kafka object
+ * @param numMessages number of messages to go back from tail for each partition
+ * @param follow keep listening and show new message as they appear
+ * @param partitions list of partitions to use. If undefined all partitiions are used.
+ */
+export async function tailTopicsObservableServer (
+  topics: RegExp,
+  kafka: Kafka,
+  groupId: string,
+  numMessages?: number,
+  follow?: boolean,
+  partitions?: number[]
+): Promise<Observable<EachMessagePayload>> {
+  const consumer = kafka.consumer({ groupId: groupId });
   await consumer.connect();
   try {
-    let topicsMeta = await listTopics(topics, kafkaCliConfig);
+    let topicsMeta = await listTopicsServer(topics, kafka);
 
     let partitionOffsetsPerTopic: { [id: string]: TopicOffsets[] } = {};
     let endOffsetPerTopicPartition: { [topicPartition: string]: number } = {};
     let finishedTopicPartitions: { [topicPartition: string]: number } = {};
 
     topicsMeta.forEach(async tm => {
-      let partitionOffsets = await getTopicOffsets(tm.name, kafkaCliConfig);
+      let partitionOffsets = await getTopicOffsetsServer(tm.name, kafka);
       partitionOffsetsPerTopic[tm.name] = partitionOffsets.filter(to => !partitions || partitions.includes(to.partition));
       partitionOffsets
         .filter(to => !partitions || partitions.includes(to.partition))
         .forEach(
-        to => {
-          (endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
-            +to.high || 0)
-        }
-      );
+          to => {
+            (endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
+              +to.high || 0)
+          }
+        );
     });
 
     log.info(
       `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} `
     );
     topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
-    if( partitions ) {
+    if (partitions) {
       let sPart = partitions.join(",");
       log.info(`Using partitions: ${sPart}`);
     }
@@ -477,8 +505,10 @@ export default {
   deleteTopics,
   deleteTopicsServer,
   getTopicOffsets,
+  getTopicOffsetsServer,
   testProduce,
   tailTopicsObservable,
+  tailTopicsObservableServer,
   publish
 };
 
