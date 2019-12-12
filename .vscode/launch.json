@@ -104,7 +104,7 @@
         "--config=config.json",
         "tailTopics",
         "--json",
-        "^VMIS_2_tls_LVEErgebnis"
+        "^CSM-UZ1-A23_1$"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"

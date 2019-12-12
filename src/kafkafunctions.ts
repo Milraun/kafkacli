@@ -10,7 +10,7 @@ import Timeout from "await-timeout";
 import protobuf from "protobufjs";
 import YAML from "yaml";
 import pino from "pino";
-import { Observable, Subject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 import {
   printMessage,
@@ -175,7 +175,7 @@ export async function tailTopicsObservable (
  * Tailing topics selected by a regular expression 
  * returning a rxjs Observable.
  * @param topics the topics regex
- * @param kafka an intitialized kafka object
+ * @param kafka an initialized kafka object
  * @param numMessages number of messages to go back from tail for each partition
  * @param follow keep listening and show new message as they appear
  * @param partitions list of partitions to use. If undefined all partitiions are used.
@@ -220,7 +220,7 @@ export async function tailTopicsObservableServer (
     }
     await consumer.subscribe({ topic: topics });
 
-    const subject = new Subject<EachMessagePayload>();
+    const subject = new ReplaySubject<EachMessagePayload>(100, 10000);
     const observable = subject.asObservable();
 
     await consumer.run({
