@@ -4,7 +4,10 @@ import {
   ITopicMetadata,
   KafkaMessage,
   IHeaders,
-  EachMessagePayload
+  EachMessagePayload,
+  DescribeConfigResponse,
+  ResourceConfigQuery,
+  ResourceTypes
 } from "kafkajs";
 import Timeout from "await-timeout";
 import protobuf from "protobufjs";
@@ -57,7 +60,42 @@ export async function listTopics (
   kafkaCliConfig: any
 ): Promise<ITopicMetadata[]> {
   const kafka = new Kafka(kafkaCliConfig);
-  return listTopicsServer(topic, kafka);
+  return await listTopicsServer(topic, kafka);
+}
+
+export async function describeTopicsConfigServer (
+  topic: RegExp,
+  kafka: Kafka
+): Promise<DescribeConfigResponse> {
+  const adminClient = kafka.admin();
+  await adminClient.connect();
+  const metaData = await adminClient.fetchTopicMetadata({ topics: [] });
+  const filteredTopics = metaData.topics.filter(t => t.name.match(topic))
+ 
+  const query = filteredTopics.map(t => {
+    let rq = {
+      type: ResourceTypes.TOPIC,
+      name: t.name
+    };
+    return rq;
+  });
+
+  const configs = await adminClient.describeConfigs({
+      resources: query,
+      includeSynonyms: false
+    });
+    
+
+  await adminClient.disconnect();
+  return configs;
+}
+
+export async function describeTopicsConfig (
+  topic: RegExp,
+  kafkaCliConfig: any
+): Promise<DescribeConfigResponse> {
+  const kafka = new Kafka(kafkaCliConfig);
+  return await describeTopicsConfigServer(topic, kafka);
 }
 
 export async function deleteTopicsServer (
@@ -502,6 +540,8 @@ export async function publish (
 export default {
   listTopics,
   listTopicsServer,
+  describeTopicsConfig,
+  describeTopicsConfigServer,
   deleteTopics,
   deleteTopicsServer,
   getTopicOffsets,

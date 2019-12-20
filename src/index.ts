@@ -51,6 +51,7 @@ function printTopics(topics: ITopicMetadata[], full: boolean): void {
   });
 }
 
+
 banner();
 
 program
@@ -80,6 +81,24 @@ program
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
       let topics = await kf.listTopics(new RegExp(regex), kafkaConfig);
       printTopics(topics, cmdObj.verbose);
+    } catch (e) {
+      log.error(e);
+    }
+    console.log("\n");
+    process.exit(0);
+  });
+
+  program
+  .command("describeTopicsConfig <regexp>")
+  .description("Read and print topics config for topics matching regexp")
+  .action(async function(regex, cmdObj) {
+    try {
+      let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+      let config = await kf.describeTopicsConfig(new RegExp(regex), kafkaConfig);
+      config.resources.forEach(r => {
+        log.info(r.resourceName);
+        r.configEntries.forEach(ce => log.info("  %s=%s", ce.configName, ce.configValue));
+      })
     } catch (e) {
       log.error(e);
     }

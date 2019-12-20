@@ -49,6 +49,21 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "kafka-cl describeTopicsConfig",
+      "program": "${workspaceFolder}\\src\\index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "args": [
+        "describeTopicsConfig",
+        "^VRZ-Measure.*"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "kafka-cl topicOffsets",
       "program": "${workspaceFolder}\\src\\index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
