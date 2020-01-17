@@ -1,0 +1,37 @@
+configs:
+  - topic: UZ_A2-ShortTermPlCheckedDataLanes
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-FailedPlCheckDataLanes
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-PlCheckValueSeriesLanes
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-ShortTermMeasurementReplacedDataLane
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-AnalyticalDataLane
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-AnalyticalDataDetSite
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-ShortTermMeasurementAggregatedDataLane
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-ShortTermMeasurementAggregatedDataDetSite
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-PrognosisDataLane
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-PrognosisDataDetSite
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-LosDataLane
+    numPartitions: 10
+    replicationFactor: 3
+  - topic: UZ_A2-LosDataDetSite
+    numPartitions: 10
+    replicationFactor: 3

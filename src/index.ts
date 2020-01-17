@@ -5,6 +5,9 @@ import clear from "clear";
 import figlet from "figlet";
 import program from "commander";
 import kf from "./kafkafunctions";
+import {
+  CreateTopicsResult
+} from "./kafkafunctions";
 const fs = require("fs").promises;
 import { ITopicMetadata } from "kafkajs";
 import pino from "pino";
@@ -130,6 +133,51 @@ program
     process.exit(0);
   });
 
+  program
+  .command("createTopic <topic>")
+  .description("create a topic")
+  .option("-p, --numPartitions <numPartitions>", "number of partitions", 10)
+  .option("-r, --replicationFactor <replicationFactor>", "replication factor", 3)
+  .option("-c, --configValue <configValue>", "config value. configValue=value", gatherConfigs, [])
+  .action(async function(topic, cmdObj) {
+    try {
+      log.info(`creating topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue}`);
+      let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+      let created = await kf.createTopic(topic, kafkaConfig, cmdObj.numPartitions, cmdObj.replicationFactor, cmdObj.configValue);
+      if( created ) {
+        log.info(`topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue} successfully created!`);
+      } else {
+        log.info(`topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue} NOT created!`);
+      }
+
+    } catch (e) {
+      log.error(e);
+    }
+    console.log("\n");
+    process.exit(0);
+  });
+
+  program
+  .command("createTopics <inputYaml>")
+  .description("create topics from an yaml input file")
+  .action(async function(inputYaml, cmdObj) {
+    try {
+      let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+      let created = await kf.createTopics(inputYaml, kafkaConfig);
+      created.forEach(r => {
+        if( r.created ) {
+          log.info(`topic: ${r.topic} successfully created`);
+        } else {
+          log.info(`topic: ${r.topic} NOT successfully created. Error: ${r.error}`);
+        }
+      })
+    } catch (e) {
+      log.error(e);
+    }
+    console.log("\n");
+    process.exit(0);
+  });
+
 function splitPartitions(value?: string, dummyPrevious?: any): number[] {
   if (value) {
     let partitions: number[] = [];
@@ -138,6 +186,10 @@ function splitPartitions(value?: string, dummyPrevious?: any): number[] {
   } else {
     return [];
   }
+}
+
+function gatherConfigs(value?: string, previous?: any): string[] {
+  return previous.concat([value]);
 }
 
 program

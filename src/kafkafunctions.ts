@@ -3,10 +3,11 @@ import {
   logLevel,
   ITopicMetadata,
   KafkaMessage,
+  ITopicConfig,
   IHeaders,
   EachMessagePayload,
   DescribeConfigResponse,
-  ResourceConfigQuery,
+  IResourceConfig,
   ResourceTypes
 } from "kafkajs";
 import Timeout from "await-timeout";
@@ -19,6 +20,7 @@ import {
   printMessage,
   replaceProtoTimeStampsInObject
 } from './utils'
+import { readFile } from "fs";
 
 const log = pino({
   prettyPrint: {
@@ -120,6 +122,7 @@ export async function deleteTopicsServer (
   await adminClient.disconnect();
 }
 
+
 export async function deleteTopics (
   topics: RegExp,
   kafkaCliConfig: any
@@ -127,6 +130,7 @@ export async function deleteTopics (
   const kafka = new Kafka(kafkaCliConfig);
   await deleteTopicsServer(topics, kafka);
 }
+
 export async function testProduce (
   topic: string,
   kafkaCliConfig: any,
@@ -159,6 +163,169 @@ export async function testProduce (
     await producer.disconnect();
   }
 }
+
+export async function createTopicServer (
+  topic: string,
+  kafka: Kafka,
+  partitions: number,
+  replicationFactor: number,
+  config: string[]
+): Promise<boolean> {
+  const adminClient = kafka.admin();
+  await adminClient.connect();
+
+    let topicConfig: ITopicConfig = {
+      topic: topic,
+      numPartitions: partitions,
+      replicationFactor: replicationFactor
+    };
+
+    let configValues: any[] = [];
+    config.forEach(ce => {
+      let configEntry = ce.split("=");
+      if( configEntry.length !== 2 ) {
+        throw `Format of ${ce} invalid. Must be: 'configName=value'`;
+      }
+      configValues = configValues.concat([
+        {name: configEntry[0],
+         value: configEntry[1]}
+      ]);
+    });
+
+    topicConfig.configEntries = configValues;
+
+    let sTC = YAML.stringify(topicConfig);
+    
+    let created = await adminClient.createTopics({
+      validateOnly: false,
+      topics: [topicConfig]
+    });
+
+    await adminClient.disconnect();
+
+    return created;
+}
+
+export async function createTopic (
+  topics: string,
+  kafkaCliConfig: any,
+  partitions: number,
+  replicationFactor: number,
+  config: string[]
+
+) : Promise<boolean> {
+  const kafka = new Kafka(kafkaCliConfig);
+  return await createTopicServer(topics, kafka, partitions, replicationFactor, config);
+}
+
+export interface CreateTopicsConfig {
+  configs : ITopicConfig[]; 
+}
+
+export interface CreateTopicsResult {
+  topic: string,
+  created: boolean,
+  error: string
+}
+
+export async function createTopics (
+  inputFile: string,
+  kafkaCliConfig: any 
+) : Promise<CreateTopicsResult[]> {
+
+  const kafka = new Kafka(kafkaCliConfig);
+  let conf = ((await fs.readFile(inputFile) as Buffer).toString());
+  let topicsConf = YAML.parse(conf) as CreateTopicsConfig;
+  const adminClient = kafka.admin();
+  await adminClient.connect();
+  let results: CreateTopicsResult[] = [];
+  for( let tc of topicsConf.configs ) {
+    try {
+      let created = await adminClient.createTopics({
+        validateOnly: false,
+        topics: [tc]
+      });
+
+      results.push( {
+        topic: tc.topic,
+        created: created,
+        error: created?"": "does it already exist ?"
+      }); 
+    } catch( e ) {
+      log.error(e);
+      results.push( {
+        topic: tc.topic,
+        created: false,
+        error: e
+      });
+    }
+  }
+  await adminClient.disconnect();
+  return results;
+}
+
+export async function alterTopicsConfig (
+  topic: RegExp,
+  kafka: Kafka,
+  config: string[]
+): Promise<CreateTopicsResult[]> {
+
+  let configValues: any[] = [];
+  config.forEach(ce => {
+    let configEntry = ce.split("=");
+    if( configEntry.length !== 2 ) {
+      throw `Format of ${ce} invalid. Must be: 'configName=value'`;
+    }
+    configValues = configValues.concat([
+      {name: configEntry[0],
+        value: configEntry[1]}
+    ]);
+  });
+
+  const adminClient = kafka.admin();
+  await adminClient.connect();
+  let metaData = await adminClient.fetchTopicMetadata({ topics: [] });
+
+  let filteredTopics: ITopicMetadata[] = [];
+
+  for (let t of metaData.topics) {
+    if (t.name.match(topic)) {
+      filteredTopics.push(t);
+    }
+  }
+
+  let results: CreateTopicsResult[] = [];
+  for( let topic of filteredTopics ) {
+    let rc: IResourceConfig = {
+      type: ResourceTypes.TOPIC,
+      name: topic.name,
+      configEntries: []
+    }
+
+    configValues.forEach(cv => {
+      rc.configEntries.push({
+        name: cv[0],
+        value: cv[1]
+      })
+    })
+
+    let result = await adminClient.alterConfigs({
+      validateOnly: false,
+      resources: [rc]
+    })
+    results.push({
+      topic: result.resurceName,
+      created: result.errorCode === 0,
+      error: result.errorMessage as string | ""
+    })
+
+  }
+
+  await adminClient.disconnect();
+
+  return results;
+}
+
 
 export interface TopicOffsets {
   readonly partition: number;
@@ -544,6 +711,9 @@ export default {
   describeTopicsConfigServer,
   deleteTopics,
   deleteTopicsServer,
+  createTopic,
+  createTopics,
+  createTopicServer,
   getTopicOffsets,
   getTopicOffsetsServer,
   testProduce,

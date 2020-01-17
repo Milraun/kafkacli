@@ -1,0 +1,15 @@
+configs:
+  - topic: hugo1
+    numPartitions: 5
+    replicationFactor: 2
+    configEntries:
+      - name: cleanup.policy
+        value: compact
+      - name: segment.ms
+        value: "3600000"
+  - topic: fritz1
+    numPartitions: 5
+    replicationFactor: 2
+    configEntries:
+      - name: retention.msX
+        value: "3600000"
