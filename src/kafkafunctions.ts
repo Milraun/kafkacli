@@ -264,8 +264,8 @@ export async function createTopics (
   return results;
 }
 
-export async function alterTopicsConfig (
-  topic: RegExp,
+export async function alterTopicsConfigServer (
+  topics: RegExp,
   kafka: Kafka,
   config: string[]
 ): Promise<CreateTopicsResult[]> {
@@ -274,7 +274,7 @@ export async function alterTopicsConfig (
   config.forEach(ce => {
     let configEntry = ce.split("=");
     if( configEntry.length !== 2 ) {
-      throw `Format of ${ce} invalid. Must be: 'configName=value'`;
+      throw `Format of ${ce} invalid. Must be: 'cname=value'`;
     }
     configValues = configValues.concat([
       {name: configEntry[0],
@@ -289,33 +289,32 @@ export async function alterTopicsConfig (
   let filteredTopics: ITopicMetadata[] = [];
 
   for (let t of metaData.topics) {
-    if (t.name.match(topic)) {
+    if (t.name.match(topics)) {
       filteredTopics.push(t);
+      log.info(`Changing config of topic: ${t.name}`);
     }
   }
 
   let results: CreateTopicsResult[] = [];
+  if(filteredTopics.length === 0) {
+    log.info(`No topic with regular expression: ${topics} found.`);
+    return results;
+  }
+
   for( let topic of filteredTopics ) {
     let rc: IResourceConfig = {
       type: ResourceTypes.TOPIC,
       name: topic.name,
-      configEntries: []
+      configEntries: configValues
     }
-
-    configValues.forEach(cv => {
-      rc.configEntries.push({
-        name: cv[0],
-        value: cv[1]
-      })
-    })
 
     let result = await adminClient.alterConfigs({
       validateOnly: false,
       resources: [rc]
     })
     results.push({
-      topic: result.resurceName,
-      created: result.errorCode === 0,
+      topic: result.resourceName,
+      created: result.errorCode !== 0,
       error: result.errorMessage as string | ""
     })
 
@@ -326,6 +325,14 @@ export async function alterTopicsConfig (
   return results;
 }
 
+export async function alterTopicsConfig (
+  topics: RegExp,
+  kafkaCliConfig: any,
+  config: string[]
+): Promise<CreateTopicsResult[]> {
+  const kafka = new Kafka(kafkaCliConfig);
+  return await alterTopicsConfigServer(topics, kafka, config);
+}
 
 export interface TopicOffsets {
   readonly partition: number;
@@ -719,6 +726,8 @@ export default {
   testProduce,
   tailTopicsObservable,
   tailTopicsObservableServer,
+  alterTopicsConfig,
+  alterTopicsConfigServer,
   publish
 };
 

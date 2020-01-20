@@ -138,7 +138,7 @@ program
   .description("create a topic")
   .option("-p, --numPartitions <numPartitions>", "number of partitions", 10)
   .option("-r, --replicationFactor <replicationFactor>", "replication factor", 3)
-  .option("-c, --configValue <configValue>", "config value. configValue=value", gatherConfigs, [])
+  .option("-c, --configValue <configValue>", "config value. configValue=name=value", gatherConfigs, [])
   .action(async function(topic, cmdObj) {
     try {
       log.info(`creating topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue}`);
@@ -171,6 +171,30 @@ program
           log.info(`topic: ${r.topic} NOT successfully created. Error: ${r.error}`);
         }
       })
+    } catch (e) {
+      log.error(e);
+    }
+    console.log("\n");
+    process.exit(0);
+  });
+
+  program
+  .command("alterTopicsConfig <topics>")
+  .description("change configurations of topics given by a regular expression.")
+  .option("-c, --configValue <configValue>", "config value. Repeatable parameter. --configValue=name=value", gatherConfigs, [])
+  .action(async function(topics, cmdObj) {
+    try {
+      log.info(`alter topics config: ${topics} -c=${cmdObj.configValue}`);
+      let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+      let created = await kf.alterTopicsConfig(topics, kafkaConfig, cmdObj.configValue);
+      created.forEach(r => {
+        if( r.created ) {
+          log.info(`topic: ${r.topic} successfully changed`);
+        } else {
+          log.info(`topic: ${r.topic} NOT successfully changed. Error: ${r.error}`);
+        }
+      })
+
     } catch (e) {
       log.error(e);
     }

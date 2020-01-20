@@ -165,9 +165,7 @@
         "createTopic",
         "hugo",
         "--numPartitions=2",
-        "--replicationFactor=3",
-        "--configValue=cleanup.policy=compact",
-        "--configValue=segment.ms=600000"
+        "--replicationFactor=3"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"
@@ -183,6 +181,23 @@
       "args": [
         "createTopics",
         "createTopic.yaml"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "kafka-cl alterTopicsConfig",
+      "program": "${workspaceFolder}\\src\\index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "args": [
+        "alterTopicsConfig",
+        "^hugo$",
+        "--configValue=cleanup.policy=compact",
+        "--configValue=segment.ms=3600000"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"
