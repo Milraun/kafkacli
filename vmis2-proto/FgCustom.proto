@@ -1,12 +1,12 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.tls.received;
 
 import "google/protobuf/timestamp.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
-
-option (.heuboe.protobuf.interface_version) = "2.0.1";
 option java_multiple_files = true;
+option (.heuboe.protobuf.interface_version) = "2.1.0";
 
 message LVEGeisterfahrer { // Fg 1 | Id 4 | deTyp 163
     string id = 1;
@@ -322,7 +322,7 @@ message VLTBrandmelderList { // Liste von VLTBrandmelder
     repeated VLTBrandmelder elements = 2;
 }
 
-message DaSYSFehlerDUE { // Fg 254 | Id 1 | deTyp 131
+message SYSFehlerDUE { // Fg 254 | Id 1 | deTyp 131
     string id = 1;
     sint32 jobnummer = 2;
     google.protobuf.Timestamp tls_time = 3;
@@ -331,7 +331,7 @@ message DaSYSFehlerDUE { // Fg 254 | Id 1 | deTyp 131
     sint32 hersteller = 12;
 }
 
-message DaSYSFehlerDUEList { // Liste von DaSYSFehlerDUE
+message SYSFehlerDUEList { // Liste von SYSFehlerDUE
     string iid = 1;
-    repeated DaSYSFehlerDUE elements = 2;
+    repeated SYSFehlerDUE elements = 2;
 }

@@ -1,17 +1,18 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-import "GeoReference.proto";
-import "CommonControlData.proto";
+package eu.vmis_ehe.vmis2.control.data;
+
 import "Attribute.proto";
+import "CommonControlData.proto";
+import "GeoReference.proto";
 import "EDBInterface.proto"; //Attributes used for new EDB-Handling
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "SituationProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
-
-
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 // VMIS2-S1ANF-622
 message MergedTypeWrapper {
@@ -33,12 +34,15 @@ message ValTypeWrapper {
     }
 }
 
-
-
 // VMIS2-S1ANF-788
 // VMIS2-S1ANF-789
 // Siuation class represents one entry in the situation catalogue
 message SituationClass {
+    enum MethodOfConflictAdjustment {
+        NONE = 0;
+        STATEPRIORITYBASED = 1;
+        QUALITYBASED = 2;
+    }
     message SituationSubClass {
         TwoPartIdentification two_part_id = 1;              // Unique two-part identification of a situation sub class
         string display_name = 2;                            // Display name
@@ -46,18 +50,22 @@ message SituationClass {
         bool merge_situations = 4;                          // true, if neighboured situations of this sub class has to 
                                                             // be merged (see VMIS2-S1ANF-559)
         LifecycleProperties lifecycle = 5;                  // Properties of lifecycle algorithm for situations of that sub class
-        
+
     }
     TwoPartIdentification two_part_id = 1;                  // Unique two-part identification of a situation class
     string description = 2;                                 // Decription of the situation class
-    bool conflict_adjustment = 3;                           /* True, if conflicts of situation objects of this situation 
-                                                             * class have to be resolved */
+    MethodOfConflictAdjustment method_of_conflict_adjustment = 3;    /* conflicts of situation objects of this situation class have to be resolved, 
+                                                                        method how they are resolved, 
+                                                                        NONE for no conflict adjustment. */
+
     // Type of geo reference (point, line, net)
     GeoReferenceTypeWrapper.GeoReferenceType geo_ref_type = 4;
     repeated SituationSubClass sub_classes = 5;             // Associated sub classes
-    repeated TwoPartIdentification attribute_class = 6;     // Additional attribute types
+    repeated string attribute_class = 6;     // Additional attribute types
     string display_name = 7;                                // Displayname of the situation class
     double situation_merge_gap_in_km = 8;                   // Maximum gap between situations to merge (VMIS2-S1ANF-559)
+    int32 situation_quality_minimum = 9;                    // For the limit from the product of the qualities, result quality minimum => 0-100 int32
+    int32 algorithm_quality_minimum = 10;                   // Minimum quality of algorithm => 0-100 int32
 }
 
 // VMIS2-BR-83
@@ -65,6 +73,7 @@ message SituationClass {
 // Situation catalogue lists all situation classes in priority sequence. (the first is the most important)
 message SituationCatalogue {
     repeated SituationClass situation_classes = 1;           // List of situation classes
+    string iid = 2;                                          // message id
 }
 // VMIS2-S1ANF-549
 // VMIS2-S1ANF-622

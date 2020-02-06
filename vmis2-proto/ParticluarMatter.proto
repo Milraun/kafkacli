@@ -1,11 +1,14 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.control.data;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "ParticularMatterProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 // Particular matter 10 sensor codes
 message PM10SensorWrapper {
@@ -94,7 +97,7 @@ message PM10Values {
 	    google.protobuf.Timestamp time = 1;                         // Timestamp
 	    double value = 2;                                           // Double value
 	}
-	
+
     google.protobuf.Timestamp event_time = 1;                       /* The point in time when an event or data record occurred,
                                                                     * i.e. was originally created "at the source". Contains
                                                                     * e.g. the interval time stamp of input values or 

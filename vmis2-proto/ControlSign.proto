@@ -1,21 +1,23 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-import "Measure.proto";
-import "GeoReference.proto";
+package eu.vmis_ehe.vmis2.control.data;
+
 import "CommonControlData.proto";
+import "GeoReference.proto";
+import "Measure.proto";
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "ControlSignProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 // Types of the control sign
 enum ControlSignType{
 		LOCATION_INDEPENDENT = 0;	//location independent control sign type
 		LOCATION_DEPENDENT = 1;		//location dependent control sign type
 	}
-
 
 /* List of control signs used e.g. to publish ControlSigns to a broker etc. */
 message ControlSigns {
@@ -33,7 +35,7 @@ message ControlSign{
 	MainFunnel main_funnel = 6;									//main funnel of the control sign
 	NoMainFunnel prev_funnel = 7;								//prev funnel of the control sign
 	NoMainFunnel next_funnel = 8;								//next funnel of the control sign
-  
+
 }
 
 // Main funnel of a control sign
@@ -53,14 +55,11 @@ message ListTagPanelContent{
     repeated TagPanelContent tag_panel_content = 1;
 }
 
- 
-
 // List of device panel tags, to make the relation between control sign and device panel.
 message TagPanelContent {
 	string tag = 1;
 	PanelContent panel_content = 2; 
 }
-
 
 // Control sign of a measure
 message ControlSignMeasure {
@@ -102,7 +101,35 @@ message TlsSpecification {
 // Result of sign overlay algorithm for one variable traffic panel 
 message ResultingPanelContent {
     TwoPartIdentification measure_id =  1;                                          // id of measure which was reason for panel content
-    string measure_class_id = 2;                                                    // measure class of measure which was reason for panel content
-    LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 3;    // Logical operating mode of measure
+    string measure_class_id = 2;                                                    // measure class of measure which was reason for panel content (convenience repetition)
+    LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 3;    // Logical operating mode of measure (convenience repetition)
     DevicePanelContent device_panel_content = 4;                                    // panel content
+}
+
+// Reason of a panel's control sign
+message ControlSignReason {
+    string panel_id = 1;                                                    // Reference to the device panel
+    repeated OneControlSignReasonMeasure control_sign_reasons_measure = 2;  // list of all reasons from measures ... maybe stripped to a numer of elements (10)
+    bool reasons_are_stripped = 3;                                          // true if the obove list is stripped
+    OneControlSignReasonOther control_sign_reason_other = 4;                // Fuer Laengs- Querabgleich, Ausfallbehandlung und Aufhebungen 
+}
+
+// A reason from a measure
+message OneControlSignReasonMeasure {
+    TwoPartIdentification measure_id =  1;                                          // Reference to the measure object
+    PanelContent panel_content = 2;                                                 // the given panel content with priority
+    LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 3;    // Logical operating mode of measure (convenience repetition)
+    string measure_class_id = 4;                                                    // measure class of measure (convenience repetition)
+}
+
+// Another reason (not from measure)
+message OneControlSignReasonOther {
+    string reason = 1;                          // desciption; name of the algorithm that changes the panel content ( "Laengs Geschwindigkeit" "Quer Geschwindigkeit" )
+    PanelContent panel_content = 2;             // the new panel content given from the algorithm
+}
+
+/* Reason of a panel's control sign used e.g. to publish Situations to a broker etc. */
+message ControlSignReasonMsg {
+    string iid = 1;                               // message id
+    ControlSignReason reason = 2;        // reason object
 }

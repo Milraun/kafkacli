@@ -1,12 +1,14 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.geomanager.hierarchy;
+
 import "base.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager.hierarchy";
 option csharp_namespace = "Geomanager.Hierarchy";
-
-package eu.vmis_ehe.vmis2.geomanager.hierarchy;
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 // A filter to limit the requested objects
 message HierarchyFilter {

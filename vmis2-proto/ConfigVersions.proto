@@ -1,9 +1,12 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
+
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
-
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 message VersionKey {                                    // Version info for one UZ
     string uz_id = 1;
@@ -22,4 +25,3 @@ message BaseVersionKey {                                // One UZ's base version
     string uz_id = 1;
     string base_version_id = 2;
 }
-

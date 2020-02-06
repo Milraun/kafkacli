@@ -1,336 +1,365 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.tls.received;
 
 import "google/protobuf/timestamp.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
-
-option (.heuboe.protobuf.interface_version) = "1.0.2";
 option java_multiple_files = true;
+option (.heuboe.protobuf.interface_version) = "1.0.0";
 
 message LVEDeFehler { // Fg 1 | Id 1 | deTyp 1
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlercode = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlercode = 11;
+    sint32 hersteller = 12;
 }
 
 message LVEDeFehlerList { // Liste von LVEDeFehler
-    repeated LVEDeFehler elements = 1;
+    string iid = 1;
+    repeated LVEDeFehler elements = 2;
 }
 
 message LVEErgDeFehler { // Fg 1 | Id 1 | deTyp 14
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 hersteller = 4;
-    bytes tls_fehlerbytes = 5;
-    bytes hersteller_fehlerbytes = 6;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    bytes tls_fehlerbytes = 12;
+    bytes hersteller_fehlerbytes = 13;
 }
 
 message LVEErgDeFehlerList { // Liste von LVEErgDeFehler
-    repeated LVEErgDeFehler elements = 1;
+    string iid = 1;
+    repeated LVEErgDeFehler elements = 2;
 }
 
 message LVENegativeQuittung { // Fg 1 | Id 2 | deTyp 16
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlerursache = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlerursache = 11;
+    sint32 hersteller = 12;
 }
 
 message LVENegativeQuittungList { // Liste von LVENegativeQuittung
-    repeated LVENegativeQuittung elements = 1;
+    string iid = 1;
+    repeated LVENegativeQuittung elements = 2;
 }
 
 message LVEPositiveQuittung { // Fg 1 | Id 2 | deTyp 28
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 quittung = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 quittung = 11;
 }
 
 message LVEPositiveQuittungList { // Liste von LVEPositiveQuittung
-    repeated LVEPositiveQuittung elements = 1;
+    string iid = 1;
+    repeated LVEPositiveQuittung elements = 2;
 }
 
 message LVEKanalsteuerung { // Fg 1 | Id 2 | deTyp 29
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 kanalsteuerbyte = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 kanalsteuerbyte = 11;
 }
 
 message LVEKanalsteuerungList { // Liste von LVEKanalsteuerung
-    repeated LVEKanalsteuerung elements = 1;
+    string iid = 1;
+    repeated LVEKanalsteuerung elements = 2;
 }
 
 message LVEBetriebsparameter { // Fg 1 | Id 3 | deTyp 32
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 datenversion_kurz = 4;
-    sint32 erfassungsintervalldauer_kurz = 5;
-    sint32 datenversion_lang = 6;
-    sint32 erfassungsintervalldauer_lang = 7;
-    double alpha1 = 8;
-    double alpha2 = 9;
-    sint32 laengengrenzwert = 10;
-    sint32 art_mittelwertbildung = 11;
-    sint32 startwert_mittelwertbildung = 12;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 datenversion_kurz = 11;
+    sint32 erfassungsintervalldauer_kurz = 12;
+    sint32 datenversion_lang = 13;
+    sint32 erfassungsintervalldauer_lang = 14;
+    double alpha1 = 15;
+    double alpha2 = 16;
+    sint32 laengengrenzwert = 17;
+    sint32 art_mittelwertbildung = 18;
+    sint32 startwert_mittelwertbildung = 19;
 }
 
 message LVEBetriebsparameterList { // Liste von LVEBetriebsparameter
-    repeated LVEBetriebsparameter elements = 1;
+    string iid = 1;
+    repeated LVEBetriebsparameter elements = 2;
 }
 
 message EFZBetriebsparameter { // Fg 1 | Id 3 | deTyp 33
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 max_puffer_anzahl = 4;
-    sint32 max_puffer_dauer = 5;
-    sint32 v_min = 6;
-    sint32 v_max = 7;
-    sint32 fahrzeugklassencode = 8;
-    sint32 meldeoptionen = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 max_puffer_anzahl = 11;
+    sint32 max_puffer_dauer = 12;
+    sint32 v_min = 13;
+    sint32 v_max = 14;
+    sint32 fahrzeugklassencode = 15;
+    sint32 meldeoptionen = 16;
 }
 
 message EFZBetriebsparameterList { // Liste von EFZBetriebsparameter
-    repeated EFZBetriebsparameter elements = 1;
+    string iid = 1;
+    repeated EFZBetriebsparameter elements = 2;
 }
 
 message SVEBetriebsparameter { // Fg 1 | Id 3 | deTyp 34
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 datenversion = 4;
-    sint32 erfassungsintervalldauer = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 datenversion = 11;
+    sint32 erfassungsintervalldauer = 12;
 }
 
 message SVEBetriebsparameterList { // Liste von SVEBetriebsparameter
-    repeated SVEBetriebsparameter elements = 1;
+    string iid = 1;
+    repeated SVEBetriebsparameter elements = 2;
 }
 
 message LVEGeoKenndaten { // Fg 1 | Id 3 | deTyp 36
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 landeskennung = 4;
-    sint32 strassenart = 5;
-    sint32 strassennummer = 6;
-    double kilometrierung = 7;
-    sint32 fahrtrichtung = 8;
-    sint32 reservebyte = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 landeskennung = 11;
+    sint32 strassenart = 12;
+    sint32 strassennummer = 13;
+    double kilometrierung = 14;
+    sint32 fahrtrichtung = 15;
+    sint32 reservebyte = 16;
 }
 
 message LVEGeoKenndatenList { // Liste von LVEGeoKenndaten
-    repeated LVEGeoKenndaten elements = 1;
+    string iid = 1;
+    repeated LVEGeoKenndaten elements = 2;
 }
 
 message LVEGeschwindigkeitsklassenKurz { // Fg 1 | Id 3 | deTyp 37
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fahrzeugklasse = 4;
-    bytes v_grenzen = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fahrzeugklasse = 11;
+    repeated sint32 v_grenzen = 12;
 }
 
 message LVEGeschwindigkeitsklassenKurzList { // Liste von LVEGeschwindigkeitsklassenKurz
-    repeated LVEGeschwindigkeitsklassenKurz elements = 1;
+    string iid = 1;
+    repeated LVEGeschwindigkeitsklassenKurz elements = 2;
 }
 
 message LVEGeschwindigkeitsklassenLang { // Fg 1 | Id 3 | deTyp 38
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fahrzeugklasse = 4;
-    bytes v_grenzen = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fahrzeugklasse = 11;
+    repeated sint32 v_grenzen = 12;
 }
 
 message LVEGeschwindigkeitsklassenLangList { // Liste von LVEGeschwindigkeitsklassenLang
-    repeated LVEGeschwindigkeitsklassenLang elements = 1;
+    string iid = 1;
+    repeated LVEGeschwindigkeitsklassenLang elements = 2;
 }
 
 message LVEErgebnisVersion0 { // Fg 1 | Id 4 | deTyp 49
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervall_art = 4;
-    sint32 intervalllaenge = 5;
-    sint32 q_kfz = 6;
-    sint32 q_lkw_ae = 7;
-    sint32 v_pkw_ae = 8;
-    sint32 v_lkw_ae = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervall_art = 5;
+    sint32 intervalllaenge = 6;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_pkw_ae = 13;
+    sint32 v_lkw_ae = 14;
 }
 
 message LVEErgebnisVersion0List { // Liste von LVEErgebnisVersion0
-    repeated LVEErgebnisVersion0 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion0 elements = 2;
 }
 
 message LVEErgebnisVersion1 { // Fg 1 | Id 4 | deTyp 50
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervall_art = 4;
-    sint32 intervalllaenge = 5;
-    sint32 q_kfz = 6;
-    sint32 q_lkw_ae = 7;
-    sint32 v_pkw_ae = 8;
-    sint32 v_lkw_ae = 9;
-    double nettozeitluecke = 10;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervall_art = 5;
+    sint32 intervalllaenge = 6;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_pkw_ae = 13;
+    sint32 v_lkw_ae = 14;
+    double nettozeitluecke = 15;
 }
 
 message LVEErgebnisVersion1List { // Liste von LVEErgebnisVersion1
-    repeated LVEErgebnisVersion1 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion1 elements = 2;
 }
 
 message LVEErgebnisVersion2 { // Fg 1 | Id 4 | deTyp 51
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervall_art = 4;
-    sint32 intervalllaenge = 5;
-    sint32 q_kfz = 6;
-    sint32 q_lkw_ae = 7;
-    sint32 v_pkw_ae = 8;
-    sint32 v_lkw_ae = 9;
-    sint32 belegung = 10;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervall_art = 5;
+    sint32 intervalllaenge = 6;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_pkw_ae = 13;
+    sint32 v_lkw_ae = 14;
+    sint32 belegung = 15;
 }
 
 message LVEErgebnisVersion2List { // Liste von LVEErgebnisVersion2
-    repeated LVEErgebnisVersion2 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion2 elements = 2;
 }
 
 message LVEErgebnisVersion3 { // Fg 1 | Id 4 | deTyp 52
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervall_art = 4;
-    sint32 intervalllaenge = 5;
-    sint32 q_kfz = 6;
-    sint32 q_lkw_ae = 7;
-    sint32 v_pkw_ae = 8;
-    sint32 v_lkw_ae = 9;
-    double nettozeitluecke = 10;
-    sint32 belegung = 11;
-    sint32 s_kfz = 12;
-    sint32 v_kfz = 13;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervall_art = 5;
+    sint32 intervalllaenge = 6;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_pkw_ae = 13;
+    sint32 v_lkw_ae = 14;
+    double nettozeitluecke = 15;
+    sint32 belegung = 16;
+    sint32 s_kfz = 17;
+    sint32 v_kfz = 18;
 }
 
 message LVEErgebnisVersion3List { // Liste von LVEErgebnisVersion3
-    repeated LVEErgebnisVersion3 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion3 elements = 2;
 }
 
 message LVEErgebnisVersion4 { // Fg 1 | Id 4 | deTyp 53
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervall_art = 4;
-    sint32 intervalllaenge = 5;
-    sint32 q_kfz = 6;
-    sint32 q_lkw_ae = 7;
-    sint32 v_pkw_ae = 8;
-    sint32 v_lkw_ae = 9;
-    double nettozeitluecke = 10;
-    sint32 belegung = 11;
-    sint32 s_kfz = 12;
-    sint32 v_kfz = 13;
-    repeated VKlassePkwAe v_klassen_pkw_ae = 14;
-    repeated VKlasseLkwAe v_klassen_lkw_ae = 15;
-    
-    message VKlassePkwAe {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLkwAe {
-        sint32 v_klasse = 1;
-    }
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervall_art = 5;
+    sint32 intervalllaenge = 6;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_pkw_ae = 13;
+    sint32 v_lkw_ae = 14;
+    double nettozeitluecke = 15;
+    sint32 belegung = 16;
+    sint32 s_kfz = 17;
+    sint32 v_kfz = 18;
+    repeated sint32 v_klassen_pkw_ae = 19;
+    repeated sint32 v_klassen_lkw_ae = 20;
 }
 
 message LVEErgebnisVersion4List { // Liste von LVEErgebnisVersion4
-    repeated LVEErgebnisVersion4 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion4 elements = 2;
 }
 
 message LVEErgebnisVersion5 { // Fg 1 | Id 4 | deTyp 54
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervall_art = 4;
-    sint32 intervalllaenge = 5;
-    sint32 q_pkw_g = 6;
-    sint32 q_pkw_a = 7;
-    sint32 q_lkw = 8;
-    sint32 q_lkw_k = 9;
-    sint32 q_bus = 10;
-    sint32 qnk_kfz = 11;
-    sint32 v_pkw_g = 12;
-    sint32 v_pkw_a = 13;
-    sint32 v_lkw = 14;
-    sint32 v_lkw_k = 15;
-    sint32 v_bus = 16;
-    sint32 s_pkw_g = 17;
-    sint32 s_pkw_a = 18;
-    sint32 s_lkw = 19;
-    sint32 s_lkw_k = 20;
-    sint32 s_bus = 21;
-    double nettozeitluecke = 22;
-    sint32 belegung = 23;
-    sint32 v_kfz = 24;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervall_art = 5;
+    sint32 intervalllaenge = 6;
+    sint32 q_pkw_g = 11;
+    sint32 q_pkw_a = 12;
+    sint32 q_lkw = 13;
+    sint32 q_lkw_k = 14;
+    sint32 q_bus = 15;
+    sint32 qnk_kfz = 16;
+    sint32 v_pkw_g = 17;
+    sint32 v_pkw_a = 18;
+    sint32 v_lkw = 19;
+    sint32 v_lkw_k = 20;
+    sint32 v_bus = 21;
+    sint32 s_pkw_g = 22;
+    sint32 s_pkw_a = 23;
+    sint32 s_lkw = 24;
+    sint32 s_lkw_k = 25;
+    sint32 s_bus = 26;
+    double nettozeitluecke = 27;
+    sint32 belegung = 28;
+    sint32 v_kfz = 29;
 }
 
 message LVEErgebnisVersion5List { // Liste von LVEErgebnisVersion5
-    repeated LVEErgebnisVersion5 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion5 elements = 2;
 }
 
 message LVEErgebnisVersion6 { // Fg 1 | Id 4 | deTyp 55
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervall_art = 4;
-    sint32 intervalllaenge = 5;
-    sint32 qnk_kfz = 6;
-    sint32 q_krad = 7;
-    sint32 q_pkw = 8;
-    sint32 q_lfw = 9;
-    sint32 q_pkw_a = 10;
-    sint32 q_lkw = 11;
-    sint32 q_lkw_a = 12;
-    sint32 q_sattel_kfz = 13;
-    sint32 q_bus = 14;
-    sint32 v_krad = 15;
-    sint32 v_pkw = 16;
-    sint32 v_lfw = 17;
-    sint32 v_pkw_a = 18;
-    sint32 v_lkw = 19;
-    sint32 v_lkw_a = 20;
-    sint32 v_sattel_kfz = 21;
-    sint32 v_bus = 22;
-    sint32 s_krad = 23;
-    sint32 s_pkw = 24;
-    sint32 s_lfw = 25;
-    sint32 s_pkw_a = 26;
-    sint32 s_lkw = 27;
-    sint32 s_lkw_a = 28;
-    sint32 s_sattel_kfz = 29;
-    sint32 s_bus = 30;
-    double nettozeitluecke = 31;
-    sint32 belegung = 32;
-    sint32 v_kfz = 33;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervall_art = 5;
+    sint32 intervalllaenge = 6;
+    sint32 qnk_kfz = 11;
+    sint32 q_krad = 12;
+    sint32 q_pkw = 13;
+    sint32 q_lfw = 14;
+    sint32 q_pkw_a = 15;
+    sint32 q_lkw = 16;
+    sint32 q_lkw_a = 17;
+    sint32 q_sattel_kfz = 18;
+    sint32 q_bus = 19;
+    sint32 v_krad = 20;
+    sint32 v_pkw = 21;
+    sint32 v_lfw = 22;
+    sint32 v_pkw_a = 23;
+    sint32 v_lkw = 24;
+    sint32 v_lkw_a = 25;
+    sint32 v_sattel_kfz = 26;
+    sint32 v_bus = 27;
+    sint32 s_krad = 28;
+    sint32 s_pkw = 29;
+    sint32 s_lfw = 30;
+    sint32 s_pkw_a = 31;
+    sint32 s_lkw = 32;
+    sint32 s_lkw_a = 33;
+    sint32 s_sattel_kfz = 34;
+    sint32 s_bus = 35;
+    double nettozeitluecke = 36;
+    sint32 belegung = 37;
+    sint32 v_kfz = 38;
 }
 
 message LVEErgebnisVersion6List { // Liste von LVEErgebnisVersion6
-    repeated LVEErgebnisVersion6 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion6 elements = 2;
 }
 
 message LVEKfzEinzeldatenSammelmeldung { // Fg 1 | Id 4 | deTyp 62
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    repeated Datensatz datensaetze = 4;
-    
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    repeated Datensatz datensaetze = 11;
+
     message Datensatz {
         sint32 status = 1;
         sint32 fahrzeugklasse = 2;
@@ -342,484 +371,441 @@ message LVEKfzEinzeldatenSammelmeldung { // Fg 1 | Id 4 | deTyp 62
 }
 
 message LVEKfzEinzeldatenSammelmeldungList { // Liste von LVEKfzEinzeldatenSammelmeldung
-    repeated LVEKfzEinzeldatenSammelmeldung elements = 1;
+    string iid = 1;
+    repeated LVEKfzEinzeldatenSammelmeldung elements = 2;
 }
 
 message LVEKfzEinzeldaten { // Fg 1 | Id 4 | deTyp 63
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 status = 4;
-    sint32 fahrzeugklassencode = 5;
-    sint32 geschwindigkeit = 6;
-    sint32 belegtzeit = 7;
-    double nettozeitluecke = 8;
-    sint32 fahrzeuglaenge = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 status = 11;
+    sint32 fahrzeugklassencode = 12;
+    sint32 geschwindigkeit = 13;
+    sint32 belegtzeit = 14;
+    double nettozeitluecke = 15;
+    sint32 fahrzeuglaenge = 16;
 }
 
 message LVEKfzEinzeldatenList { // Liste von LVEKfzEinzeldaten
-    repeated LVEKfzEinzeldaten elements = 1;
+    string iid = 1;
+    repeated LVEKfzEinzeldaten elements = 2;
 }
 
 message LVEErgebnisVersion10 { // Fg 1 | Id 4,36 | deTyp 65
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_kfz = 5;
-    sint32 q_lkw_ae = 6;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
 }
 
 message LVEErgebnisVersion10List { // Liste von LVEErgebnisVersion10
-    repeated LVEErgebnisVersion10 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion10 elements = 2;
 }
 
 message LVEErgebnisVersion11 { // Fg 1 | Id 4,36 | deTyp 66
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_kfz = 5;
-    sint32 q_lkw_ae = 6;
-    sint32 v_kfz = 7;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_kfz = 13;
 }
 
 message LVEErgebnisVersion11List { // Liste von LVEErgebnisVersion11
-    repeated LVEErgebnisVersion11 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion11 elements = 2;
 }
 
 message LVEErgebnisVersion12 { // Fg 1 | Id 4,36 | deTyp 67
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_kfz = 5;
-    sint32 q_lkw_ae = 6;
-    sint32 v_pkw_ae = 7;
-    sint32 v_lkw_ae = 8;
-    sint32 s_pkw_ae = 9;
-    sint32 s_lkw_ae = 10;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_pkw_ae = 13;
+    sint32 v_lkw_ae = 14;
+    sint32 s_pkw_ae = 15;
+    sint32 s_lkw_ae = 16;
 }
 
 message LVEErgebnisVersion12List { // Liste von LVEErgebnisVersion12
-    repeated LVEErgebnisVersion12 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion12 elements = 2;
 }
 
 message LVEErgebnisVersion13 { // Fg 1 | Id 4,36 | deTyp 68
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_kfz = 5;
-    sint32 q_lkw_ae = 6;
-    sint32 v_pkw_ae = 7;
-    sint32 v_lkw_ae = 8;
-    sint32 s_pkw_ae = 9;
-    sint32 s_lkw_ae = 10;
-    sint32 v85_pkw_ae = 11;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_kfz = 11;
+    sint32 q_lkw_ae = 12;
+    sint32 v_pkw_ae = 13;
+    sint32 v_lkw_ae = 14;
+    sint32 s_pkw_ae = 15;
+    sint32 s_lkw_ae = 16;
+    sint32 v85_pkw_ae = 17;
 }
 
 message LVEErgebnisVersion13List { // Liste von LVEErgebnisVersion13
-    repeated LVEErgebnisVersion13 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion13 elements = 2;
 }
 
 message LVEErgebnisVersion14 { // Fg 1 | Id 4,36 | deTyp 69
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_pkw_g = 5;
-    sint32 q_pkw_a = 6;
-    sint32 q_lkw = 7;
-    sint32 q_lkw_k = 8;
-    sint32 q_bus = 9;
-    sint32 qnk_kfz = 10;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_pkw_g = 11;
+    sint32 q_pkw_a = 12;
+    sint32 q_lkw = 13;
+    sint32 q_lkw_k = 14;
+    sint32 q_bus = 15;
+    sint32 qnk_kfz = 16;
 }
 
 message LVEErgebnisVersion14List { // Liste von LVEErgebnisVersion14
-    repeated LVEErgebnisVersion14 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion14 elements = 2;
 }
 
 message LVEErgebnisVersion15 { // Fg 1 | Id 4,36 | deTyp 70
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_pkw_g = 5;
-    sint32 q_pkw_a = 6;
-    sint32 q_lkw = 7;
-    sint32 q_lkw_k = 8;
-    sint32 q_bus = 9;
-    sint32 qnk_kfz = 10;
-    sint32 v_pkw_ae = 11;
-    sint32 v_lkw_ae = 12;
-    sint32 s_pkw_ae = 13;
-    sint32 s_lkw_ae = 14;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_pkw_g = 11;
+    sint32 q_pkw_a = 12;
+    sint32 q_lkw = 13;
+    sint32 q_lkw_k = 14;
+    sint32 q_bus = 15;
+    sint32 qnk_kfz = 16;
+    sint32 v_pkw_ae = 17;
+    sint32 v_lkw_ae = 18;
+    sint32 s_pkw_ae = 19;
+    sint32 s_lkw_ae = 20;
 }
 
 message LVEErgebnisVersion15List { // Liste von LVEErgebnisVersion15
-    repeated LVEErgebnisVersion15 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion15 elements = 2;
 }
 
 message LVEErgebnisVersion16 { // Fg 1 | Id 4,36 | deTyp 71
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_pkw_g = 5;
-    sint32 q_pkw_a = 6;
-    sint32 q_lkw = 7;
-    sint32 q_lkw_k = 8;
-    sint32 q_bus = 9;
-    sint32 qnk_kfz = 10;
-    sint32 v_pkw_ae = 11;
-    sint32 v_lkw_ae = 12;
-    sint32 s_pkw_ae = 13;
-    sint32 s_lkw_ae = 14;
-    sint32 v85_pkw_ae = 15;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_pkw_g = 11;
+    sint32 q_pkw_a = 12;
+    sint32 q_lkw = 13;
+    sint32 q_lkw_k = 14;
+    sint32 q_bus = 15;
+    sint32 qnk_kfz = 16;
+    sint32 v_pkw_ae = 17;
+    sint32 v_lkw_ae = 18;
+    sint32 s_pkw_ae = 19;
+    sint32 s_lkw_ae = 20;
+    sint32 v85_pkw_ae = 21;
 }
 
 message LVEErgebnisVersion16List { // Liste von LVEErgebnisVersion16
-    repeated LVEErgebnisVersion16 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion16 elements = 2;
 }
 
 message LVEErgebnisVersion17 { // Fg 1 | Id 4,36 | deTyp 72
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_pkw_g = 5;
-    sint32 q_pkw_a = 6;
-    sint32 q_lkw = 7;
-    sint32 q_lkw_k = 8;
-    sint32 q_bus = 9;
-    sint32 qnk_kfz = 10;
-    sint32 v_pkw_ae = 11;
-    sint32 v_lkw_ae = 12;
-    sint32 s_pkw_ae = 13;
-    sint32 s_lkw_ae = 14;
-    sint32 v85_pkw_ae = 15;
-    repeated VKlassePkwAe v_klassen_pkw_ae = 16;
-    repeated VKlasseLkwAe v_klassen_lkw_ae = 17;
-    
-    message VKlassePkwAe {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLkwAe {
-        sint32 v_klasse = 1;
-    }
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_pkw_g = 11;
+    sint32 q_pkw_a = 12;
+    sint32 q_lkw = 13;
+    sint32 q_lkw_k = 14;
+    sint32 q_bus = 15;
+    sint32 qnk_kfz = 16;
+    sint32 v_pkw_ae = 17;
+    sint32 v_lkw_ae = 18;
+    sint32 s_pkw_ae = 19;
+    sint32 s_lkw_ae = 20;
+    sint32 v85_pkw_ae = 21;
+    repeated sint32 v_klassen_pkw_ae = 22;
+    repeated sint32 v_klassen_lkw_ae = 23;
 }
 
 message LVEErgebnisVersion17List { // Liste von LVEErgebnisVersion17
-    repeated LVEErgebnisVersion17 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion17 elements = 2;
 }
 
 message LVEErgebnisVersion18 { // Fg 1 | Id 4,36 | deTyp 73
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 q_pkw_g = 5;
-    sint32 q_pkw_a = 6;
-    sint32 q_lkw = 7;
-    sint32 q_lkw_k = 8;
-    sint32 q_bus = 9;
-    sint32 qnk_kfz = 10;
-    sint32 v_pkw_g = 11;
-    sint32 v_pkw_a = 12;
-    sint32 v_lkw = 13;
-    sint32 v_lkw_k = 14;
-    sint32 v_bus = 15;
-    sint32 s_pkw_g = 16;
-    sint32 s_pkw_a = 17;
-    sint32 s_lkw = 18;
-    sint32 s_lkw_k = 19;
-    sint32 s_bus = 20;
-    sint32 v85_pkw_ae = 21;
-    repeated VKlassePkwG v_klassen_pkw_g = 22;
-    repeated VKlassePkwA v_klassen_pkw_a = 23;
-    repeated VKlasseLkw v_klassen_lkw = 24;
-    repeated VKlasseLkwK v_klassen_lkw_k = 25;
-    repeated VKlasseBus v_klassen_bus = 26;
-    
-    message VKlassePkwG {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlassePkwA {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLkw {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLkwK {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseBus {
-        sint32 v_klasse = 1;
-    }
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 q_pkw_g = 11;
+    sint32 q_pkw_a = 12;
+    sint32 q_lkw = 13;
+    sint32 q_lkw_k = 14;
+    sint32 q_bus = 15;
+    sint32 qnk_kfz = 16;
+    sint32 v_pkw_g = 17;
+    sint32 v_pkw_a = 18;
+    sint32 v_lkw = 19;
+    sint32 v_lkw_k = 20;
+    sint32 v_bus = 21;
+    sint32 s_pkw_g = 22;
+    sint32 s_pkw_a = 23;
+    sint32 s_lkw = 24;
+    sint32 s_lkw_k = 25;
+    sint32 s_bus = 26;
+    sint32 v85_pkw_ae = 27;
+    repeated sint32 v_klassen_pkw_g = 28;
+    repeated sint32 v_klassen_pkw_a = 29;
+    repeated sint32 v_klassen_lkw = 30;
+    repeated sint32 v_klassen_lkw_k = 31;
+    repeated sint32 v_klassen_bus = 32;
 }
 
 message LVEErgebnisVersion18List { // Liste von LVEErgebnisVersion18
-    repeated LVEErgebnisVersion18 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion18 elements = 2;
 }
 
 message LVEErgebnisVersion19 { // Fg 1 | Id 4,36 | deTyp 74
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 qnk_kfz = 5;
-    sint32 q_krad = 6;
-    sint32 q_pkw = 7;
-    sint32 q_lfw = 8;
-    sint32 q_pkw_a = 9;
-    sint32 q_lkw = 10;
-    sint32 q_lkw_a = 11;
-    sint32 q_sattel_kfz = 12;
-    sint32 q_bus = 13;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 qnk_kfz = 11;
+    sint32 q_krad = 12;
+    sint32 q_pkw = 13;
+    sint32 q_lfw = 14;
+    sint32 q_pkw_a = 15;
+    sint32 q_lkw = 16;
+    sint32 q_lkw_a = 17;
+    sint32 q_sattel_kfz = 18;
+    sint32 q_bus = 19;
 }
 
 message LVEErgebnisVersion19List { // Liste von LVEErgebnisVersion19
-    repeated LVEErgebnisVersion19 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion19 elements = 2;
 }
 
 message LVEErgebnisVersion20 { // Fg 1 | Id 4,36 | deTyp 75
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 qnk_kfz = 5;
-    sint32 q_krad = 6;
-    sint32 q_pkw = 7;
-    sint32 q_lfw = 8;
-    sint32 q_pkw_a = 9;
-    sint32 q_lkw = 10;
-    sint32 q_lkw_a = 11;
-    sint32 q_sattel_kfz = 12;
-    sint32 q_bus = 13;
-    sint32 v_pkw_ae = 14;
-    sint32 v_lkw_ae = 15;
-    sint32 s_pkw_ae = 16;
-    sint32 s_lkw_ae = 17;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 qnk_kfz = 11;
+    sint32 q_krad = 12;
+    sint32 q_pkw = 13;
+    sint32 q_lfw = 14;
+    sint32 q_pkw_a = 15;
+    sint32 q_lkw = 16;
+    sint32 q_lkw_a = 17;
+    sint32 q_sattel_kfz = 18;
+    sint32 q_bus = 19;
+    sint32 v_pkw_ae = 20;
+    sint32 v_lkw_ae = 21;
+    sint32 s_pkw_ae = 22;
+    sint32 s_lkw_ae = 23;
 }
 
 message LVEErgebnisVersion20List { // Liste von LVEErgebnisVersion20
-    repeated LVEErgebnisVersion20 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion20 elements = 2;
 }
 
 message LVEErgebnisVersion21 { // Fg 1 | Id 4,36 | deTyp 76
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 qnk_kfz = 5;
-    sint32 q_krad = 6;
-    sint32 q_pkw = 7;
-    sint32 q_lfw = 8;
-    sint32 q_pkw_a = 9;
-    sint32 q_lkw = 10;
-    sint32 q_lkw_a = 11;
-    sint32 q_sattel_kfz = 12;
-    sint32 q_bus = 13;
-    sint32 v_pkw_ae = 14;
-    sint32 v_lkw_ae = 15;
-    sint32 s_pkw_ae = 16;
-    sint32 s_lkw_ae = 17;
-    sint32 v85_pkw_ae = 18;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 qnk_kfz = 11;
+    sint32 q_krad = 12;
+    sint32 q_pkw = 13;
+    sint32 q_lfw = 14;
+    sint32 q_pkw_a = 15;
+    sint32 q_lkw = 16;
+    sint32 q_lkw_a = 17;
+    sint32 q_sattel_kfz = 18;
+    sint32 q_bus = 19;
+    sint32 v_pkw_ae = 20;
+    sint32 v_lkw_ae = 21;
+    sint32 s_pkw_ae = 22;
+    sint32 s_lkw_ae = 23;
+    sint32 v85_pkw_ae = 24;
 }
 
 message LVEErgebnisVersion21List { // Liste von LVEErgebnisVersion21
-    repeated LVEErgebnisVersion21 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion21 elements = 2;
 }
 
 message LVEErgebnisVersion22 { // Fg 1 | Id 4,36 | deTyp 77
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 qnk_kfz = 5;
-    sint32 q_krad = 6;
-    sint32 q_pkw = 7;
-    sint32 q_lfw = 8;
-    sint32 q_pkw_a = 9;
-    sint32 q_lkw = 10;
-    sint32 q_lkw_a = 11;
-    sint32 q_sattel_kfz = 12;
-    sint32 q_bus = 13;
-    sint32 v_pkw_ae = 14;
-    sint32 v_lkw_ae = 15;
-    sint32 s_pkw_ae = 16;
-    sint32 s_lkw_ae = 17;
-    sint32 v85_pkw_ae = 18;
-    repeated VKlassePkwAe v_klassen_pkw_ae = 19;
-    repeated VKlasseLkwAe v_klassen_lkw_ae = 20;
-    
-    message VKlassePkwAe {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLkwAe {
-        sint32 v_klasse = 1;
-    }
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 qnk_kfz = 11;
+    sint32 q_krad = 12;
+    sint32 q_pkw = 13;
+    sint32 q_lfw = 14;
+    sint32 q_pkw_a = 15;
+    sint32 q_lkw = 16;
+    sint32 q_lkw_a = 17;
+    sint32 q_sattel_kfz = 18;
+    sint32 q_bus = 19;
+    sint32 v_pkw_ae = 20;
+    sint32 v_lkw_ae = 21;
+    sint32 s_pkw_ae = 22;
+    sint32 s_lkw_ae = 23;
+    sint32 v85_pkw_ae = 24;
+    repeated sint32 v_klassen_pkw_ae = 25;
+    repeated sint32 v_klassen_lkw_ae = 26;
 }
 
 message LVEErgebnisVersion22List { // Liste von LVEErgebnisVersion22
-    repeated LVEErgebnisVersion22 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion22 elements = 2;
 }
 
 message LVEErgebnisVersion23 { // Fg 1 | Id 4,36 | deTyp 78
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 qnk_kfz = 5;
-    sint32 q_krad = 6;
-    sint32 q_pkw = 7;
-    sint32 q_lfw = 8;
-    sint32 q_pkw_a = 9;
-    sint32 q_lkw = 10;
-    sint32 q_lkw_a = 11;
-    sint32 q_sattel_kfz = 12;
-    sint32 q_bus = 13;
-    sint32 v_krad = 14;
-    sint32 v_pkw = 15;
-    sint32 v_lfw = 16;
-    sint32 v_pkw_a = 17;
-    sint32 v_lkw = 18;
-    sint32 v_lkw_a = 19;
-    sint32 v_sattel_kfz = 20;
-    sint32 v_bus = 21;
-    sint32 s_krad = 22;
-    sint32 s_pkw = 23;
-    sint32 s_lfw = 24;
-    sint32 s_pkw_a = 25;
-    sint32 s_lkw = 26;
-    sint32 s_lkw_a = 27;
-    sint32 s_sattel_kfz = 28;
-    sint32 s_bus = 29;
-    sint32 v85_pkw = 30;
-    repeated VKlasseKrad v_klassen_krad = 31;
-    repeated VKlassePkw v_klassen_pkw = 32;
-    repeated VKlasseLfw v_klassen_lfw = 33;
-    repeated VKlassePkwA v_klassen_pkw_a = 34;
-    repeated VKlasseLkw v_klassen_lkw = 35;
-    repeated VKlasseLkwA v_klassen_lkw_a = 36;
-    repeated VKlasseSattelKfz v_klassen_sattel_kfz = 37;
-    repeated VKlasseBus v_klassen_bus = 38;
-    
-    message VKlasseKrad {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlassePkw {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLfw {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlassePkwA {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLkw {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseLkwA {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseSattelKfz {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseBus {
-        sint32 v_klasse = 1;
-    }
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 qnk_kfz = 11;
+    sint32 q_krad = 12;
+    sint32 q_pkw = 13;
+    sint32 q_lfw = 14;
+    sint32 q_pkw_a = 15;
+    sint32 q_lkw = 16;
+    sint32 q_lkw_a = 17;
+    sint32 q_sattel_kfz = 18;
+    sint32 q_bus = 19;
+    sint32 v_krad = 20;
+    sint32 v_pkw = 21;
+    sint32 v_lfw = 22;
+    sint32 v_pkw_a = 23;
+    sint32 v_lkw = 24;
+    sint32 v_lkw_a = 25;
+    sint32 v_sattel_kfz = 26;
+    sint32 v_bus = 27;
+    sint32 s_krad = 28;
+    sint32 s_pkw = 29;
+    sint32 s_lfw = 30;
+    sint32 s_pkw_a = 31;
+    sint32 s_lkw = 32;
+    sint32 s_lkw_a = 33;
+    sint32 s_sattel_kfz = 34;
+    sint32 s_bus = 35;
+    sint32 v85_pkw = 36;
+    repeated sint32 v_klassen_krad = 37;
+    repeated sint32 v_klassen_pkw = 38;
+    repeated sint32 v_klassen_lfw = 39;
+    repeated sint32 v_klassen_pkw_a = 40;
+    repeated sint32 v_klassen_lkw = 41;
+    repeated sint32 v_klassen_lkw_a = 42;
+    repeated sint32 v_klassen_sattel_kfz = 43;
+    repeated sint32 v_klassen_bus = 44;
 }
 
 message LVEErgebnisVersion23List { // Liste von LVEErgebnisVersion23
-    repeated LVEErgebnisVersion23 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion23 elements = 2;
 }
 
 message LVEErgebnisVersion24 { // Fg 1 | Id 4,36 | deTyp 79
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 intervalllaenge = 4;
-    sint32 qnk_kfz = 5;
-    sint32 q_krad = 6;
-    sint32 q_pkw = 7;
-    sint32 q_lfw = 8;
-    sint32 q_pkw_a = 9;
-    sint32 q_lkw = 10;
-    sint32 q_lkw_a = 11;
-    sint32 q_sattel_kfz = 12;
-    sint32 q_bus = 13;
-    double v_l_vo = 14;
-    double v_s_g_v = 15;
-    double v_b_p_a = 16;
-    double s_l_vo = 17;
-    double s_s_g_v = 18;
-    double s_b_p_a = 19;
-    sint32 v85_l_vo = 20;
-    sint32 v85_s_g_v = 21;
-    sint32 v85_b_p_a = 22;
-    sint32 v15_l_vo = 23;
-    sint32 v15_s_g_v = 24;
-    sint32 v15_b_p_a = 25;
-    repeated VKlasseLVo v_klassen_l_vo = 26;
-    repeated VKlasseSGV v_klassen_s_g_v = 27;
-    repeated VKlasseBPA v_klassen_b_p_a = 28;
-    
-    message VKlasseLVo {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseSGV {
-        sint32 v_klasse = 1;
-    }
-    
-    message VKlasseBPA {
-        sint32 v_klasse = 1;
-    }
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 qnk_kfz = 11;
+    sint32 q_krad = 12;
+    sint32 q_pkw = 13;
+    sint32 q_lfw = 14;
+    sint32 q_pkw_a = 15;
+    sint32 q_lkw = 16;
+    sint32 q_lkw_a = 17;
+    sint32 q_sattel_kfz = 18;
+    sint32 q_bus = 19;
+    double v_l_vo = 20;
+    double v_s_g_v = 21;
+    double v_b_p_a = 22;
+    double s_l_vo = 23;
+    double s_s_g_v = 24;
+    double s_b_p_a = 25;
+    sint32 v85_l_vo = 26;
+    sint32 v85_s_g_v = 27;
+    sint32 v85_b_p_a = 28;
+    sint32 v15_l_vo = 29;
+    sint32 v15_s_g_v = 30;
+    sint32 v15_b_p_a = 31;
+    repeated sint32 v_klassen_l_vo = 32;
+    repeated sint32 v_klassen_s_g_v = 33;
+    repeated sint32 v_klassen_b_p_a = 34;
 }
 
 message LVEErgebnisVersion24List { // Liste von LVEErgebnisVersion24
-    repeated LVEErgebnisVersion24 elements = 1;
+    string iid = 1;
+    repeated LVEErgebnisVersion24 elements = 2;
 }
 
 message SVEErgebnisVersion0 { // Fg 1 | Id 4 | deTyp 96
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 k_kfz = 4;
-    sint32 v_kfz = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 k_kfz = 11;
+    sint32 v_kfz = 12;
 }
 
 message SVEErgebnisVersion0List { // Liste von SVEErgebnisVersion0
-    repeated SVEErgebnisVersion0 elements = 1;
+    string iid = 1;
+    repeated SVEErgebnisVersion0 elements = 2;
 }
 
 message SVEErgebnisVersion1 { // Fg 1 | Id 4 | deTyp 97
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 k_kfz = 4;
-    sint32 v_kfz = 5;
-    sint32 k_pkw = 6;
-    sint32 k_lkw = 7;
-    sint32 v_pkw = 8;
-    sint32 v_lkw = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 k_kfz = 11;
+    sint32 v_kfz = 12;
+    sint32 k_pkw = 13;
+    sint32 k_lkw = 14;
+    sint32 v_pkw = 15;
+    sint32 v_lkw = 16;
 }
 
 message SVEErgebnisVersion1List { // Liste von SVEErgebnisVersion1
-    repeated SVEErgebnisVersion1 elements = 1;
+    string iid = 1;
+    repeated SVEErgebnisVersion1 elements = 2;
 }

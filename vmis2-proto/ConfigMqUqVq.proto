@@ -1,12 +1,14 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
 
 import "ConfigBase.proto";
 import "ConfigRelations.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
-
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 // MQ 'MessQuerschnitt'
 message CfgMq {
@@ -51,10 +53,10 @@ message CfgUdeSensor {
         WR = 56;                // Windrichtung in Grad
         WGM = 57;               // mittlere Windgeschwindigkeit in Meter pro Sekunde 
         SH = 58;                // Schneehoehe in Zentimeter
-        
+
         SWE = 60;               // Sichtweite in Meter
         HK = 61;                // Helligkeit in Lux
-        
+
         NA = 63;                // Niederschlagsart (veraltet)
         WGS = 64;               // Windgeschwindigkeit Spitze in Meter pro Sekunde
         GT = 65;                // Gefriertemperatur in Grad Celsius
@@ -82,11 +84,11 @@ message CfgUdeSensor {
         LAEQ = 387;             // Laerm: energieaequivalenter Dauerschallpegel in Dezibel
         LA95 = 88;              // Laerm: Basispegel in Dezibel
         LAMS = 89;              // Laerm: mittlerer Spitzenpegel in Dezibel
-        
+
         LAERM = 203;            // Laerm in dbA (herstellerdefiniert)
-        
+
         VNA = 240;              // Virtuelle Nässestufe
-        
+
 //      FSR                     // Staub, Rohdaten
     }
 
@@ -107,7 +109,7 @@ message CfgVltSensor {
 
     enum VltType {
         UNKNOWN = 0;
-        
+
         TUERK = 48;                     // Türkontakt
         TMPUE = 49;                     // Temperaturüberwachung
         LICHT = 50;                     // Licht
@@ -117,7 +119,7 @@ message CfgVltSensor {
         UESS = 54;                      // Überspannungsschutz
         DVS = 55;                       // Diebstahl-/Vandalismusschutz
         FSA = 56;                       // Fernüberwachung von Solaranlagen
-        
+
         LMDM = 129;                     // Leitungsmodem
         USVNT = 130;                    // USV NT Video
         VEA = 220;                      // Videoencoder
@@ -125,14 +127,14 @@ message CfgVltSensor {
         EXTVKP = 222;                   // Steuerung VKP (Schlüsselschalter)
         EXTSOS = 133;                   // Brandmeldenottaster
         ESUE = 221;                     // Erdschluss
-        
+
         CO = 134;                       // CO - Wert
         SICHT = 135;                    // Sichttrübung
         NOTF = 136;                     // Notfall
         ZVFZ = 137;                     // Zu viele Fahrzeuge
         RBTR = 138;                     // Richtungsbetriebsart
         VUE = 139;                      // VUE-Betrieb
-        
+
         BRAND = 223;                    // Brandmelder
     }
 

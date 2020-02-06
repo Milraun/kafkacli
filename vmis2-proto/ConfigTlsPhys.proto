@@ -1,11 +1,13 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
 
 import "ConfigBase.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
-
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 message TlsDevice {                             // Device: Main organizational unit; represents objects like VRZ, UZ, KRI, ...
     string id = 1;
@@ -52,4 +54,3 @@ message TlsEa {
     int32 de_nummer = 2;
     repeated string virtual_targets = 3;        // 'virtual' eas (where this ea's data is getting copied to) 
 }
-

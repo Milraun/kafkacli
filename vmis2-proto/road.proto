@@ -1,12 +1,15 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.geomanager.road;
+
+import "base.proto";
 import "features.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager.road";
 option csharp_namespace = "Geomanager.Road";
-
-package eu.vmis_ehe.vmis2.geomanager.road;
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 // Enumeration of junction types
 enum RoadComponentRelationType {
@@ -22,6 +25,7 @@ enum RoadComponentRelationType {
 	TARGET = 4;
 	OTHER = 5;
 }
+
 // NetLevel types
 enum NetLevel {
 	ASFINAG_ROAD = 0;
@@ -29,6 +33,7 @@ enum NetLevel {
 	SERVICE_AREA = 2;
 	LEVEL_4 = 3;
 }
+
 // Junction
 message RoadComponentRelation {
 	// Junction ID
@@ -40,14 +45,21 @@ message RoadComponentRelation {
 	// Position on related road
 	features.RoadReference related_road_reference = 4;
 }
+
 // Road part composed of multiple sections
 message RoadComponent {
 	string id = 1;
 	string name = 2;
+
+	// Second name: especially 'Rampen-Name' for exits and entries
+	string second_name = 20;
+
 	// Route identifier (provided as attribute (ID_ASFINAG) for GIP edges)
 	string route_id = 3;
+
 	// Start offset of road part, may be different from 0.0
 	double start_offset = 5;
+
 	double end_offset = 6;
 
 	features.Geometry geometry = 4; // optional due to GeoFilter.with_geometry flag
@@ -59,6 +71,7 @@ message RoadComponent {
     // Attributes on sections of a RoadComponent
 	repeated SegmentedAttributes segmented_attributes = 12;
 }
+
 // Road composed of multiple RoadComponents
 message Road {
 	string id = 1;
@@ -68,16 +81,46 @@ message Road {
 	string routeId = 3;
 	repeated RoadComponent road_component = 4;
 }
+
 // A list of Roads
 message Roads {
   	repeated Road roads = 1;
 }
+
+// Point on a road given by logical metering value
+message RoadOffset {
+	// Road ID
+	string road_id = 1;
+	// logical metering value
+	double offset = 2;	
+}
+
+message RoadOffsets {
+	repeated RoadOffset road_offsets = 1;
+} 
+
+message RoadPoint {
+	// Road ID
+	string road_id = 1;
+	// logical metering value
+	double offset = 2;	
+	// operational metering value
+	double meter = 3;	
+	// Geographical coordinate
+	features.Geometry point = 4;
+}
+
+message RoadPoints {
+	repeated RoadPoint road_points = 1;
+} 
+
 // Point on a road given by operational kilometrage value
 message RoadMeter {
 	// Route Id of road
 	string route_id = 1;
 	double meter = 2;	
 }
+
 // Section on a road given by operational kilometrage value
 message RoadMeterSection {
 	// Route Id of road
@@ -85,46 +128,66 @@ message RoadMeterSection {
 	double from_meter = 2;
 	double to_meter = 3;
 }
+
 // Section on a road given by offset value
 message RoadOffsetSection {
     string road_id = 1;
     double offset = 2;
     double length = 3;
 }
+
 // Point on a road given by geographical coordinates
 message RoadCoordinate {
 	string route_id = 1;
 	features.Geometry point = 2;
 }
+
+message IdentifiableRoadMeterSection {
+	string type = 1;
+	string id = 2;
+	string name = 3;
+	RoadMeterSection roadMeterSection = 4;
+}
+
 message LaneNumberSection {
 	double lane_number = 1;
 	features.LineRoadReference lane_number_section = 2;
 }
+
 // Defines roads and their attributes
 message GetRoadsRequest {
     features.GeoFilter geo_filter = 1;
     repeated SegmentedAttributeName attributes = 2;
 }
+
 message SegmentedAttribute {
     oneof value {
         double number_value = 1;
         string name_value = 2;
+        bool boolean_value = 3;
     }
     features.LineRoadReference road_section = 4;
+    repeated base.Property tags = 5;
 }
+
 message SegmentedAttributes {
     SegmentedAttributeName name = 3;
     repeated SegmentedAttribute attributes = 2;
 }
+
 enum SegmentedAttributeName {
     Lane_number = 0;
     Destination = 1;
     Operational_metering = 2;
+    Hardshoulder = 3;
+    Road_name = 4;
 }
+
 message ConvertRoadPartRequest {
     repeated features.LineRoadReference line_road_reference = 1;
     string target_epsg = 2;
 }
+
 message RoadPartGeometries {
     repeated RoadPartGeometry road_part_geometry = 1;
 }
@@ -133,3 +196,28 @@ message RoadPartGeometry {
     features.Geometry geometry = 2;
 }
 
+message ConvertRoadOffsetRequest {
+	message RoadOffsetItem {
+		string id = 1;
+		RoadOffset road_offset = 2;
+	} 
+
+	repeated RoadOffsetItem road_offset = 1;
+}
+
+// Result of a routing rquest
+message ConvertRoadOffsetResult {
+	message RoadPointItem {
+		string id = 1;
+		RoadPoint road_point = 2;
+	} 
+
+	// RoadPointItems
+	// id references ID of RoadOffsetItem in ConvertRoadPointsRequest
+	repeated RoadPointItem road_point = 1;
+
+	// Errors related to not locatable RoadOffsetItems
+	// ( For each RoadOffsetItem of a ConvertRoadPointsRequest 
+	//   there is either exactly one road_point or exactly one rerror.)
+	repeated base.Error error = 2;
+}

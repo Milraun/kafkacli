@@ -1,10 +1,13 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
 
 import "ConfigBase.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 // AQ 'AnzeigeQuerschnitt'
 message CfgAq {
@@ -28,6 +31,7 @@ message CfgAq {
         CfgIds wzg_ids = 6;
         CfgWzgs wzgs = 7;
     }
+    repeated string cluster_ids = 10;
     Location location = 20;
 }
 message CfgAqs {
@@ -48,7 +52,7 @@ message CfgWzg {
         PRISM = 7;             // prisma
         WTA = 8;               // WTA
         WTV = 9;               // WTV
-        
+
         LSA = 10;              // traffic signal
         DLZ = 11;              // 'Dauerlichtzeichen'
         WWW = 12;              // WWW group root
@@ -85,7 +89,7 @@ message CfgWzgs {
 message WzgSymbol {
 
     enum TrafficSignificance {      // enum constants correspond to TLS WVZ codes (for now).
-    
+
         NONE = 0;
         DANGER = 1;
         UNEVEN_SURFACE = 2;
@@ -99,9 +103,9 @@ message WzgSymbol {
         ONCOMING_TRAFFIC = 10;
         SNOWFALL = 11;
         TRAFFIC_SIGNALS = 12;
-        
+
         reserved 13 to 19;
-        
+
         SPEED_LIMIT_20_KMH = 20;
         SPEED_LIMIT_30_KMH = 21;
         SPEED_LIMIT_40_KMH = 22;
@@ -116,9 +120,9 @@ message WzgSymbol {
         NO_PASSING = 31;
         NO_PASSING_TRUCKS = 32;
         SPEED_LIMIT_130_KMH = 33;
-        
+
         reserved 34 to 37;
-        
+
         NO_VEHICLES_SMOG = 38;
         NO_VEHICLES = 39;
         END_SPEED_LIMIT_20_KMH = 40;
@@ -146,20 +150,20 @@ message WzgSymbol {
         ADD_TEXT_WETNESS = 65;
         ADD_TEXT_ACCIDENT = 66;
         ADD_TEXT_VISIBILITY = 67;
-        
+
         reserved 68;
-        
+
         ADD_TEXT_ROAD_GRAVEL = 69;
         ADD_TEXT_MOWING = 70;
         ADD_TEXT_OZONE = 71;
         ADD_TEXT_NOISE_PROTECTION = 72;
-        
+
         reserved 73;
-        
+
         ADD_TEXT_600M = 74;
-        
+
         reserved 75 to 77;
-        
+
         ADD_TEXT_200M = 78;
         ADD_TEXT_300M = 79;
         ADD_TEXT_400M = 80;
@@ -201,9 +205,9 @@ message WzgSymbol {
         GREEN_ARROW_DOWN = 112;
         GREEN_ARROW_LEFT = 113;
         GREEN_ARROW_RIGHT = 114;
-        
+
         reserved 115 to 120;
-        
+
         RECOMMENDED_SPEED_30_KMH = 121;
         RECOMMENDED_SPEED_40_KMH = 122;
         RECOMMENDED_SPEED_50_KMH = 123;
@@ -215,7 +219,7 @@ message WzgSymbol {
         RECOMMENDED_SPEED_110_KMH = 129;
         RECOMMENDED_SPEED_120_KMH = 130;
         RECOMMENDED_SPEED_130_KMH = 131;
-        
+
         reserved 132 to 140;
 
         END_RECOMMENDED_SPEED_30_KMH = 141;
@@ -229,7 +233,7 @@ message WzgSymbol {
         END_RECOMMENDED_SPEED_110_KMH = 149;
         END_RECOMMENDED_SPEED_140_KMH = 150;
         END_RECOMMENDED_SPEED_130_KMH = 151;
-        
+
         reserved 152 to 214;
 
         ADD_TEXT_NEXT_1700M = 215;
@@ -253,17 +257,17 @@ message WzgSymbol {
         ADD_TEXT_DETOUR = 236;
 
         reserved 237 to 240;
-        
+
         PRISM_1 = 241;
         PRISM_2 = 242;
         PRISM_3 = 243;
         PRISM_4 = 244;
-        
+
         reserved 245 to 255;
     }
 
     int32 code = 1;                                 // This particular symbol's code, must be unique for one WZG
-    
+
     oneof name {                                    // Symbol's name, either
         TrafficSignificance significance = 2;       //  a traffic relevant constant, or
         string plaintext = 3;                       //  a simple text (for custom symbols)

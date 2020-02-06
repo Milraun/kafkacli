@@ -1,11 +1,14 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.control.data;
+
 import "CommonControlData.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "AttributeProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 message AttributeTypeWrapper {
     // Value type of an attribute
@@ -16,7 +19,7 @@ message AttributeTypeWrapper {
         FLOAT = 3;
         ENUM = 4;
     }
-    
+
     enum AggregationBehavior {
     	IGNORE = 0;
     	DISJOINT = 1;
@@ -38,6 +41,7 @@ message AttributeClass {
 // Attribute catalogue lists all attribute classes . 
 message AttributeCatalogue {
     repeated AttributeClass attribute_classes = 1;           // List of attribute classes
+    string iid = 2;                                          // message id
 }
 
 // Attribute

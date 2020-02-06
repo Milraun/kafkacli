@@ -1,493 +1,578 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.tls.received;
 
 import "google/protobuf/timestamp.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
-
-option (.heuboe.protobuf.interface_version) = "1.0.2";
 option java_multiple_files = true;
+option (.heuboe.protobuf.interface_version) = "1.0.0";
 
 message UFDDeFehler { // Fg 3 | Id 1 | deTyp 1
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlercode = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlercode = 11;
+    sint32 hersteller = 12;
 }
 
 message UFDDeFehlerList { // Liste von UFDDeFehler
-    repeated UFDDeFehler elements = 1;
+    string iid = 1;
+    repeated UFDDeFehler elements = 2;
 }
 
 message UFDErgDeFehler { // Fg 3 | Id 1 | deTyp 14
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 hersteller = 4;
-    bytes tls_fehlerbytes = 5;
-    bytes hersteller_fehlerbytes = 6;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 hersteller = 11;
+    bytes tls_fehlerbytes = 12;
+    bytes hersteller_fehlerbytes = 13;
 }
 
 message UFDErgDeFehlerList { // Liste von UFDErgDeFehler
-    repeated UFDErgDeFehler elements = 1;
+    string iid = 1;
+    repeated UFDErgDeFehler elements = 2;
 }
 
 message UFDNegativeQuittung { // Fg 3 | Id 2 | deTyp 16
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlerursache = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlerursache = 11;
+    sint32 hersteller = 12;
 }
 
 message UFDNegativeQuittungList { // Liste von UFDNegativeQuittung
-    repeated UFDNegativeQuittung elements = 1;
+    string iid = 1;
+    repeated UFDNegativeQuittung elements = 2;
 }
 
 message UFDKanalsteuerung { // Fg 3 | Id 2 | deTyp 29
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 kanalsteuerbyte = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 kanalsteuerbyte = 11;
 }
 
 message UFDKanalsteuerungList { // Liste von UFDKanalsteuerung
-    repeated UFDKanalsteuerung elements = 1;
+    string iid = 1;
+    repeated UFDKanalsteuerung elements = 2;
 }
 
 message UFDBetriebsparameter { // Fg 3 | Id 3 | deTyp 32
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 erfassungsperiodendauer = 4;
-    sint32 uebertragungsverfahren = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 erfassungsperiodendauer = 11;
+    sint32 uebertragungsverfahren = 12;
 }
 
 message UFDBetriebsparameterList { // Liste von UFDBetriebsparameter
-    repeated UFDBetriebsparameter elements = 1;
+    string iid = 1;
+    repeated UFDBetriebsparameter elements = 2;
 }
 
 message UFDGeoKenndaten { // Fg 3 | Id 3 | deTyp 36
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 landeskennung = 4;
-    sint32 strassenart = 5;
-    sint32 strassennummer = 6;
-    double kilometrierung = 7;
-    sint32 fahrtrichtung = 8;
-    sint32 reservebyte = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 landeskennung = 11;
+    sint32 strassenart = 12;
+    sint32 strassennummer = 13;
+    double kilometrierung = 14;
+    sint32 fahrtrichtung = 15;
+    sint32 reservebyte = 16;
 }
 
 message UFDGeoKenndatenList { // Liste von UFDGeoKenndaten
-    repeated UFDGeoKenndaten elements = 1;
+    string iid = 1;
+    repeated UFDGeoKenndaten elements = 2;
 }
 
 message UFDLufttemperatur { // Fg 3 | Id 4 | deTyp 48
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDLufttemperaturList { // Liste von UFDLufttemperatur
-    repeated UFDLufttemperatur elements = 1;
+    string iid = 1;
+    repeated UFDLufttemperatur elements = 2;
 }
 
 message UFDFahrbahnoberflaechentemperatur { // Fg 3 | Id 4 | deTyp 49
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDFahrbahnoberflaechentemperaturList { // Liste von UFDFahrbahnoberflaechentemperatur
-    repeated UFDFahrbahnoberflaechentemperatur elements = 1;
+    string iid = 1;
+    repeated UFDFahrbahnoberflaechentemperatur elements = 2;
 }
 
 message UFDRestsalz { // Fg 3 | Id 4 | deTyp 52
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDRestsalzList { // Liste von UFDRestsalz
-    repeated UFDRestsalz elements = 1;
+    string iid = 1;
+    repeated UFDRestsalz elements = 2;
 }
 
 message UFDNiederschlagsintensitaet { // Fg 3 | Id 4 | deTyp 53
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDNiederschlagsintensitaetList { // Liste von UFDNiederschlagsintensitaet
-    repeated UFDNiederschlagsintensitaet elements = 1;
+    string iid = 1;
+    repeated UFDNiederschlagsintensitaet elements = 2;
 }
 
 message UFDLuftdruck { // Fg 3 | Id 4 | deTyp 54
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDLuftdruckList { // Liste von UFDLuftdruck
-    repeated UFDLuftdruck elements = 1;
+    string iid = 1;
+    repeated UFDLuftdruck elements = 2;
 }
 
 message UFDRelativeLuftfeuchte { // Fg 3 | Id 4 | deTyp 55
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDRelativeLuftfeuchteList { // Liste von UFDRelativeLuftfeuchte
-    repeated UFDRelativeLuftfeuchte elements = 1;
+    string iid = 1;
+    repeated UFDRelativeLuftfeuchte elements = 2;
 }
 
 message UFDWindrichtung { // Fg 3 | Id 4 | deTyp 56
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDWindrichtungList { // Liste von UFDWindrichtung
-    repeated UFDWindrichtung elements = 1;
+    string iid = 1;
+    repeated UFDWindrichtung elements = 2;
 }
 
 message UFDWindgeschwindigkeit { // Fg 3 | Id 4 | deTyp 57
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDWindgeschwindigkeitList { // Liste von UFDWindgeschwindigkeit
-    repeated UFDWindgeschwindigkeit elements = 1;
+    string iid = 1;
+    repeated UFDWindgeschwindigkeit elements = 2;
 }
 
 message UFDSchneehoehe { // Fg 3 | Id 4 | deTyp 58
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDSchneehoeheList { // Liste von UFDSchneehoehe
-    repeated UFDSchneehoehe elements = 1;
+    string iid = 1;
+    repeated UFDSchneehoehe elements = 2;
 }
 
 message UFDSichtweite { // Fg 3 | Id 4 | deTyp 60
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDSichtweiteList { // Liste von UFDSichtweite
-    repeated UFDSichtweite elements = 1;
+    string iid = 1;
+    repeated UFDSichtweite elements = 2;
 }
 
 message UFDHelligkeit { // Fg 3 | Id 4 | deTyp 61
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDHelligkeitList { // Liste von UFDHelligkeit
-    repeated UFDHelligkeit elements = 1;
+    string iid = 1;
+    repeated UFDHelligkeit elements = 2;
 }
 
 message UFDWindgeschwindigkeitMax { // Fg 3 | Id 4 | deTyp 64
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDWindgeschwindigkeitMaxList { // Liste von UFDWindgeschwindigkeitMax
-    repeated UFDWindgeschwindigkeitMax elements = 1;
+    string iid = 1;
+    repeated UFDWindgeschwindigkeitMax elements = 2;
 }
 
 message UFDGefriertemperatur { // Fg 3 | Id 4 | deTyp 65
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDGefriertemperaturList { // Liste von UFDGefriertemperatur
-    repeated UFDGefriertemperatur elements = 1;
+    string iid = 1;
+    repeated UFDGefriertemperatur elements = 2;
 }
 
 message UFDTaupunkttemperatur { // Fg 3 | Id 4 | deTyp 66
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDTaupunkttemperaturList { // Liste von UFDTaupunkttemperatur
-    repeated UFDTaupunkttemperatur elements = 1;
+    string iid = 1;
+    repeated UFDTaupunkttemperatur elements = 2;
 }
 
 message UFDBodentemperaturTiefe1 { // Fg 3 | Id 4 | deTyp 67
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDBodentemperaturTiefe1List { // Liste von UFDBodentemperaturTiefe1
-    repeated UFDBodentemperaturTiefe1 elements = 1;
+    string iid = 1;
+    repeated UFDBodentemperaturTiefe1 elements = 2;
 }
 
 message UFDBodentemperaturTiefe2 { // Fg 3 | Id 4 | deTyp 68
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDBodentemperaturTiefe2List { // Liste von UFDBodentemperaturTiefe2
-    repeated UFDBodentemperaturTiefe2 elements = 1;
+    string iid = 1;
+    repeated UFDBodentemperaturTiefe2 elements = 2;
 }
 
 message UFDBodentemperaturTiefe3 { // Fg 3 | Id 4 | deTyp 69
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDBodentemperaturTiefe3List { // Liste von UFDBodentemperaturTiefe3
-    repeated UFDBodentemperaturTiefe3 elements = 1;
+    string iid = 1;
+    repeated UFDBodentemperaturTiefe3 elements = 2;
 }
 
 message UFDZustandFahrbahnoberflaeche { // Fg 3 | Id 4 | deTyp 70
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDZustandFahrbahnoberflaecheList { // Liste von UFDZustandFahrbahnoberflaeche
-    repeated UFDZustandFahrbahnoberflaeche elements = 1;
+    string iid = 1;
+    repeated UFDZustandFahrbahnoberflaeche elements = 2;
 }
 
 message UFDNiederschlagsart { // Fg 3 | Id 4 | deTyp 71
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDNiederschlagsartList { // Liste von UFDNiederschlagsart
-    repeated UFDNiederschlagsart elements = 1;
+    string iid = 1;
+    repeated UFDNiederschlagsart elements = 2;
 }
 
 message UFDWasserfilmdicke { // Fg 3 | Id 4 | deTyp 72
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDWasserfilmdickeList { // Liste von UFDWasserfilmdicke
-    repeated UFDWasserfilmdicke elements = 1;
+    string iid = 1;
+    repeated UFDWasserfilmdicke elements = 2;
 }
 
 message UFDTaustoffkonzentration { // Fg 3 | Id 4 | deTyp 73
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDTaustoffkonzentrationList { // Liste von UFDTaustoffkonzentration
-    repeated UFDTaustoffkonzentration elements = 1;
+    string iid = 1;
+    repeated UFDTaustoffkonzentration elements = 2;
 }
 
 message UFDTaustoffmenge { // Fg 3 | Id 4 | deTyp 74
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDTaustoffmengeList { // Liste von UFDTaustoffmenge
-    repeated UFDTaustoffmenge elements = 1;
+    string iid = 1;
+    repeated UFDTaustoffmenge elements = 2;
 }
 
 message UFDSchneefilmdicke { // Fg 3 | Id 4 | deTyp 75
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDSchneefilmdickeList { // Liste von UFDSchneefilmdicke
-    repeated UFDSchneefilmdicke elements = 1;
+    string iid = 1;
+    repeated UFDSchneefilmdicke elements = 2;
 }
 
 message UFDEisfilmdicke { // Fg 3 | Id 4 | deTyp 76
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDEisfilmdickeList { // Liste von UFDEisfilmdicke
-    repeated UFDEisfilmdicke elements = 1;
+    string iid = 1;
+    repeated UFDEisfilmdicke elements = 2;
 }
 
 message UFDGriffigkeit { // Fg 3 | Id 4 | deTyp 77
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDGriffigkeitList { // Liste von UFDGriffigkeit
-    repeated UFDGriffigkeit elements = 1;
+    string iid = 1;
+    repeated UFDGriffigkeit elements = 2;
 }
 
 message UFDGlobalstrahlung { // Fg 3 | Id 4 | deTyp 78
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDGlobalstrahlungList { // Liste von UFDGlobalstrahlung
-    repeated UFDGlobalstrahlung elements = 1;
+    string iid = 1;
+    repeated UFDGlobalstrahlung elements = 2;
 }
 
 message UFDFZW { // Fg 3 | Id 4 | deTyp 79
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 messwert = 11;
 }
 
 message UFDFZWList { // Liste von UFDFZW
-    repeated UFDFZW elements = 1;
+    string iid = 1;
+    repeated UFDFZW elements = 2;
 }
 
 message UFDStickstoffmonoxid { // Fg 3 | Id 4 | deTyp 80
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDStickstoffmonoxidList { // Liste von UFDStickstoffmonoxid
-    repeated UFDStickstoffmonoxid elements = 1;
+    string iid = 1;
+    repeated UFDStickstoffmonoxid elements = 2;
 }
 
 message UFDStickstoffdioxid { // Fg 3 | Id 4 | deTyp 81
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDStickstoffdioxidList { // Liste von UFDStickstoffdioxid
-    repeated UFDStickstoffdioxid elements = 1;
+    string iid = 1;
+    repeated UFDStickstoffdioxid elements = 2;
 }
 
 message UFDStickoxide { // Fg 3 | Id 4 | deTyp 82
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDStickoxideList { // Liste von UFDStickoxide
-    repeated UFDStickoxide elements = 1;
+    string iid = 1;
+    repeated UFDStickoxide elements = 2;
 }
 
 message UFDSchadstoffePM10 { // Fg 3 | Id 4 | deTyp 83
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDSchadstoffePM10List { // Liste von UFDSchadstoffePM10
-    repeated UFDSchadstoffePM10 elements = 1;
+    string iid = 1;
+    repeated UFDSchadstoffePM10 elements = 2;
 }
 
 message UFDSchadstoffePM2_5 { // Fg 3 | Id 4 | deTyp 84
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDSchadstoffePM2_5List { // Liste von UFDSchadstoffePM2_5
-    repeated UFDSchadstoffePM2_5 elements = 1;
+    string iid = 1;
+    repeated UFDSchadstoffePM2_5 elements = 2;
 }
 
 message UFDSchadstoffePM1 { // Fg 3 | Id 4 | deTyp 85
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDSchadstoffePM1List { // Liste von UFDSchadstoffePM1
-    repeated UFDSchadstoffePM1 elements = 1;
+    string iid = 1;
+    repeated UFDSchadstoffePM1 elements = 2;
 }
 
 message UFDSchalldruckpegelLA { // Fg 3 | Id 4 | deTyp 86
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDSchalldruckpegelLAList { // Liste von UFDSchalldruckpegelLA
-    repeated UFDSchalldruckpegelLA elements = 1;
+    string iid = 1;
+    repeated UFDSchalldruckpegelLA elements = 2;
 }
 
 message UFDDauerschallpegelLAeq { // Fg 3 | Id 4 | deTyp 87
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDDauerschallpegelLAeqList { // Liste von UFDDauerschallpegelLAeq
-    repeated UFDDauerschallpegelLAeq elements = 1;
+    string iid = 1;
+    repeated UFDDauerschallpegelLAeq elements = 2;
 }
 
 message UFDBasispegelLA95 { // Fg 3 | Id 4 | deTyp 88
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDBasispegelLA95List { // Liste von UFDBasispegelLA95
-    repeated UFDBasispegelLA95 elements = 1;
+    string iid = 1;
+    repeated UFDBasispegelLA95 elements = 2;
 }
 
 message UFDMittlererSpitzenpegelLA1 { // Fg 3 | Id 4 | deTyp 89
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    double messwert = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    double messwert = 11;
 }
 
 message UFDMittlererSpitzenpegelLA1List { // Liste von UFDMittlererSpitzenpegelLA1
-    repeated UFDMittlererSpitzenpegelLA1 elements = 1;
+    string iid = 1;
+    repeated UFDMittlererSpitzenpegelLA1 elements = 2;
 }
-

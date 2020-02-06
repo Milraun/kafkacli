@@ -1,11 +1,14 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
+package eu.vmis_ehe.vmis2.receiving.processing.data.prepara;
+
 import "MeasurementReplacementData.proto";
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.receiving.processing.data.prepara;
 option java_outer_classname = "MeasurementPreparationDataProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 /* Short-term measurement preparation to analyze data of lane. (output) */
 message AnalyticalDataLane {
@@ -68,7 +71,6 @@ message AnalyticalDataLane {
     int32 density_quality = 45;						// Quality in percent  (specification:  'Guete')
     int32 q_B_quality = 46;							// Quality in percent  (specification:  'Guete')
 }
-
 
 /* Short-term measurement preparation to analyze data of an detection site . (output) */
 message AnalyticalDataDetSite {

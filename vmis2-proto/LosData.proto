@@ -1,10 +1,13 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.receiving.processing.data.los;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.receiving.processing.data.los;
 option java_outer_classname = "LosDataProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 // Level of service (Z..) for the traffic conditons
 enum LosType {

@@ -1,10 +1,13 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.geomanager.base;
+
+import "heuboe/protobuf/InterfaceVersion.proto";
+
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager.base";
 option csharp_namespace = "Geomanager.Base";
-
-package eu.vmis_ehe.vmis2.geomanager.base;
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 // Contains versions of interface and server
 message Version {
@@ -24,6 +27,7 @@ message Property {
     string name = 1;
     string value = 2;
 }
+
 // Contains an object id and an error message
 message Error {
 	string id = 1;

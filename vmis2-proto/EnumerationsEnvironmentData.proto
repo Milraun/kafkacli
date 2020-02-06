@@ -1,8 +1,12 @@
 syntax = "proto3";
 
-option java_multiple_files = true;
 package eu.vmis_ehe.vmis2.receiving.processing.ed;
+
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+option java_multiple_files = true;
 option java_outer_classname = "EnumEDProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 message Precipitation{
 
@@ -116,7 +120,7 @@ message Precipitation{
 		INDETERMINATE = 255;
 	  }
  }
- 
+
  message RoadSurface {
 	  // Road surface conditions
 	  enum Condition {
@@ -140,9 +144,9 @@ message Precipitation{
 	  	reserved 128 to 254;
 	  	INDETERMINATE = 255; 	// Road surface condition is indeterminate.		
 	  }
- 
+
 }
- 
+
  message RoadSurfaceWinterService {
    // Road surface conditions
 	  enum Condition {

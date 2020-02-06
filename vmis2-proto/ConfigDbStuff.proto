@@ -3,17 +3,19 @@
 // -----------------------------------------------------------------------------------------------------------------------------------
 
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
 
-import "google/protobuf/timestamp.proto";
 import "ConfigBase.proto";
-import "ConfigVersions.proto";
-import "ConfigTlsData.proto";
 import "ConfigRelations.proto";
+import "ConfigTlsData.proto";
+import "ConfigVersions.proto";
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
-
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 message BaseData {                                      // TLS config, stored by UZ
 	string iid = 1;

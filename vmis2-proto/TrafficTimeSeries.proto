@@ -1,11 +1,14 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.control.data;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "TrafficTimeSeriesProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 //VMIS2-S1ANF-339
 //Traffic time series data structure from VMIS1

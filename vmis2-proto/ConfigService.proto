@@ -1,23 +1,22 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
 
-import "google/protobuf/empty.proto";
-
-import "ConfigBase.proto";
-import "ConfigMqUqVq.proto";
 import "ConfigAqData.proto";
+import "ConfigBase.proto";
 import "ConfigDevicesData.proto";
-import "ConfigTlsPhys.proto";
-import "ConfigTlsData.proto";
+import "ConfigMqUqVq.proto";
 import "ConfigRelations.proto";
+import "ConfigTlsData.proto";
+import "ConfigTlsPhys.proto";
 import "ConfigVersions.proto";
+import "google/protobuf/empty.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
 option java_outer_classname = "ConfigServiceProto";
-
-option (.heuboe.protobuf.interface_version) = "1.13.0";
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 service ConfigService {
 
@@ -31,19 +30,19 @@ service ConfigService {
     // Should some of the ids given are invalid, returns items for the valid ones only;
     // for the invalid ones, appropriate error messages will be returned instead. 
     rpc GetItems(GetItemsRequest) returns (GetItemsReply) {}
-    
+
     // Returns a list of relation infos by relation type and item ids.
     // Should some of the ids given are invalid, returns items for the valid ones only;
     // for the invalid ones, appropriate error messages will be returned instead. 
     rpc GetItemRelations(GetItemRelationsRequest) returns (GetItemRelationsReply) {}
-    
+
     // Sets a bunch of manual item relations (relations that shadow existing ones).
     // Throws exceptions for invalid items.
     rpc SetManualRelations(SetItemRelationsRequest) returns (google.protobuf.Empty) {}
 
     // Removes manual relations by type and/or ids
     rpc ClearManualRelations(ClearItemRelationsRequest) returns (google.protobuf.Empty) {}
-    
+
     // Returns a partial DAG of TLS world's nodes 
     rpc GetTlsNodes( GetTlsNodesRequest ) returns (GetItemsReply) {} 
 
@@ -88,19 +87,19 @@ message ChildOpt {                              // Determines how an item's chil
 message GetItemsReply {
     oneof result {
         TlsNodes nodes = 1;
-    
+
         TlsDevices devices = 2;
         TlsCables cables = 3;
 
         CfgUzs uzs = 4;
         CfgMqs mqs = 5;
         CfgAqs aqs = 6;
-        
+
         CfgVdeSensors vde_sensors = 7;
         CfgUdeSensors ude_sensors = 8;
         CfgVltSensors vlt_sensors = 9;
         CfgWzgs wzgs = 10;
-        
+
         CfgKris kris = 11;
         CfgRouteStations route_stations = 12;
     }

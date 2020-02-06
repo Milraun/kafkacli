@@ -1,8 +1,12 @@
 syntax = "proto3";
 
-option java_multiple_files = true;
 package eu.vmis_ehe.vmis2.receiving.processing.data.smooth;
+
+import "heuboe/protobuf/InterfaceVersion.proto";
+
+option java_multiple_files = true;
 option java_outer_classname = "MeasurementSmoothingParameterDataProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 /* State of value smoothing*/
 
@@ -10,10 +14,8 @@ message MeasurementSmoothingProcedure{
 	string id = 1; 					// Smoothing procedure id.
 	string name = 2;				// Smoothing procedure name.
 	repeated string instances = 3;	// Smoothing procedure instances.
-	
+
 }
-
-
 
 /* Measurement smoothing parameter to smooth data of lane or detection.*/
 message MeasurementSmoothingDetectionSiteParameter  {
@@ -40,7 +42,7 @@ message MeasurementSmoothingDetectionSiteParameter  {
    repeated MeasurementSmoothingProcedure procedures_30_min = 21;		// list of active procedures
    bool agg_interval_60_min = 22;											// aggregation in a 60 minutes interval.
    repeated MeasurementSmoothingProcedure procedures_60_min = 23;		// list of active procedures
-   
+
 }
 
 /* Measurement smoothing trend extra polation parameter to smooth data of lane or detection.*/
@@ -51,7 +53,7 @@ message MeasurementSmoothingTrendextrapolParameter  {
 		float alpha_QKFZ_falling = 3;			// falling qKfz alpha parameter
 		float beta_QKFZ_falling = 4;			// falling qKfz beta parameter
 	}
-	
+
 	string id= 1; 			// id of the detection site
 	string instance = 2;	// instance of the smoothing procedure
 	SmoothingParameter smoothing_level_15_sec = 3;	// smoothing level for 15 seconds aggregation.
@@ -69,7 +71,7 @@ message MeasurementSmoothingTrendextrapolParameter  {
 
 /* Parameter for measurement smoothing weighted moving average. */
 message MeasurementSmoothingWeightedMovingAverageParameter  {
-	
+
 	string id= 1; 					// id of the detection site
 	string instance = 2;			// instance of the smoothing procedure
 	repeated int32 weighting = 3;	// weightings values.
@@ -77,7 +79,7 @@ message MeasurementSmoothingWeightedMovingAverageParameter  {
 
 /* Parameter for measurement smoothing moving average. */
 message MeasurementSmoothingMovingAverageParameter  {
-	
+
 	string id= 1; 					// id of the detection site
 	string instance = 2;			// instance of the smoothing procedure
 	int32 interpolationPoints = 3;	// amount of interpolation points.

@@ -1,11 +1,14 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.control.data;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "EnvironmentalDataProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 // state of value plausibility
 message EDValueStatePlausibilityWrapper {
@@ -97,7 +100,7 @@ message EDNo {
     double no_value = 4;            											// NO value
     EDValueStatePlausibilityWrapper.EDValueStatePlausibility no_value_state_pl = 5; 	// state of values plausibility
     EDMeasuredValueStateAggWrapper.EDMeasuredValueStateAgg no_value_state = 6;    		// state of measured value
-    
+
 }
 
 // VMIS2-S1ANF-339

@@ -1,34 +1,40 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.paramservice;
 
-import "ValueWrappers.proto";
-import "ConfigMqUqVq.proto";
 import "ConfigBase.proto";
+import "ConfigMqUqVq.proto";
+import "ValueWrappers.proto";
 import "google/protobuf/wrappers.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.paramservice";
 option java_outer_classname = "ParametersProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.paramservice";
+option (.heuboe.protobuf.interface_version) = "0.23.0";
 
 // Parameter definition set, that consists of multiple parameter definitions, each of which defines a structure of a single parameter
 message ParameterDefinitionSet {
     string definition_set_id = 1; // ID of parameter definition set
     repeated ParameterDefinition definitions = 3; // List of parameter definitions, that this set consists of
-    ItemType propagation_target = 9; // Type of sensor, that these parameter definitions apply to
+    ItemType propagation_target = 9; // Type of sensor, that these parameter definitions are propagated for
     DefinitionType definitionType = 10; // Type of algorithm, that this parameter definition set represents
+    ItemType activation_target = 11; // Type of sensor, that these parameter definitions are activated for
 }
 
 // Definition of a single parameter value
 message ParameterDefinition {
     string parameter_id = 1; // ID of parameter that this definition applies to
     string caption = 2; // Displayable and readable parameter name for UI
+    string tooltip = 3; // Displayable and readable tooltip for the parameter
     string unit = 4; // Unit of measure
     ParameterScope scope = 5; // Scope of the parameter  (e.g. Global / Lane specific)
     ValueType value_type = 6; // Type of the parameter value (e.g. int, string, double...)
     ValueRestriction value_restriction = 7; // Boundaries for the value of parameter (e.g. min / max)
     reserved 8; // ver. 0.12.0: Ranges unavailable_numbers = 8;
     repeated int32 unavailable_numbers = 9; // Unavailable numbers for numbered values (e.g. no value could be defined for some lane specific parameter at lane 1.)
+    ValueContent value_content = 10; // Specific content type of the parameter value (e.g. Tls code, weather code)
 }
 
 //List for Propagation in Kafka
@@ -56,6 +62,9 @@ message ParameterSet {
     string comment = 100; // Comment provided when this parameter was activated
     google.protobuf.Int64Value timestamp = 101; // Timestamp this item was saved at
     string userId = 102; //User that saved this ParameterSet
+    bool reset = 103; // If true it means, that parameter set for the target was reset
+    string iid = 1000; //ID for the parameter to allow tagging via VIA
+    string previousIid = 1001; //ID for the previously active parameter to allow historization in ZDH
 }
 
 // Numbered single parameter value.
@@ -99,6 +108,8 @@ message AllowedValues {
 message Instance {
     string instance_id = 1; // ID of the instance
     string caption = 2; // Visible name of the instance for UI
+    repeated DefinitionType types = 3; // Definition types for which the instance can be applied fixme change to DefinitionType
+    repeated string specific_definition_set_ids = 4; // Optional definition set ids for which the instance can be applied
 }
 
 // The Parameterizable object
@@ -159,10 +170,27 @@ enum DefinitionType {
     SITUATIONSERKENNUNGSVERFAHREN = 1; // Type: Situationserkennungsverfahren
     DATENAUFBEREITUNG = 2; // Type: Datenaufbereitung
     DATENUEBERNAHME = 3; // Type: Datenuebernahme
+    SITUATIONENMAPPING = 4; // Type: Situation Mapping
+    MASSNAHMENMAPPING = 5; // Type: Measure Mapping
+    ALGORITHM = 6; // Type: Glättungsalgorithm
+    GLA_CONFIG = 7; // Type: GLA
+    GLA_TAGESTYPEN_CONFIG = 8; // Type: GLA pro Ereignis
 }
 
+// Severity of a Validation message
 enum ValidationSeverity {
     SEVERITY_UNDEFINED = 0; // Default value required by the framework
     WARNING = 1; // Severity: Warning
     ERROR = 2; // Severity: Error
+}
+
+// Specific content type of some value
+enum ValueContent {
+    VALUE_CONTENT_RAW = 0; // Default value required by the framework
+    VALUE_CONTENT_TLS_CODE = 1; // Tls Code
+    VALUE_CONTENT_WEATHER_CODE = 2; // Weather Code
+    VALUE_CONTENT_SMOOTHING_ALGORITHM = 3; // Smoothing Algorithm (Glättungsverfahren)
+    VALUE_CONTENT_UDE_ID = 4; // ID of an UDE sensor
+    VALUE_CONTENT_VDE_ID = 5; // ID of an VDE sensor
+    VALUE_CONTENT_MQ_ID = 6; // ID of an MQ
 }

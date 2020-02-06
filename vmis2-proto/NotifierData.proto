@@ -8,19 +8,19 @@ import "google/protobuf/wrappers.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
 
-option (.heuboe.protobuf.interface_version) = "1.2.5";
-
+option (.heuboe.protobuf.interface_version) = "1.2.9";
 
 package eu.vmis_ehe.vmis2.geo.notifier.data;
 
 /**
-// gRPC GeoManager's message declaration. Will be sebd either via broker or via stream to client(s) 
+// gRPC GeoManager's message declaration. Will be sent either via broker or via stream to client(s) 
  * 
  * @author Frank Lautenbach, frank.lautenbach@heuboe.de
  */
 
 // The message itself
 message Notification {
+    string iid = 100;                           // Globally unique ID (requirement in VMIS2 Kafka context)
     google.protobuf.Int64Value timestamp = 9;	// Creation time
     Level level = 1;                            // Log level like Info, Warn and so on
     Source source = 2;                          // Creator of the message
@@ -30,6 +30,7 @@ message Notification {
     Properties properties = 6;                  // A customizable list with key/value pairs
     google.protobuf.StringValue object_id = 7;  // Related object, may be empty
     google.protobuf.StringValue message = 8;    // Detailed message part, may be empty
+    google.protobuf.StringValue type = 10;      // Type of change that caused a message, may be empty
 }
 
 // Log levels
@@ -62,22 +63,41 @@ enum Topic {
     SYSTEM = 4;
 }
 
+
+
+
 // Senders component
 enum Component { 
 
-    // Map import/update components
-    GIP = 0; 
-    OPERATION_RESOURCE = 1;
-    LCL = 2;
-    TUNNEL = 3;
-    DISTANT_DESTINATION = 4;
-    VALIDITY_SECTION = 5;
-    ROAD_UZ_RELATION = 6;
+    // Map import components
     
-    // Map activation components
+    // gRPC/GUI known components (cover others)
+    GIP = 0; 
+    LCL = 2;
+    GIS = 11; 
+
+	// gRPC/GUI known components (but import not explicitly triggered by user)
+    OPERATION_RESOURCE = 1;         
+
+    // Other Map import/update components
+    TUNNEL = 3;						// covered by GIP
+    DISTANT_DESTINATION = 4;		// covered by GIP
+    ROAD_UZ_RELATION = 6;			// covered by GIP
+    BRIDGE = 10; 					// covered by GIP
+    GIS_POINT_OBJECT = 12;   		// covered by GIS
+
+
+	// Dynamic map component
+	
+    VALIDITY_SECTION = 5;			 
+
+
+    // Map check/activation components
+    
     MAP = 7;
     ROAD = 8;
     MAIN_ROAD = 9;
+
 }
 
 // List of service related key/value pairs

@@ -1,14 +1,15 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-import "MeasuredValueState.proto";
+package eu.vmis_ehe.vmis2.control.data;
+
 import "VehicleType.proto";
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "AnalyticalDataProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
-
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 // State of 8 + 1 measured values
 message MeasuredValue8p1StateWrapper{
@@ -30,7 +31,7 @@ message LongTerm8p1DataLane {
 	    MeasuredValue8p1StateWrapper.MeasuredValue8p1State q_state = 4;        // Hourly volume state
 	    MeasuredValue8p1StateWrapper.MeasuredValue8p1State v_state = 5;        // Average speed state
 	}
-	
+
     google.protobuf.Timestamp event_time = 1;       // Creation time of event/message, also called system_time in old systems
     google.protobuf.Timestamp processing_time = 2;  // Contains e.g. the interval time stamp or aggregation time
     string id = 3;                                  // Identification of lane

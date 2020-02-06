@@ -1,9 +1,10 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.tls.send;
 
 import "google/protobuf/timestamp.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
-
-option (.heuboe.protobuf.interface_version) = "2.0.1";
 option java_multiple_files = true;
+option (.heuboe.protobuf.interface_version) = "2.1.0";
+

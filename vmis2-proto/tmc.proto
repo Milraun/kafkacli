@@ -1,14 +1,15 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.geomanager.alertc;
+
 import "base.proto";
 import "features.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager.alertc";
 option csharp_namespace = "Geomanager.Alertc";
-
-package eu.vmis_ehe.vmis2.geomanager.alertc;
-
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 // AlertC direction
 enum AlertCDirection {
@@ -18,14 +19,12 @@ enum AlertCDirection {
   ALC_NONE = 3;
 }
 
-
 // AlertC point
 message AlertCPoint {
     string lcl_version = 1;
 	int32 location_code = 2;
 	AlertCDirection direction = 3;
 }
-
 
 // AlertC point with distance
 message AlertCPointWithOffset {
@@ -39,12 +38,11 @@ message AlertCLinear {
 	int32 primary_code = 2;
 	int32 secondary_code = 3;
 	AlertCDirection direction = 4;
-	
+
 	// If a location related event affects both directions, 
 	// this shall be encoded here: attribute 'direction' is not suited.
 	bool both_directions_affected = 5;
 }
-
 
 // AlertC linear with distances
 message AlertCLinearWithDistance {
@@ -53,7 +51,7 @@ message AlertCLinearWithDistance {
 	double secondary_distance = 3;
 }
 
-// AlertC direction
+// AlertC location types
 enum AlertCLocationType {
   ALC_POINT = 0;
   ALC_POINT_WITH_OFF = 1;
@@ -71,7 +69,7 @@ message AlertCLocation {
 	AlertCLinearWithDistance linear_with_dist = 6;
 }
 
-//A list of AlertCLocation
+//A list of AlertCLocations
 message AlertCLocations {
 	repeated AlertCLocation alert_c_locations = 1;
 }

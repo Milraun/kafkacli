@@ -1,10 +1,13 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.receiving.processing.data;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.receiving.processing.data;
 option java_outer_classname = "SyncCollectedDataProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 enum TlsDataVersion {
     VERSION_0 = 0;
@@ -71,7 +74,6 @@ message ShortTermCollectedTrafficCategoriesLane {
     repeated int32 LKW_similar_category = 9;        // Truck (heavy vehicle) similar vehicle category
     int32 interval_length = 10;                     // Recording interval length in seconds
 }
-
 
 // VMIS2-S1ANF-714
 // VMIS2-S1ANF-492

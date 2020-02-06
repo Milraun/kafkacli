@@ -1,79 +1,94 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.tls.received;
 
 import "google/protobuf/timestamp.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
-
-option (.heuboe.protobuf.interface_version) = "1.0.2";
 option java_multiple_files = true;
+option (.heuboe.protobuf.interface_version) = "1.0.0";
 
 message WZGDeFehler { // Fg 4 | Id 1,33 | deTyp 1
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlercode = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 fehlercode = 11;
+    sint32 hersteller = 12;
 }
 
 message WZGDeFehlerList { // Liste von WZGDeFehler
-    repeated WZGDeFehler elements = 1;
+    string iid = 1;
+    repeated WZGDeFehler elements = 2;
 }
 
 message WZGNichtDarstellbareWVZ { // Fg 4 | Id 1,33 | deTyp 2
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    bytes wvz_codes = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    bytes wvz_codes = 11;
 }
 
 message WZGNichtDarstellbareWVZList { // Liste von WZGNichtDarstellbareWVZ
-    repeated WZGNichtDarstellbareWVZ elements = 1;
+    string iid = 1;
+    repeated WZGNichtDarstellbareWVZ elements = 2;
 }
 
 message WZGDefekteLampen { // Fg 4 | Id 1 | deTyp 3
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    bytes statusbytes = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    bytes statusbytes = 11;
 }
 
 message WZGDefekteLampenList { // Liste von WZGDefekteLampen
-    repeated WZGDefekteLampen elements = 1;
+    string iid = 1;
+    repeated WZGDefekteLampen elements = 2;
 }
 
 message WZGGestoerteTextpositionen { // Fg 4 | Id 1,33 | deTyp 4
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    bytes textpositionen = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    bytes textpositionen = 11;
 }
 
 message WZGGestoerteTextpositionenList { // Liste von WZGGestoerteTextpositionen
-    repeated WZGGestoerteTextpositionen elements = 1;
+    string iid = 1;
+    repeated WZGGestoerteTextpositionen elements = 2;
 }
 
 message WZGDefekteLEDKetten { // Fg 4 | Id 1 | deTyp 5
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 anzeigeprinzip = 4;
-    sint32 ausfallschwere = 5;
-    sint32 anzahl_vorhandene_ketten = 6;
-    sint32 anzahl_uebertragene_ketten = 7;
-    bytes statusbytes = 8;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 anzeigeprinzip = 11;
+    sint32 ausfallschwere = 12;
+    sint32 anzahl_vorhandene_ketten = 13;
+    sint32 anzahl_uebertragene_ketten = 14;
+    bytes statusbytes = 15;
 }
 
 message WZGDefekteLEDKettenList { // Liste von WZGDefekteLEDKetten
-    repeated WZGDefekteLEDKetten elements = 1;
+    string iid = 1;
+    repeated WZGDefekteLEDKetten elements = 2;
 }
 
 message WZGGestoertePixelspalten { // Fg 4 | Id 1,33 | deTyp 6
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    repeated Pixelspalte pixelspalten = 4;
-    
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    repeated Pixelspalte pixelspalten = 11;
+
     message Pixelspalte {
         sint32 pixelspaltennummer = 1;
         sint32 anzahl_fehlerhafter_pixel = 2;
@@ -81,164 +96,189 @@ message WZGGestoertePixelspalten { // Fg 4 | Id 1,33 | deTyp 6
 }
 
 message WZGGestoertePixelspaltenList { // Liste von WZGGestoertePixelspalten
-    repeated WZGGestoertePixelspalten elements = 1;
+    string iid = 1;
+    repeated WZGGestoertePixelspalten elements = 2;
 }
 
 message WZGErgDeFehler { // Fg 4 | Id 1,33 | deTyp 14
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 hersteller = 4;
-    bytes tls_fehlerbytes = 5;
-    bytes hersteller_fehlerbytes = 6;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 hersteller = 11;
+    bytes tls_fehlerbytes = 12;
+    bytes hersteller_fehlerbytes = 13;
 }
 
 message WZGErgDeFehlerList { // Liste von WZGErgDeFehler
-    repeated WZGErgDeFehler elements = 1;
+    string iid = 1;
+    repeated WZGErgDeFehler elements = 2;
 }
 
 message WZGNegativeQuittung { // Fg 4 | Id 2 | deTyp 16
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlerursache = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlerursache = 11;
+    sint32 hersteller = 12;
 }
 
 message WZGNegativeQuittungList { // Liste von WZGNegativeQuittung
-    repeated WZGNegativeQuittung elements = 1;
+    string iid = 1;
+    repeated WZGNegativeQuittung elements = 2;
 }
 
 message WZGBetriebsart { // Fg 4 | Id 2,34 | deTyp 17
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 betriebsart = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 betriebsart = 11;
 }
 
 message WZGBetriebsartList { // Liste von WZGBetriebsart
-    repeated WZGBetriebsart elements = 1;
+    string iid = 1;
+    repeated WZGBetriebsart elements = 2;
 }
 
 message WZGKanalsteuerung { // Fg 4 | Id 2 | deTyp 29
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 kanalsteuerbyte = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 kanalsteuerbyte = 11;
 }
 
 message WZGKanalsteuerungList { // Liste von WZGKanalsteuerung
-    repeated WZGKanalsteuerung elements = 1;
+    string iid = 1;
+    repeated WZGKanalsteuerung elements = 2;
 }
 
 message WZGGrundeinstellung { // Fg 4 | Id 3,35 | deTyp 33
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 anzeigeprinzip = 4;
-    sint32 stellcode = 5;
-    sint32 funktionsbyte = 6;
-    bytes komponenten = 7;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 anzeigeprinzip = 11;
+    sint32 stellcode = 12;
+    sint32 funktionsbyte = 13;
+    bytes komponenten = 14;
 }
 
 message WZGGrundeinstellungList { // Liste von WZGGrundeinstellung
-    repeated WZGGrundeinstellung elements = 1;
+    string iid = 1;
+    repeated WZGGrundeinstellung elements = 2;
 }
 
 message WZGGeoKenndaten { // Fg 4 | Id 3 | deTyp 36
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 landeskennung = 4;
-    sint32 strassenart = 5;
-    sint32 strassennummer = 6;
-    double kilometrierung = 7;
-    sint32 fahrtrichtung = 8;
-    sint32 reservebyte = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 landeskennung = 11;
+    sint32 strassenart = 12;
+    sint32 strassennummer = 13;
+    double kilometrierung = 14;
+    sint32 fahrtrichtung = 15;
+    sint32 reservebyte = 16;
 }
 
 message WZGGeoKenndatenList { // Liste von WZGGeoKenndaten
-    repeated WZGGeoKenndaten elements = 1;
+    string iid = 1;
+    repeated WZGGeoKenndaten elements = 2;
 }
 
 message WZGCodeliste { // Fg 4 | Id 3 | deTyp 43
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 anzeigeprinzip = 4;
-    bytes wvz_codes = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 anzeigeprinzip = 11;
+    bytes wvz_codes = 12;
 }
 
 message WZGCodelisteList { // Liste von WZGCodeliste
-    repeated WZGCodeliste elements = 1;
+    string iid = 1;
+    repeated WZGCodeliste elements = 2;
 }
 
 message WZGCodedefinition { // Fg 4 | Id 3,35 | deTyp 44
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 anzeigeprinzip = 4;
-    sint32 stellcode = 5;
-    repeated Lampennummer lampennummern = 6;
-    string textzeichen = 7;
-    repeated Prisma prismen = 8;
-    repeated Stellzustand stellzustaende = 9;
-    
-    message Lampennummer {
-        sint32 lampennummer = 1;
-    }
-    
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 anzeigeprinzip = 11;
+    sint32 stellcode = 12;
+    repeated sint32 lampennummern = 13;
+    string textzeichen = 14;
+    repeated Prisma prismen = 15;
+    repeated Stellzustand stellzustaende = 16;
+
     message Prisma {
         sint32 wvz_code = 1;
         sint32 funktionsbyte = 2;
     }
-    
+
     message Stellzustand {
         sint32 de_nummer = 1;
-        sint32 dnzeigeprinzip = 2;
+        sint32 anzeigeprinzip = 2;
         sint32 stellcode = 3;
         sint32 funktionsbyte = 4;
     }
 }
 
 message WZGCodedefinitionList { // Liste von WZGCodedefinition
-    repeated WZGCodedefinition elements = 1;
+    string iid = 1;
+    repeated WZGCodedefinition elements = 2;
 }
 
 message WZGBilddefinition { // Fg 4 | Id 3,35 | deTyp 45
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 stellcode = 4;
-    string dateiname = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 stellcode = 11;
+    string dateiname = 12;
 }
 
 message WZGBilddefinitionList { // Liste von WZGBilddefinition
-    repeated WZGBilddefinition elements = 1;
+    string iid = 1;
+    repeated WZGBilddefinition elements = 2;
 }
 
 message WZGHelligkeit { // Fg 4 | Id 5,37 | deTyp 49
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 helligkeit = 4;
-    sint32 statusbyte = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 helligkeit = 11;
+    sint32 statusbyte = 12;
 }
 
 message WZGHelligkeitList { // Liste von WZGHelligkeit
-    repeated WZGHelligkeit elements = 1;
+    string iid = 1;
+    repeated WZGHelligkeit elements = 2;
 }
 
 message WZGStellzustand { // Fg 4 | Id 5,37 | deTyp 55
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 anzeigeprinzip = 4;
-    sint32 stellcode = 5;
-    sint32 funktionsbyte = 6;
-    string textzeichen = 7;
-    repeated Prisma prismen = 8;
-    
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 anzeigeprinzip = 11;
+    sint32 stellcode = 12;
+    sint32 funktionsbyte = 13;
+    string textzeichen = 14;
+    repeated Prisma prismen = 15;
+
     message Prisma {
         sint32 wvz_code = 1;
         sint32 funktionsbyte = 2;
@@ -246,5 +286,6 @@ message WZGStellzustand { // Fg 4 | Id 5,37 | deTyp 55
 }
 
 message WZGStellzustandList { // Liste von WZGStellzustand
-    repeated WZGStellzustand elements = 1;
+    string iid = 1;
+    repeated WZGStellzustand elements = 2;
 }

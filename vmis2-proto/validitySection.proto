@@ -1,18 +1,19 @@
 syntax = "proto3";
 
-import "base.proto";
-import "road.proto";
-import "features.proto";
-import "ConfigBase.proto";
-import "ConfigAqData.proto";
-import "ConfigMqUqVq.proto";
+package eu.vmis_ehe.vmis2.geomanager.validitySection;
 
+import "ConfigAqData.proto";
+import "ConfigBase.proto";
+import "ConfigMqUqVq.proto";
+import "features.proto";
+import "road.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
+import "google/protobuf/timestamp.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager.validitySection";
 option csharp_namespace = "Geomanager.ValiditySection";
-
-package eu.vmis_ehe.vmis2.geomanager.validitySection;
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 // Possible object types for validity section requests
 enum ValiditySectionType {
@@ -29,6 +30,7 @@ message ValiditySectionRequest {
 		AqTypes aq_types = 4; // for AQs use enum AqType (config-service)
 		UdeTypes ude_types = 5; // for UDEs use enum UdeType (config-service)
 	}
+	bool defaults_only = 6;
 }
 message AqTypes {
 	repeated configservice.CfgAq.AqType type = 1;
@@ -41,6 +43,7 @@ message ValiditySectionResponse {
 }
 // Validity section for one object
 message ValiditySection {
+	string iid = 100; // Globally unique ID (requirement in VMIS2 Kafka context)
 	string id = 1; // object id
 	string name = 2; // object name
 	ValiditySectionType type = 3; // object type
@@ -51,6 +54,7 @@ message ValiditySection {
 	features.PointRoadReference road_reference = 4;
 	repeated Section sections = 5; // road sections
 	bool manual = 6;
+	google.protobuf.Timestamp time = 9;
 }
 // Object that describes a line part including metering and coordinates. (The target road id can be found within LineRoadReference.)
 message Section {

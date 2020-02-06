@@ -1,10 +1,13 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.receiving.processing.data.smooth;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.receiving.processing.data.smooth;
 option java_outer_classname = "MeasurementSmoothingDataProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 /* State of value smoothing*/
 
@@ -79,7 +82,7 @@ message PrognosisDataLane {
 }
 /* Short-term measurement smoothing data to smooth data of detection site. (output) */
 message PrognosisDataDetSite {
- 
+
     string id = 1;                                  // Identification of detection site
     google.protobuf.Timestamp processing_time = 2;  /* Processing time - The point in time when the event or data
                                                      * record happens to be processed by the stream processing 
@@ -141,7 +144,7 @@ message PrognosisDataDetSite {
     int32 D_LKW_quality = 48;                       // Quality of trucks density in percent  (specification:  'Guete')
     int32 D_Q_B_quality = 49;                       // Quality of measurement traffic density in percent  (specification:  'Guete')
 }
-  
+
 /* List of PrognosisDataLane used e.g. to publish PrognosisDataLane-data to a broker etc. */
 message PrognosisDataLanes {
     repeated PrognosisDataLane data = 1;
@@ -153,4 +156,3 @@ message PrognosisDataDetSites {
     repeated PrognosisDataDetSite data = 1;
     string iid = 2;                     // message id
 }
-  

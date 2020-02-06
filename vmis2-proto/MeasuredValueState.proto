@@ -1,10 +1,13 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.control.data;
+
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "MeasuredValueStateProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 // Measured value state (MARZ_2018)
 message MeasuredValueStateWrapper{

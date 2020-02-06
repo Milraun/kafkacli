@@ -1,5 +1,7 @@
 # Protos
 protos/
+vmis2-kernsystem-schema/
+vmis2-proto/
 
 # Compiled sources
 lib/

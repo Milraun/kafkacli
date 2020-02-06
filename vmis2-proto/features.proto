@@ -1,14 +1,16 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.geomanager.features;
+
 import "base.proto";
 import "ConfigBase.proto";
-import "ConfigService.proto";
+import "ConfigMqUqVq.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager.features";
 option csharp_namespace = "Geomanager.Features";
-
-package eu.vmis_ehe.vmis2.geomanager.features;
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 //A single GeoFeature. It describes a geographical object of a specific type and it's relation to similar objects and a road graph.
 message GeoFeature {
@@ -52,13 +54,27 @@ enum Type {
 	AQ = 1;
 	UDE_SENSOR = 2;
 	TUNNEL = 3;
+	BRIDGE = 4;
+	PARKING_SITE = 5;
+	STATION = 6;				// Standorte, e.g. 'Autobahnmeisterei'
 }
+
 message ConfigTypeMappings {
     repeated ConfigTypeMapping mapping = 1;
 }
+
 message ConfigTypeMapping {
     configservice.ConfigItemType cfgType = 1;
     Type geoType = 2;
+}
+
+message UdeTypeMapping {
+    string ude_type_string = 1;
+    configservice.CfgUdeSensor.UdeType ude_type = 2;
+}
+
+message UdeTypeMappings {
+    repeated UdeTypeMapping mapping = 1;
 }
 
 message Types {
@@ -157,7 +173,8 @@ enum PropertyKeys {
 	Heading = 4; // cardinal direction of point objects
 	UzId = 5;
 	Lanes = 6;
-	MainRoad = 7; // true if feature lies on a road with NetLevel.ASFINAG_ROAD
+	MainRoad = 7;     // true if feature lies on a road with NetLevel.ASFINAG_ROAD
+    SubType = 8;         
 }
 // -------- Filter --------
 

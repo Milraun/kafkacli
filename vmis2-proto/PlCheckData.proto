@@ -1,10 +1,13 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.receiving.processing.data;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.receiving.processing.data;
 option java_outer_classname = "PlCheckDataProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 /* States of pl-checks. */
 enum PlCheckState {
@@ -49,9 +52,9 @@ enum PlCheckCategory {
     /* Specification term: 'Logische/Physikalische Pruefung' */
     LOGICAL_PHYSICAL = 10;
     /* Specification term: 'Detektorvergleich standortbezogen' */
-    DET_SITE_COMPARISON_SITE_SPEC = 11;
+    DETECTOR_COMPARISON_SITE_SPEC = 11;
     /* Specification term: 'Detektor-Längsabgleich' */
-    DET_SITE_LONGITUD_HARMON  = 12;
+    DETECTOR_LONGITUD_HARMON  = 12;
 };
 
 /* Short-term data with PL recognition. (input and output) */

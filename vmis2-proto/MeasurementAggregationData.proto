@@ -1,10 +1,13 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.receiving.processing.data.aggr;
+
 import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.receiving.processing.data.aggr;
 option java_outer_classname = "MeasurementAggregationDataProto";
+option (.heuboe.protobuf.interface_version) = "0.3.2";
 
 /* State of measurement aggregation. 
  * ATTENTION: Do not change order of numbers! 'Higher enum number' means 'better state'.
@@ -154,7 +157,6 @@ message ShortTermMeasurementAggregatedDataDetSite {
     int32 A_LKW_quality = 46;                       // Quality in percent  (specification:  'Guete')
 }
 
-
 /* List of ShortTermMeasurementAggregatedDataLane used e.g. to publish ShortTermMeasurementAggregatedDataLane-data to a broker etc. */
 message ShortTermMeasurementAggregatedDataLanes {
     repeated ShortTermMeasurementAggregatedDataLane data = 1;
@@ -166,4 +168,3 @@ message ShortTermMeasurementAggregatedDataDetSites {
     repeated ShortTermMeasurementAggregatedDataDetSite data = 1;
     string iid = 2;                     								// message id
 }
-

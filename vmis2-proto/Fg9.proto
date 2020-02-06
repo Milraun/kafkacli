@@ -1,103 +1,120 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.tls.received;
 
 import "google/protobuf/timestamp.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
-
-option (.heuboe.protobuf.interface_version) = "1.0.2";
 option java_multiple_files = true;
+option (.heuboe.protobuf.interface_version) = "1.0.0";
 
 message ZRADeFehler { // Fg 9 | Id 1 | deTyp 1
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlercode = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 fehlercode = 11;
+    sint32 hersteller = 12;
 }
 
 message ZRADeFehlerList { // Liste von ZRADeFehler
-    repeated ZRADeFehler elements = 1;
+    string iid = 1;
+    repeated ZRADeFehler elements = 2;
 }
 
 message ZRAErgDeFehler { // Fg 9 | Id 1 | deTyp 14
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 hersteller = 4;
-    bytes tls_fehlerbytes = 5;
-    bytes hersteller_fehlerbytes = 6;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 hersteller = 11;
+    bytes tls_fehlerbytes = 12;
+    bytes hersteller_fehlerbytes = 13;
 }
 
 message ZRAErgDeFehlerList { // Liste von ZRAErgDeFehler
-    repeated ZRAErgDeFehler elements = 1;
+    string iid = 1;
+    repeated ZRAErgDeFehler elements = 2;
 }
 
 message ZRANegativeQuittung { // Fg 9 | Id 2 | deTyp 16
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 fehlerursache = 4;
-    sint32 hersteller = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 fehlerursache = 11;
+    sint32 hersteller = 12;
 }
 
 message ZRANegativeQuittungList { // Liste von ZRANegativeQuittung
-    repeated ZRANegativeQuittung elements = 1;
+    string iid = 1;
+    repeated ZRANegativeQuittung elements = 2;
 }
 
 message ZRABetriebsart { // Fg 9 | Id 2,34 | deTyp 17
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 betriebsart = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 betriebsart = 11;
 }
 
 message ZRABetriebsartList { // Liste von ZRABetriebsart
-    repeated ZRABetriebsart elements = 1;
+    string iid = 1;
+    repeated ZRABetriebsart elements = 2;
 }
 
 message ZRAKanalsteuerung { // Fg 9 | Id 2 | deTyp 29
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 kanalsteuerbyte = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 kanalsteuerbyte = 11;
 }
 
 message ZRAKanalsteuerungList { // Liste von ZRAKanalsteuerung
-    repeated ZRAKanalsteuerung elements = 1;
+    string iid = 1;
+    repeated ZRAKanalsteuerung elements = 2;
 }
 
 message ZRABetriebsparameter { // Fg 9 | Id 3,35 | deTyp 32
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 gelbzeit = 4;
-    sint32 rotgelbzeit = 5;
-    sint32 min_gruenzeit = 6;
-    sint32 max_gruenzeit = 7;
-    sint32 max_belegzeit = 8;
-    sint32 max_stoerung_gruenzeit = 9;
-    sint32 steuerflags = 10;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 gelbzeit = 11;
+    sint32 rotgelbzeit = 12;
+    sint32 min_gruenzeit = 13;
+    sint32 max_gruenzeit = 14;
+    sint32 max_belegzeit = 15;
+    sint32 max_stoerung_gruenzeit = 16;
+    sint32 steuerflags = 17;
 }
 
 message ZRABetriebsparameterList { // Liste von ZRABetriebsparameter
-    repeated ZRABetriebsparameter elements = 1;
+    string iid = 1;
+    repeated ZRABetriebsparameter elements = 2;
 }
 
 message ZRABetriebsparameterAlinea1 { // Fg 9 | Id 3,35 | deTyp 33
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 q_e_min = 4;
-    double korrekturfaktor = 5;
-    sint32 b_opt = 6;
-    sint32 berechnung_belegung = 7;
-    sint32 t_min = 8;
-    sint32 t_aus = 9;
-    sint32 max_rotschaltzeit = 10;
-    sint32 schwach_rotschaltzeit = 11;
-    repeated Programm programme = 12;
-    
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 q_e_min = 11;
+    double korrekturfaktor = 12;
+    sint32 b_opt = 13;
+    sint32 berechnung_belegung = 14;
+    sint32 t_min = 15;
+    sint32 t_aus = 16;
+    sint32 max_rotschaltzeit = 17;
+    sint32 schwach_rotschaltzeit = 18;
+    repeated Programm programme = 19;
+
     message Programm {
         double t_u_ein = 1;
         double t_u_aus = 2;
@@ -106,56 +123,60 @@ message ZRABetriebsparameterAlinea1 { // Fg 9 | Id 3,35 | deTyp 33
 }
 
 message ZRABetriebsparameterAlinea1List { // Liste von ZRABetriebsparameterAlinea1
-    repeated ZRABetriebsparameterAlinea1 elements = 1;
+    string iid = 1;
+    repeated ZRABetriebsparameterAlinea1 elements = 2;
 }
 
 message ZRABetriebsparameterRotfahrer { // Fg 9 | Id 3 | deTyp 34
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 erfassungsintervalldauer = 4;
-    sint32 uebertragungsverfahren = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 erfassungsintervalldauer = 11;
+    sint32 uebertragungsverfahren = 12;
 }
 
 message ZRABetriebsparameterRotfahrerList { // Liste von ZRABetriebsparameterRotfahrer
-    repeated ZRABetriebsparameterRotfahrer elements = 1;
+    string iid = 1;
+    repeated ZRABetriebsparameterRotfahrer elements = 2;
 }
 
 message ZRABetriebsparameterAlinea2 { // Fg 9 | Id 3,35 | deTyp 35
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 v_h_f_b_stau_ein = 4;
-    sint32 t_h_f_bv_stau_ein = 5;
-    sint32 v_h_f_b_stau_aus = 6;
-    sint32 t_h_f_bv_stau_aus = 7;
-    sint32 b_h_f_b_stau_ein = 8;
-    sint32 t_h_f_bb_stau_ein = 9;
-    sint32 b_h_f_b_stau_aus = 10;
-    sint32 t_h_f_bb_stau_aus = 11;
-    sint32 b_gelb_an_s_stau_ein = 12;
-    sint32 t_gelb_an_sb_stau_ein = 13;
-    sint32 b_gelb_an_s_stau_aus = 14;
-    sint32 t_gelb_an_sb_stau_aus = 15;
-    sint32 b_f_gruen_an_s_stau_ein = 16;
-    sint32 t_f_gruen_an_sb_stau_ein = 17;
-    sint32 b_f_gruen_an_s_stau_aus = 18;
-    sint32 t_f_gruen_an_sb_stau_aus = 19;
-    sint32 b_r_stau_s_stau_ein = 20;
-    sint32 t_r_stau_sb_stau_ein = 21;
-    sint32 b_r_stau_s_stau_aus = 22;
-    sint32 t_r_stau_sb_stau_aus = 23;
-    sint32 b_h_b_fmin = 24;
-    sint32 t_rest = 25;
-    repeated ProgrammFGruenAnS programme_f_gruen_an_s = 26;
-    repeated ProgrammRStauS programme_r_stau_s = 27;
-    
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 v_h_f_b_stau_ein = 11;
+    sint32 t_h_f_bv_stau_ein = 12;
+    sint32 v_h_f_b_stau_aus = 13;
+    sint32 t_h_f_bv_stau_aus = 14;
+    sint32 b_h_f_b_stau_ein = 15;
+    sint32 t_h_f_bb_stau_ein = 16;
+    sint32 b_h_f_b_stau_aus = 17;
+    sint32 t_h_f_bb_stau_aus = 18;
+    sint32 b_gelb_an_s_stau_ein = 19;
+    sint32 t_gelb_an_sb_stau_ein = 20;
+    sint32 b_gelb_an_s_stau_aus = 21;
+    sint32 t_gelb_an_sb_stau_aus = 22;
+    sint32 b_f_gruen_an_s_stau_ein = 23;
+    sint32 t_f_gruen_an_sb_stau_ein = 24;
+    sint32 b_f_gruen_an_s_stau_aus = 25;
+    sint32 t_f_gruen_an_sb_stau_aus = 26;
+    sint32 b_r_stau_s_stau_ein = 27;
+    sint32 t_r_stau_sb_stau_ein = 28;
+    sint32 b_r_stau_s_stau_aus = 29;
+    sint32 t_r_stau_sb_stau_aus = 30;
+    sint32 b_h_b_fmin = 31;
+    sint32 t_rest = 32;
+    repeated ProgrammFGruenAnS programme_f_gruen_an_s = 33;
+    repeated ProgrammRStauS programme_r_stau_s = 34;
+
     message ProgrammFGruenAnS {
         sint32 untere_rotschaltzeit = 1;
         sint32 obere_rotschaltzeit = 2;
         sint32 schwache_rotschaltzeit = 3;
     }
-    
+
     message ProgrammRStauS {
         sint32 untere_rotschaltzeit = 1;
         sint32 obere_rotschaltzeit = 2;
@@ -164,70 +185,84 @@ message ZRABetriebsparameterAlinea2 { // Fg 9 | Id 3,35 | deTyp 35
 }
 
 message ZRABetriebsparameterAlinea2List { // Liste von ZRABetriebsparameterAlinea2
-    repeated ZRABetriebsparameterAlinea2 elements = 1;
+    string iid = 1;
+    repeated ZRABetriebsparameterAlinea2 elements = 2;
 }
 
 message ZRAGeoKenndaten { // Fg 9 | Id 3 | deTyp 36
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 landeskennung = 4;
-    sint32 strassenart = 5;
-    sint32 strassennummer = 6;
-    double kilometrierung = 7;
-    sint32 fahrtrichtung = 8;
-    sint32 reservebyte = 9;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 landeskennung = 11;
+    sint32 strassenart = 12;
+    sint32 strassennummer = 13;
+    double kilometrierung = 14;
+    sint32 fahrtrichtung = 15;
+    sint32 reservebyte = 16;
 }
 
 message ZRAGeoKenndatenList { // Liste von ZRAGeoKenndaten
-    repeated ZRAGeoKenndaten elements = 1;
+    string iid = 1;
+    repeated ZRAGeoKenndaten elements = 2;
 }
 
 message ZRASignalplan { // Fg 9 | Id 5,37 | deTyp 48
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 signalplan = 4;
-    sint32 extra_fahrzeuge = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 signalplan = 11;
+    sint32 extra_fahrzeuge = 12;
 }
 
 message ZRASignalplanList { // Liste von ZRASignalplan
-    repeated ZRASignalplan elements = 1;
+    string iid = 1;
+    repeated ZRASignalplan elements = 2;
 }
 
 message ZRAHelligkeit { // Fg 9 | Id 5,37 | deTyp 49
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 helligkeit = 4;
-    sint32 statusbyte = 5;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 folgenummer = 5;
+    sint32 helligkeit = 11;
+    sint32 statusbyte = 12;
 }
 
 message ZRAHelligkeitList { // Liste von ZRAHelligkeit
-    repeated ZRAHelligkeit elements = 1;
+    string iid = 1;
+    repeated ZRAHelligkeit elements = 2;
 }
 
 message ZRAErgebnismeldungRotfahrer { // Fg 9 | Id 4 | deTyp 65
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 anzahl_rotfahrer = 4;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 intervalllaenge = 5;
+    sint32 anzahl_rotfahrer = 11;
 }
 
 message ZRAErgebnismeldungRotfahrerList { // Liste von ZRAErgebnismeldungRotfahrer
-    repeated ZRAErgebnismeldungRotfahrer elements = 1;
+    string iid = 1;
+    repeated ZRAErgebnismeldungRotfahrer elements = 2;
 }
 
 message ZRASchaltvorschlaegeALINEA { // Fg 9 | Id 4,36 | deTyp 70
     string id = 1;
-    google.protobuf.Timestamp tls_time = 2;
-    google.protobuf.Timestamp process_time = 3;
-    sint32 q_zufluss = 4;
-    sint32 belegungsgrad = 5;
-    double umlaufzeit = 6;
-    sint32 rotschaltzeit = 7;
+    sint32 jobnummer = 2;
+    google.protobuf.Timestamp tls_time = 3;
+    google.protobuf.Timestamp process_time = 4;
+    sint32 q_zufluss = 11;
+    sint32 belegungsgrad = 12;
+    double umlaufzeit = 13;
+    sint32 rotschaltzeit = 14;
 }
 
 message ZRASchaltvorschlaegeALINEAList { // Liste von ZRASchaltvorschlaegeALINEA
-    repeated ZRASchaltvorschlaegeALINEA elements = 1;
+    string iid = 1;
+    repeated ZRASchaltvorschlaegeALINEA elements = 2;
 }

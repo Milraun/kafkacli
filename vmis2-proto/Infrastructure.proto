@@ -1,12 +1,15 @@
 syntax = "proto3";
 
-import "GeoReference.proto";
+package eu.vmis_ehe.vmis2.control.data;
+
 import "CommonControlData.proto";
+import "GeoReference.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "InfrastructureProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 //Symbols for display panel
 message DisplayPanelSymbolWrapper{
@@ -51,8 +54,6 @@ enum LaneRelation {
     ALL = 5;                        // covering all available lanes
 }
 
-
-
 //road
 message RoadData {
 	TwoPartIdentification id = 1;							//id of the road
@@ -60,7 +61,7 @@ message RoadData {
 	ValiditySection validity_section = 3;		//validity section of the road
 	repeated Junction junctions = 4;						//junctions of road
 	repeated DisplayPanelSite display_panel_sites = 5;		// display panel sites of the road.
-	
+
 }
 
 //Logical kilometer position on a road
@@ -69,8 +70,6 @@ message LogKm {
     string road_id = 2;										//Road id
 }
 
-
-
 //Junction with logical kilometer position on a road
 message Junction  {
     TwoPartIdentification two_part_id = 1;					//Unique two_part_id of the junction
@@ -78,7 +77,6 @@ message Junction  {
     LogKm roadEnds= 3;										//Logical kilometer position of road that ends in the junction
     LogKm roadStarts= 4;									//Logical kilometer position of road that starts at the junction
 }
-
 
 /* Display panel site with logical kilometer position on a road,
 * nested display panel and connected display panel site.*/
@@ -90,7 +88,7 @@ message DisplayPanelSite {
 	repeated DisplayPanel display_panels = 4; 				//Display panels of the display panel site
 	repeated TwoPartIdentification predecessors = 5; 		//Predecessors display panel sites of the display panel site
 	repeated TwoPartIdentification successors = 6; 			//Successors display panel sites of the display panel site
-	
+
 }
 
 // Display panel with connected display panel symbol set and priority table
@@ -103,8 +101,7 @@ message DisplayPanel {
 	TwoPartIdentification symbol_set  = 4; 					//Two_part_id of the symbol_set of the display panel
 	TwoPartIdentification priority_table  = 5; 				//Two_part_id of the priority_table of the display panel
 	LanePos lane_pos = 6;
-  
-	
+
 }
 
 message LanePos {
@@ -113,7 +110,6 @@ message LanePos {
     int32 loc_index = 3;            // used when there's more than one element at a specified position, e.g. when stacking
                                     //   signs 'between' lanes, counting from bottom up
 }
-
 
 //display panel symbol set for display panels a-c
 message DisplayPanelSymbolSet {

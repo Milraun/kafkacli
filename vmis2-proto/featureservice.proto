@@ -1,13 +1,15 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.geomanager.featureservice;
+
 import "features.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager.featureservice";
 option csharp_namespace = "FeatureService";
 option java_outer_classname = "FeatureServiceProto";
-
-package eu.vmis_ehe.vmis2.geomanager.featureservice;
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 // Interface for specific feature requests
 service FeatureService {

@@ -5,14 +5,16 @@
 //	
 // @author Chris Becker, Heusch Boesefeldt GmbH, christian.becker@heuboe.de
 
-
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
 
 import "ConfigBase.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 // One node of the TLS world DAG, uniquely identified by its type and id.
 // Has a list of attribute values (as parsed from input), and some children
@@ -27,19 +29,24 @@ message TlsNode {
         OSI2ADR = 5;        // TLS_SLAVE
         EAK = 6;            // TLS_EAK
         EA = 7;             // TLS_EA
-        
+
         VENDOR = 8;         // TLS_HERSTELLER
         TYPE = 9;           // TLS_TYP
-        
+
         REF = 10;           // TLS_REF
         HEADING = 11;       // TLS_FAHRTR
         LANE = 12;          // TLS_FAHRSTREIFEN
-        
+
         WZG_TYPE = 13;
         WZG_CODES = 14;
         WZG_DISPTYPE = 15;
-        
+
         IFACEKEY = 16;		// TLS_IFACEKEY
+
+        WGS84_LAT = 17;
+        WGS84_LONG = 18;
+        ROAD = 19;          // ID_ASFINAG
+
 	}
     ConfigItemType type = 1;
     string id = 2;
@@ -53,4 +60,3 @@ message TlsNode {
 message TlsNodes {
 	repeated TlsNode nodes = 1;
 }
-

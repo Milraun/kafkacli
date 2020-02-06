@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-import "GeoReference.proto";
-import "CommonControlData.proto";
+package eu.vmis_ehe.vmis2.control.data;
+
 import "Attribute.proto";
+import "CommonControlData.proto";
+import "GeoReference.proto";
 import "EDBInterface.proto"; //Attributes used for new EDB-Handling
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
-package eu.vmis_ehe.vmis2.control.data;
 option java_outer_classname = "MeasureProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.control.data";
-
+option (.heuboe.protobuf.interface_version) = "1.17.0";
 
 // VMIS2-S1ANF-452
 // Temporary definition of a logical operation mode
@@ -65,7 +67,7 @@ message MeasureClass {
     repeated string cutting_valid_sections_measures = 11;               /* List of measurekey(s): If the following measures have a
                                                                          * common validity area, the valid area must be clipped */
     string stVO_paragraph = 12;                                         // StVO-Paragraph
-    repeated TwoPartIdentification attribute_class = 13;                // Additional attribute types
+    repeated string attribute_class = 13;                // Additional attribute types
     StandardDescription standard_description = 14;                      // Standardized description of measures
     // Logical operating mode
     LogicalOperatingModeWrapper.LogicalOperatingMode logical_operating_mode = 15;
@@ -83,6 +85,7 @@ message MeasureClass {
 // Measure catalogue lists all measures in priority sequence. (the first is the most important)
 message MeasureCatalogue {
     repeated MeasureClass measure_classes = 1;              // List of measures
+    string iid = 2;                                         // message id
 }
 
 // Release state for measures requiring release
@@ -173,4 +176,5 @@ message SuppressedMeasure {
     google.protobuf.Timestamp time = 2;         // timestamp when measure was set to suppressed
     string user = 3;                            // user who suppressed the measure
     bool active = 4;							// flag if measure should be suppressed or not
+    string iid = 5;                             // message id - TODO: extract like Measure-message
 }

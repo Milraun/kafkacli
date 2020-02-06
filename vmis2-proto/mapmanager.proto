@@ -1,15 +1,18 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.mapmanager;
+
 import "base.proto";
+import "systemversion.proto";
 import "NotifierData.proto";
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.mapmanager";
 option csharp_namespace = "Mapmanager";
-
-package eu.vmis_ehe.vmis2.mapmanager;
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 service MapManager {
 	// Returns details of all map part versions of a specific part type (e.g. LCL)
@@ -36,7 +39,6 @@ service MapManager {
 	// Returned <MapOperationState> provides an ID for the initiated operation
 	rpc CheckMapVersion( MapCreationRequest ) returns ( stream MapOperationState ) {}
 
-
 	// Activates map version
 	// (Asynchronous execution)
 	// Returned <MapOperationState> provides an ID for the initiated operation
@@ -53,11 +55,27 @@ service MapManager {
 	// Deletes map part version
 	// (Synchronous execution)
 	rpc DeleteMapPartVersion( MapPartVersionId ) returns ( google.protobuf.Empty ) {}
-	
-	
+
+	// ----------------------------- manual packages -----------------------------
+
+	// Activates manual data versions. Empty version will clear the related system package
+    rpc ActivateVersions (systemversion.ActivateVersionsRequest) returns (systemversion.NotificationsResponse) {}
+
+    // Merges given manual packages into system packages
+    rpc MergeManualData (systemversion.MergeManualDataRequest) returns (systemversion.NotificationsResponse) {}
+
+    // Persists system package into the given manual version
+    rpc FinalizeSnapshots (systemversion.FinalizeSnapshotsRequest) returns (google.protobuf.Empty) {}
+
+    // Returns all existing manual package versions
+    rpc GetKnownVersions (google.protobuf.Empty) returns (systemversion.ManualPackageVersions) {}
+
+    // Returns the active manual package versions (used in system package)
+    rpc GetCurrentVersions (google.protobuf.Empty) returns (systemversion.ManualPackageVersions) {}
+
+    // Deletes versions from DB (doesn't affect service's system state)
+    rpc DeleteVersions (systemversion.ManualPackageVersions) returns (google.protobuf.Empty) {}
 }
-
-
 
 // Contains a Component
 message ComponentType {
@@ -95,14 +113,12 @@ message MapPartVersions {
 	repeated MapPartVersion mapPartVersion = 1;
 }
 
-
 // Map operations
 enum MapValidationState {
     UNKNOWN = 0;
     VALID = 1;
     INVALId =2;
 }
-
 
 // Version of a whole map present in VMIS2 system
 message MapVersion {
@@ -111,7 +127,7 @@ message MapVersion {
     google.protobuf.Timestamp activationTime = 4;		// Time of activation by GeoManager
 
     repeated MapPartVersion mapPartVersion = 5;			// Map parts
-    
+
     MapValidationState validationState = 6;				// VALID: map data complete 	
     string validationComment = 7;           				
 }
@@ -172,12 +188,9 @@ enum MapCheckType {
     ROAD_UZ_RELATION = 6;
 }
 
-
 message MapCreationRequest {
 	string version = 1;
 	repeated MapPartVersionId partVersions = 2;
 	repeated MapCheckType mapChecks = 3; 		// All checks are executed if left empty
 	string description = 4;
 }
-
-

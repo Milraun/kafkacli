@@ -1,48 +1,40 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.configservice;
 
-import "google/protobuf/empty.proto";
-
 import "ConfigVersions.proto";
+import "google/protobuf/empty.proto";
 import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option csharp_namespace = "eu.vmis_ehe.vmis2.configservice";
 option java_outer_classname = "ConfigVersionServiceProto";
-
-option (.heuboe.protobuf.interface_version) = "1.13.0";
+option (.heuboe.protobuf.interface_version) = "1.13.1";
 
 service ConfigVersionService {
 
     // Creates one new TLS Base Config from (Excel) without default data (doesn't change service's current data) 
-    // Pushes messages for warnings
-    rpc ImportBaseData (ImportBaseDataRequest) returns (ImportBaseDataResponse) {}
-    
-    // Creates new manual data for new base versions (can use existing manual data a source)
-    // Pushes messages for warnings
-    rpc CreateManualData (CreateManualDataRequest) returns (google.protobuf.Empty) {}
-    
-    // Activates new base- and manual data versions
-    // Can be called without manual versions in STAGING mode only
-    // Pushes messages for warnings & data model changes
-    rpc ActivateVersions (ActivateVersionsRequest) returns (ActivateVersionsResponse) {}
+    rpc ImportBaseData (ImportBaseDataRequest) returns (stream ImportBaseDataResponse) {}
 
-    // Creates defaults for manual data for a new base version (needs GeoManager to do so)
-    // Can be called in STAGING mode only
-    // Pushes messages for warnings & data model changes
-    rpc InitVersions (InitVersionsRequest) returns (google.protobuf.Empty) {}
+    // Creates new manual data for new base versions (can use existing manual data a source)
+    rpc CreateManualData (CreateManualDataRequest) returns (stream CreateManualDataResponse) {}
+
+    // Activates new base- and manual data versions
+    // Creates new extended data for new base versions in staging mode (needs up to date GeoManager)
+    // Pushes messages for data model changes
+    rpc ActivateVersions (ActivateVersionsRequest) returns (stream ActivateVersionsResponse) {}
 
     // Merges manual data according to input into current manual data.
-    // Pushes messages for warnings & data model changes
-    rpc MergeManualData (MergeManualDataRequest) returns (MergeManualDataResponse) {}
-    
+    // Pushes messages for data model changes
+    rpc MergeManualData (MergeManualDataRequest) returns (stream MergeManualDataResponse) {}
+
     // Converts snapshot manual data blocks into final ones
     // Basically activates current state as new master version
     rpc PersistSnapshots (PersistSnapshotsRequest) returns (google.protobuf.Empty) {}
 
     // Dismiss snaphot manual data blocks (fall back to non-snapshot data)
-    // Pushes messages for warnings & data model changes
-    rpc DismissSnapshots (DismissSnapshotsRequest) returns (google.protobuf.Empty) {}
+    // Pushes messages for data model changes
+    rpc DismissSnapshots (DismissSnapshotsRequest) returns (stream DismissSnapshotsResponse) {}
 
     // Reports which data versions are currently available in service's DB
     rpc GetKnownVersions (google.protobuf.Empty) returns (GetKnownVersionsResponse) {}
@@ -52,24 +44,49 @@ service ConfigVersionService {
 
     // Deletes saved versions from DB (doesn't affect service's current versions: can't delete active ones)
     rpc DeleteVersions (DeleteVersionsRequest) returns (google.protobuf.Empty) {}
+
+    // Creates defaults for manual data (needs up to date GeoManager to do so)
+    // DEBUG, can be called in STAGING mode only (usually done automatically when first activating new base versions)
+    rpc CreateExtData (CreateExtDataRequest) returns (google.protobuf.Empty) {}
+
+}
+
+message Notification {
+    enum NotiType {
+        UNKNOWN = 0;
+        TLS = 1;
+        EXT_DATA = 2;
+    }
+    enum NotiState {
+        UPDATE = 0;
+        NEW = 1;
+        REMOVED = 2;
+    }
+    string id = 1;
+    NotiType type = 2;
+    NotiState state = 3;
+    string text = 4;
 }
 
 message ImportBaseDataRequest {
-    string base_version_id = 1;
-    string tls_data_path = 2;
+    string tls_data_path = 1;
 }
 message ImportBaseDataResponse {
-    string uz_id = 1;
+    BaseVersionKey base_version_key = 1;
     string uz_name = 2;
+    repeated Notification warnings = 3;
 }
 
 message CreateManualDataRequest {
-    message Descriptor {
+    message ManVersionDesc {
         VersionKey new_version = 1;
         string ancestor_base_version_id = 2;            // Optional ancestor info; creates new empty version if missing
         string ancestor_manual_version_id = 3;
     }
-    repeated Descriptor versions = 1;
+    repeated ManVersionDesc versions = 1;
+}
+message CreateManualDataResponse {
+    repeated Notification warnings = 1;
 }
 
 message ActivateVersionsRequest {                       // Can be called without versions to load a previously activated
@@ -78,10 +95,7 @@ message ActivateVersionsRequest {                       // Can be called without
 }
 message ActivateVersionsResponse {
     repeated VersionDesc versions = 1;                  // returns activated versions, together with snapshot info
-}
-
-message InitVersionsRequest {
-    repeated BaseVersionKey versions = 1;
+    repeated Notification warnings = 2;
 }
 
 message MergeManualDataRequest {
@@ -94,6 +108,7 @@ message MergeManualDataRequest {
 }
 message MergeManualDataResponse {
     repeated VersionDesc versions = 1;
+    repeated Notification warnings = 2;
 }
 
 message PersistSnapshotsRequest {
@@ -104,6 +119,9 @@ message PersistSnapshotsRequest {
 message DismissSnapshotsRequest {
     string master_version_id = 1;
     repeated VersionKey versions = 2;
+}
+message DismissSnapshotsResponse {
+    repeated Notification warnings = 1;
 }
 
 message GetKnownVersionsResponse {
@@ -125,4 +143,9 @@ message GetCurrentVersionsResponse {
 message DeleteVersionsRequest {
     repeated BaseVersionKey base_versions = 1;
     repeated VersionKey manual_versions = 2;
+}
+
+message CreateExtDataRequest {
+    repeated BaseVersionKey versions = 1;
+    repeated string types = 2;
 }

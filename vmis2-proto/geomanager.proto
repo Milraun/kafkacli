@@ -1,30 +1,25 @@
 syntax = "proto3";
 
+package eu.vmis_ehe.vmis2.geomanager;
+
 import "base.proto";
 import "features.proto";
+import "gip.proto";
 import "hierarchy.proto";
-import "validitySection.proto";
 import "road.proto";
 import "routing.proto";
 import "tmc.proto";
-import "gip.proto";
+import "validitySection.proto";
+//import "google/api/annotations.proto";
 import "google/protobuf/descriptor.proto";
 import "google/protobuf/empty.proto";
-
-//import "google/api/annotations.proto";
-
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.geomanager";
 option csharp_namespace = "Geomanager";
 option java_outer_classname = "GeoManagerProto";
-
-package eu.vmis_ehe.vmis2.geomanager;
-
-extend google.protobuf.FileOptions {
-    string interface_version = 50000;
-}
-option (interface_version) = "3.1.8";
+option (.heuboe.protobuf.interface_version) = "3.3.0";
 
 // Interface that defines functionality for a geo-spatial service.
 service GeoManager {
@@ -38,6 +33,9 @@ service GeoManager {
 
     // Returns a mapping from ConfigItemType to feature's Types
 	rpc GetConfigTypeMapping ( google.protobuf.Empty ) returns ( features.ConfigTypeMappings ) {}
+
+    // Returns a mapping from String to UdeType 
+  	rpc GetUdeTypeMapping(google.protobuf.Empty) returns ( features.UdeTypeMappings ) {};
 
 	// ----- Roads -----
 
@@ -70,6 +68,9 @@ service GeoManager {
 	// Converts a RoadMeterSection (operational meter) into a LineRoadReference (contains logical meter).
 	rpc ConvertRoadMeterSection( road.RoadMeterSection ) returns (features.LineRoadReference) {}
 
+	// Converts logical metering position to extended road point data (including operational meter)
+	rpc ConvertRoadOffset( road.ConvertRoadOffsetRequest ) returns ( road.ConvertRoadOffsetResult ) {}
+
 	// ----- RDS/TMC conversions -----
 
     // Converts each element in a set of RoadReferences to the corresponding AlertC location.
@@ -92,9 +93,9 @@ service GeoManager {
 	// For a point on a directed road given by a geographic coordinate this method returns its
 	// offset position on the road (PointRoadReference).
 	rpc ProjectOntoRoad( road.RoadCoordinate ) returns (features.PointRoadReference) {}
-	
+
 	// ------ Routing --------
-	
+
 	// Calculates Routes in road network 
 	rpc CalculateRoutes( routing.RoutingRequest ) returns ( routing.RoutingResult ) {}
 

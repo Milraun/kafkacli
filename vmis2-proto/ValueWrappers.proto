@@ -1,12 +1,15 @@
 syntax = "proto3";
+
 package eu.vmis_ehe.vmis2.paramservice;
 
 import "google/protobuf/wrappers.proto";
+import "heuboe/protobuf/InterfaceVersion.proto";
 
 option java_multiple_files = true;
 option java_package = "eu.vmis_ehe.vmis2.paramservice";
 option java_outer_classname = "ValueWrappersProto";
 option csharp_namespace = "eu.vmis_ehe.vmis2.paramservice";
+option (.heuboe.protobuf.interface_version) = "0.23.0";
 
 // Type of a value (e.g. of a single parameter value)
 enum ValueType {
@@ -24,11 +27,7 @@ enum ValueType {
     DOUBLE_LIST = 104; // double array/list value
     BOOLEAN_LIST = 105; // boolean array/list value
 
-    /**
-     * ValueWrapper type StringValue.
-     * To obtain all possible values user has to request the parameter service with the given parameter set id.
-     */
-    PARAMETER_SET_INSTANCE = 200;
+    DOUBLE_RANGE_LIST = 204; // list of ranges(type:double)
 }
 
 // Generic value wrapper around some typified value(s)
@@ -45,6 +44,8 @@ message ValueWrapper {
         StringsWrapper string_vals = 103; // string array/list value
         DoublesWrapper double_vals = 104; // double array/list value
         BooleansWrapper boolean_vals = 105; // boolean array/list value
+
+        DoubleRangesWrapper double_range_vals = 204; // list of double ranges
 
         google.protobuf.StringValue parameter_set_id_val = 200; // parameter set id string value
     }
@@ -73,4 +74,15 @@ message DoublesWrapper {
 // Wrapper around a list of bool (boolean) values
 message BooleansWrapper {
     repeated bool values = 1; // Wrapped list of boolean values
+}
+
+// Wrapper for a list of ranges of type double
+message DoubleRangesWrapper{
+    repeated DoubleRange values = 1; // Wrapped list of double ranges
+}
+
+// Range of type double
+message DoubleRange{
+    double min = 1; // min value
+    double max = 2; // max value
 }
