@@ -1,37 +1,64 @@
-configs:
-  - topic: UZ_A2-ShortTermPlCheckedDataLanes
+# This file can be used to create or alter topic with kafkacli
+# If altered only the configEntries are used. To change
+# replicationFactor or numPartitions other tools must be used
+topicsConfigs:
+# Standard topics: Multi partitions, no log compation
+- topics:
+  - UZ_A2-ShortTermCollectedDataLane
+  - UZ_A2-ShortTermCollectedOpcUaDataLane
+  - UZ_A2-ShortTermCollectedTrafficCategoriesLane
+  - UZ_A2-DiscardedShortTermCollectedDataLane
+  - UZ_A2-FailedPlCheckDataLanes
+  - UZ_A2-PlCheckValueSeriesLanes
+  - UZ_A2-ShortTermPlCheckedDataLanes
+  - UZ_A2-ShortTermMeasurementReplacedDataLane
+  - UZ_A2-AnalyticalDataLane
+  - UZ_A2-AnalyticalDataDetSite
+  - UZ_A2-ShortTermMeasurementAggregatedDataLane
+  - UZ_A2-ShortTermMeasurementAggregatedDataDetSite
+  - UZ_A2-PrognosisDataLane
+  - UZ_A2-PrognosisDataDetSite
+  - UZ_A2-LosDataLane
+  - UZ_A2-LosDataDetSite
+  config:
     numPartitions: 10
     replicationFactor: 3
-  - topic: UZ_A2-FailedPlCheckDataLanes
+# One partition, log compation
+- topics:    
+  - VRZ-Situations-opgui
+  - VRZ-Measures-opgui
+  - VRZ-Situations-external
+  - VRZ-Measures-external
+  - VRZ-ControlSignMeasures
+  - VRZ-ControlSignReason
+  config:
+    numPartitions: 1
+    replicationFactor: 3
+    configEntries:
+    - name: cleanup.policy
+      value: compact
+    - name: segment.ms
+      value: "3600000"
+    - name: retention.ms
+      value: "86400000"
+# Multi partitions, log compation      
+- topics: 
+  - VRZ-OpGuiMeasuresWithControlSigns
+  - VRZ-OpGuiControlSignMeasures
+  - VRZ-SignOverlayApp-WZGStellzustand
+  - VRZ-SignOverlayApp-ControlSignReason  
+  - VRZ-MeasuresAdjusted
+  - VRZ-MeasuresSelected
+  - UZ_A2-SituationsRecognized
+  - VRZ-SituationsMerged
+  config:
     numPartitions: 10
     replicationFactor: 3
-  - topic: UZ_A2-PlCheckValueSeriesLanes
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-ShortTermMeasurementReplacedDataLane
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-AnalyticalDataLane
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-AnalyticalDataDetSite
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-ShortTermMeasurementAggregatedDataLane
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-ShortTermMeasurementAggregatedDataDetSite
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-PrognosisDataLane
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-PrognosisDataDetSite
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-LosDataLane
-    numPartitions: 10
-    replicationFactor: 3
-  - topic: UZ_A2-LosDataDetSite
-    numPartitions: 10
-    replicationFactor: 3
+    configEntries:
+    - name: cleanup.policy
+      value: compact
+    - name: segment.ms
+      value: "3600000"
+    - name: retention.ms
+      value: "86400000"
+

@@ -14,12 +14,9 @@ import Timeout from "await-timeout";
 import protobuf from "protobufjs";
 import YAML from "yaml";
 import pino from "pino";
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from "rxjs";
 
-import {
-  printMessage,
-  replaceProtoTimeStampsInObject
-} from './utils'
+import { printMessage, replaceProtoTimeStampsInObject } from "./utils";
 import { readFile } from "fs";
 
 const log = pino({
@@ -32,12 +29,12 @@ const log = pino({
 
 const fs = require("fs").promises;
 
-async function readProtoDef (file: string): Promise<any> {
+async function readProtoDef(file: string): Promise<any> {
   var json = await fs.readFile(file);
   return JSON.parse(json);
 }
 
-export async function listTopicsServer (
+export async function listTopicsServer(
   topic: RegExp,
   kafka: Kafka
 ): Promise<ITopicMetadata[]> {
@@ -57,7 +54,7 @@ export async function listTopicsServer (
   return filteredTopics;
 }
 
-export async function listTopics (
+export async function listTopics(
   topic: RegExp,
   kafkaCliConfig: any
 ): Promise<ITopicMetadata[]> {
@@ -65,15 +62,15 @@ export async function listTopics (
   return await listTopicsServer(topic, kafka);
 }
 
-export async function describeTopicsConfigServer (
+export async function describeTopicsConfigServer(
   topic: RegExp,
   kafka: Kafka
 ): Promise<DescribeConfigResponse> {
   const adminClient = kafka.admin();
   await adminClient.connect();
   const metaData = await adminClient.fetchTopicMetadata({ topics: [] });
-  const filteredTopics = metaData.topics.filter(t => t.name.match(topic))
- 
+  const filteredTopics = metaData.topics.filter(t => t.name.match(topic));
+
   const query = filteredTopics.map(t => {
     let rq = {
       type: ResourceTypes.TOPIC,
@@ -83,16 +80,15 @@ export async function describeTopicsConfigServer (
   });
 
   const configs = await adminClient.describeConfigs({
-      resources: query,
-      includeSynonyms: false
-    });
-    
+    resources: query,
+    includeSynonyms: false
+  });
 
   await adminClient.disconnect();
   return configs;
 }
 
-export async function describeTopicsConfig (
+export async function describeTopicsConfig(
   topic: RegExp,
   kafkaCliConfig: any
 ): Promise<DescribeConfigResponse> {
@@ -100,7 +96,7 @@ export async function describeTopicsConfig (
   return await describeTopicsConfigServer(topic, kafka);
 }
 
-export async function deleteTopicsServer (
+export async function deleteTopicsServer(
   topic: RegExp,
   kafka: Kafka
 ): Promise<void> {
@@ -122,16 +118,12 @@ export async function deleteTopicsServer (
   await adminClient.disconnect();
 }
 
-
-export async function deleteTopics (
-  topics: RegExp,
-  kafkaCliConfig: any
-) {
+export async function deleteTopics(topics: RegExp, kafkaCliConfig: any) {
   const kafka = new Kafka(kafkaCliConfig);
   await deleteTopicsServer(topics, kafka);
 }
 
-export async function testProduce (
+export async function testProduce(
   topic: string,
   kafkaCliConfig: any,
   delay: number,
@@ -164,7 +156,7 @@ export async function testProduce (
   }
 }
 
-export async function createTopicServer (
+export async function createTopicServer(
   topic: string,
   kafka: Kafka,
   partitions: number,
@@ -174,111 +166,157 @@ export async function createTopicServer (
   const adminClient = kafka.admin();
   await adminClient.connect();
 
-    let topicConfig: ITopicConfig = {
-      topic: topic,
-      numPartitions: partitions,
-      replicationFactor: replicationFactor
-    };
+  let topicConfig: ITopicConfig = {
+    topic: topic,
+    numPartitions: partitions,
+    replicationFactor: replicationFactor
+  };
 
-    let configValues: any[] = [];
-    config.forEach(ce => {
-      let configEntry = ce.split("=");
-      if( configEntry.length !== 2 ) {
-        throw `Format of ${ce} invalid. Must be: 'configName=value'`;
-      }
-      configValues = configValues.concat([
-        {name: configEntry[0],
-         value: configEntry[1]}
-      ]);
-    });
+  let configValues: any[] = [];
+  config.forEach(ce => {
+    let configEntry = ce.split("=");
+    if (configEntry.length !== 2) {
+      throw `Format of ${ce} invalid. Must be: 'configName=value'`;
+    }
+    configValues = configValues.concat([
+      { name: configEntry[0], value: configEntry[1] }
+    ]);
+  });
 
-    topicConfig.configEntries = configValues;
+  topicConfig.configEntries = configValues;
 
-    let sTC = YAML.stringify(topicConfig);
-    
-    let created = await adminClient.createTopics({
-      validateOnly: false,
-      topics: [topicConfig]
-    });
+  let sTC = YAML.stringify(topicConfig);
 
-    await adminClient.disconnect();
+  let created = await adminClient.createTopics({
+    validateOnly: false,
+    topics: [topicConfig]
+  });
 
-    return created;
+  await adminClient.disconnect();
+
+  return created;
 }
 
-export async function createTopic (
+/**
+ * create a single topic
+ * @param topics
+ * @param kafkaCliConfig
+ * @param partitions
+ * @param replicationFactor
+ * @param config
+ */
+export async function createTopic(
   topics: string,
   kafkaCliConfig: any,
   partitions: number,
   replicationFactor: number,
   config: string[]
-
-) : Promise<boolean> {
+): Promise<boolean> {
   const kafka = new Kafka(kafkaCliConfig);
-  return await createTopicServer(topics, kafka, partitions, replicationFactor, config);
+  return await createTopicServer(
+    topics,
+    kafka,
+    partitions,
+    replicationFactor,
+    config
+  );
+}
+
+export interface TopicConfig {
+  numPartitions?: number;
+  replicationFactor?: number;
+  replicaAssignment?: object[];
+  configEntries?: object[];
+}
+
+export interface TopicsConfig {
+  topics: string[];
+  config: TopicConfig;
 }
 
 export interface CreateTopicsConfig {
-  configs : ITopicConfig[]; 
+  topicsConfigs: TopicsConfig[];
 }
 
 export interface CreateTopicsResult {
-  topic: string,
-  created: boolean,
-  error: string
+  topic: string;
+  created: boolean;
+  error: string;
 }
 
-export async function createTopics (
+/**
+ * createTopics. Get input from a definition file.
+ *
+ * This function tries to create each topic from the definition file
+ * with a single call so that we get an information wether creation worked
+ * or not for each topic
+ * @param inputFile the definition file
+ * @param kafkaCliConfig  kafka config
+ */
+export async function createTopics(
   inputFile: string,
-  kafkaCliConfig: any 
-) : Promise<CreateTopicsResult[]> {
-
+  kafkaCliConfig: any
+): Promise<CreateTopicsResult[]> {
   const kafka = new Kafka(kafkaCliConfig);
-  let conf = ((await fs.readFile(inputFile) as Buffer).toString());
+  let conf = ((await fs.readFile(inputFile)) as Buffer).toString();
   let topicsConf = YAML.parse(conf) as CreateTopicsConfig;
   const adminClient = kafka.admin();
   await adminClient.connect();
   let results: CreateTopicsResult[] = [];
-  for( let tc of topicsConf.configs ) {
-    try {
-      let created = await adminClient.createTopics({
-        validateOnly: false,
-        topics: [tc]
-      });
+  for (let tc of topicsConf.topicsConfigs) {
+    for (let t of tc.topics) {
+      const itc: ITopicConfig = {
+        topic: t,
+        numPartitions: tc.config.numPartitions,
+        replicaAssignment: tc.config.replicaAssignment,
+        replicationFactor: tc.config.replicationFactor,
+        configEntries: tc.config.configEntries
+      };
 
-      results.push( {
-        topic: tc.topic,
-        created: created,
-        error: created?"": "does it already exist ?"
-      }); 
-    } catch( e ) {
-      log.error(e);
-      results.push( {
-        topic: tc.topic,
-        created: false,
-        error: e
-      });
+      try {
+        let created = await adminClient.createTopics({
+          validateOnly: false,
+          topics: [itc]
+        });
+
+        results.push({
+          topic: t,
+          created: created,
+          error: created ? "" : "does it already exist ?"
+        });
+      } catch (e) {
+        log.error(e);
+        results.push({
+          topic: t,
+          created: false,
+          error: e
+        });
+      }
     }
   }
   await adminClient.disconnect();
   return results;
 }
 
-export async function alterTopicsConfigServer (
+/**
+ * Alter topics matching a regexp (for server calls)
+ * @param topics  topics regexp
+ * @param kafka   configure kafka object
+ * @param config  configurations
+ */
+export async function alterTopicsConfigServer(
   topics: RegExp,
   kafka: Kafka,
   config: string[]
 ): Promise<CreateTopicsResult[]> {
-
   let configValues: any[] = [];
   config.forEach(ce => {
     let configEntry = ce.split("=");
-    if( configEntry.length !== 2 ) {
+    if (configEntry.length !== 2) {
       throw `Format of ${ce} invalid. Must be: 'cname=value'`;
     }
     configValues = configValues.concat([
-      {name: configEntry[0],
-        value: configEntry[1]}
+      { name: configEntry[0], value: configEntry[1] }
     ]);
   });
 
@@ -296,28 +334,36 @@ export async function alterTopicsConfigServer (
   }
 
   let results: CreateTopicsResult[] = [];
-  if(filteredTopics.length === 0) {
+  if (filteredTopics.length === 0) {
     log.info(`No topic with regular expression: ${topics} found.`);
     return results;
   }
 
-  for( let topic of filteredTopics ) {
+  for (let topic of filteredTopics) {
     let rc: IResourceConfig = {
       type: ResourceTypes.TOPIC,
       name: topic.name,
       configEntries: configValues
+    };
+
+    try {
+      let result = await adminClient.alterConfigs({
+        validateOnly: false,
+        resources: [rc]
+      });
+      results.push({
+        topic: result.resources[0].resourceName,
+        created: result.resources[0].errorCode === 0,
+        error: result.resources[0].errorMessage as string | ""
+      });
+    } catch (e) {
+      log.error(e);
+      results.push({
+        topic: topic.name,
+        created: false,
+        error: e
+      });
     }
-
-    let result = await adminClient.alterConfigs({
-      validateOnly: false,
-      resources: [rc]
-    })
-    results.push({
-      topic: result.resourceName,
-      created: result.errorCode !== 0,
-      error: result.errorMessage as string | ""
-    })
-
   }
 
   await adminClient.disconnect();
@@ -325,13 +371,94 @@ export async function alterTopicsConfigServer (
   return results;
 }
 
-export async function alterTopicsConfig (
+/**
+ * Alter topics matching a regexp (for cli calls)
+ * @param topics  topics regexp
+ * @param kafkaCliConfig   config object to configure kafka
+ * @param config  configurations
+ */
+
+export async function alterTopicsConfig(
   topics: RegExp,
   kafkaCliConfig: any,
   config: string[]
 ): Promise<CreateTopicsResult[]> {
   const kafka = new Kafka(kafkaCliConfig);
   return await alterTopicsConfigServer(topics, kafka, config);
+}
+
+interface ConfigEntry {
+  name: string;
+  value: string;
+}
+
+/**
+ * alterTopics. Get input from a definition file.
+ *
+ * This function tries to alter each topic from the definition file
+ * with a single call so that we get an information wether creation worked
+ * or not for each topic
+ * @param inputFile the definition file
+ * @param kafkaCliConfig  kafka config
+ */
+export async function alterTopics(
+  inputFile: string,
+  kafkaCliConfig: any
+): Promise<CreateTopicsResult[]> {
+  const kafka = new Kafka(kafkaCliConfig);
+  let conf = ((await fs.readFile(inputFile)) as Buffer).toString();
+  let topicsConf = YAML.parse(conf) as CreateTopicsConfig;
+  const adminClient = kafka.admin();
+  await adminClient.connect();
+
+  let metaData = await adminClient.fetchTopicMetadata({ topics: [] });
+
+  let topicDic: { [id: string]: string } = {};
+  metaData.topics.forEach(t => (topicDic[t.name] = t.name));
+
+  let results: CreateTopicsResult[] = [];
+  for (let tc of topicsConf.topicsConfigs) {
+    for (let t of tc.topics) {
+      if (t in topicDic) {
+        let configValues: any[] = [];
+        if (tc.config.configEntries) {
+          for (let cv of tc.config.configEntries as ConfigEntry[])
+            configValues = configValues.concat([
+              { name: cv.name, value: cv.value }
+            ]);
+        }
+        let rc: IResourceConfig = {
+          type: ResourceTypes.TOPIC,
+          name: t,
+          configEntries: configValues
+        };
+
+        try {
+          let result = await adminClient.alterConfigs({
+            validateOnly: false,
+            resources: [rc]
+          });
+          results.push({
+            topic: result.resources[0].resourceName,
+            created: result.resources[0].errorCode === 0,
+            error: result.resources[0].errorMessage as string | ""
+          });
+        } catch (e) {
+          log.error(e);
+          results.push({
+            topic: t,
+            created: false,
+            error: e
+          });
+        }
+      } else {
+        log.info(`Topic: ${t} does NOT exist !`);
+      }
+    }
+  }
+
+  await adminClient.disconnect();
+  return results;
 }
 
 export interface TopicOffsets {
@@ -341,7 +468,7 @@ export interface TopicOffsets {
   readonly low: string;
 }
 
-export async function getTopicOffsets (
+export async function getTopicOffsets(
   topic: string,
   kafkaCliConfig: any
 ): Promise<Array<TopicOffsets>> {
@@ -349,11 +476,10 @@ export async function getTopicOffsets (
   return await getTopicOffsetsServer(topic, kafka);
 }
 
-export async function getTopicOffsetsServer (
+export async function getTopicOffsetsServer(
   topic: string,
   kafka: Kafka
 ): Promise<Array<TopicOffsets>> {
-
   const adminClient = kafka.admin();
   await adminClient.connect();
   try {
@@ -364,7 +490,7 @@ export async function getTopicOffsetsServer (
 }
 
 /**
- * Tailing topics selected by a regular expression 
+ * Tailing topics selected by a regular expression
  * returning a rxjs Observable.
  * @param topics the topics regex
  * @param kafkaCliConfig the config object needed to initialize kafka
@@ -372,7 +498,7 @@ export async function getTopicOffsetsServer (
  * @param follow keep listening and show new message as they appear
  * @param partitions list of partitions to use. If undefined all partitiions are used.
  */
-export async function tailTopicsObservable (
+export async function tailTopicsObservable(
   topics: RegExp,
   kafkaCliConfig: any,
   numMessages?: number,
@@ -380,11 +506,18 @@ export async function tailTopicsObservable (
   partitions?: number[]
 ): Promise<Observable<EachMessagePayload>> {
   const kafka = new Kafka(kafkaCliConfig);
-  return await tailTopicsObservableServer(topics, kafka, kafkaCliConfig.groupId, numMessages, follow, partitions);
+  return await tailTopicsObservableServer(
+    topics,
+    kafka,
+    kafkaCliConfig.groupId,
+    numMessages,
+    follow,
+    partitions
+  );
 }
 
 /**
- * Tailing topics selected by a regular expression 
+ * Tailing topics selected by a regular expression
  * returning a rxjs Observable.
  * @param topics the topics regex
  * @param kafka an initialized kafka object
@@ -392,7 +525,7 @@ export async function tailTopicsObservable (
  * @param follow keep listening and show new message as they appear
  * @param partitions list of partitions to use. If undefined all partitiions are used.
  */
-export async function tailTopicsObservableServer (
+export async function tailTopicsObservableServer(
   topics: RegExp,
   kafka: Kafka,
   groupId: string,
@@ -411,15 +544,15 @@ export async function tailTopicsObservableServer (
 
     topicsMeta.forEach(async tm => {
       let partitionOffsets = await getTopicOffsetsServer(tm.name, kafka);
-      partitionOffsetsPerTopic[tm.name] = partitionOffsets.filter(to => !partitions || partitions.includes(to.partition));
+      partitionOffsetsPerTopic[tm.name] = partitionOffsets.filter(
+        to => !partitions || partitions.includes(to.partition)
+      );
       partitionOffsets
         .filter(to => !partitions || partitions.includes(to.partition))
-        .forEach(
-          to => {
-            (endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
-              +to.high || 0)
-          }
-        );
+        .forEach(to => {
+          endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
+            +to.high || 0;
+        });
     });
 
     log.info(
@@ -514,10 +647,9 @@ export interface TopicDescription {
   readonly partitions?: PartitionDescription[]; //Partitions and offset to read. If empty read the whole topic
 }
 
-
 //TODO: new method readTopics to read the complete or parts of the topic, for all or selected partitions with filters on key and message (and headers)
 /**
- * Read topics selected by a regular expression 
+ * Read topics selected by a regular expression
  * returning a rxjs Observable.
  * @param topics the topics regex
  * @param kafkaCliConfig the config object needed to initialize kafka
@@ -656,7 +788,7 @@ export interface PublishDescription {
   ];
 }
 
-export async function publish (
+export async function publish(
   kafkaCliConfig: any,
   protoDefinitionFile: string,
   yamlFile: string
@@ -728,6 +860,6 @@ export default {
   tailTopicsObservableServer,
   alterTopicsConfig,
   alterTopicsConfigServer,
+  alterTopics,
   publish
 };
-

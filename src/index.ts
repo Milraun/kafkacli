@@ -179,6 +179,28 @@ program
   });
 
   program
+  .command("alterTopics <inputYaml>")
+  .description("alter topics configuration from an yaml input file")
+  .action(async function(inputYaml, cmdObj) {
+    try {
+      let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
+      let created = await kf.alterTopics(inputYaml, kafkaConfig);
+      created.forEach(r => {
+        if( r.created ) {
+          log.info(`topic: ${r.topic} successfully altered`);
+        } else {
+          log.info(`topic: ${r.topic} NOT successfully altered. Error: ${r.error}`);
+        }
+      })
+    } catch (e) {
+      log.error(e);
+    }
+    console.log("\n");
+    process.exit(0);
+  });
+
+
+  program
   .command("alterTopicsConfig <topics>")
   .description("change configurations of topics given by a regular expression.")
   .option("-c, --configValue <configValue>", "config value. Repeatable parameter. --configValue=name=value", gatherConfigs, [])

@@ -190,12 +190,27 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "kafka-cl alterTopics",
+      "program": "${workspaceFolder}\\src\\index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "args": [
+        "alterTopics",
+        "createTopic.yaml"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "kafka-cl alterTopicsConfig",
       "program": "${workspaceFolder}\\src\\index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "args": [
         "alterTopicsConfig",
-        "^hugo$",
+        "^hugo1$",
         "--configValue=cleanup.policy=compact",
         "--configValue=segment.ms=3600000"
       ],

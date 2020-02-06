@@ -5,6 +5,34 @@ import Long from "long";
 const fs = require("fs").promises;
 const TS_LITERAL = "#TS(";
 
+// import {TopicConfig, TopicsConfig, CreateTopicsConfig} from "./kafkafunctions"
+// import YAML from "yaml";
+
+
+// const ctc: CreateTopicsConfig = {
+//   topicsConfigs: [
+//     {
+//       topics: ["hugo1", "hugo2"],
+//       config: {
+//         numPartitions: 2,
+//         replicationFactor: 3
+//       }
+//     },
+//     {
+//       topics: ["fritz1", "fritz2"],
+//       config: {
+//         numPartitions: 3,
+//         replicationFactor: 3
+//       }
+//     }
+//   ]
+// }
+
+// const s = YAML.stringify(ctc);
+
+// fs.writeFile("test.yaml", s);
+
+
 async function readProtoDef(file: string): Promise<any> {
   var json = await fs.readFile(file);
   return JSON.parse(json);

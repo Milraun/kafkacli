@@ -1,5 +1,8 @@
-configs:
-  - topic: hugo1
+topicsConfigs:
+- topics: 
+  - hugo1
+  - hugo2
+  config:
     numPartitions: 5
     replicationFactor: 2
     configEntries:
@@ -7,9 +10,20 @@ configs:
         value: compact
       - name: segment.ms
         value: "3600000"
-  - topic: fritz1
+- topics: 
+  - fritz1
+  - fritz2
+  config:
     numPartitions: 5
     replicationFactor: 2
     configEntries:
-      - name: retention.msX
+      - name: retention.ms
         value: "3600000"
+- topics:
+  - dummy
+  config:
+    numPartitions: 1
+    replicationFactor: 1
+    configEntries:
+    - name: egal
+      value: irgendwas

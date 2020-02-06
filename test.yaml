@@ -1,0 +1,13 @@
+topicsConfigs:
+  - topics:
+      - hugo1
+      - hugo2
+    config:
+      numPartitions: 2
+      replicationFactor: 3
+  - topics:
+      - fritz1
+      - fritz2
+    config:
+      numPartitions: 3
+      replicationFactor: 3
