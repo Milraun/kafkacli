@@ -118,10 +118,10 @@ program
       let topics = await kf.listTopics(new RegExp(regex), kafkaConfig);
       log.info("ATTENTION: the following topics will be deleted!");
       printTopics(topics, false);
-      let answer = readlineSync.keyInYN(
-        "Do you really want to delete these topics ?"
+      let answer = readlineSync.question(
+        "Do you really want to delete these topics? Type YES: "
       );
-      if (answer === true) {
+      if (answer === "YES") {
         log.info("Deleting topics !");
         await kf.deleteTopics(new RegExp(regex), kafkaConfig);
         log.info("Topics are marked for deletion !");
