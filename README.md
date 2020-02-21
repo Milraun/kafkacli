@@ -138,7 +138,11 @@ Aktuell gibt es zwei ausführbare Binaries
 siehe config.json
 ### Start/Stop
 * kafkacli -h gibt alle möglichen Befehle aus. 
-* kafkacli <Befehl> -h gibt nähere Infos zu einem Befehl
+* kafkacli BEFEHL -h gibt nähere Infos zu einem Befehl
 * config.json und vmis2proto.json werden im aktuellen Verzeichnis gesucht oder müssen mit -c und/oder -p angegeben werden.
-* Bei der Nutzung in der GitBash ist zu beachten, dass diese keine tty-Device zur Verfügung stellt (was immer das heißt). Bei Befehlen, die interaktive Eingaben vom Benutzer verlangen funktioniert das nicht. In diesem Fall muss man ein **winpty** voranstellen (**winpty ./kafkacli.exe deleteTopics 'Müll.*'**). Aktuell wird nur bei **deleteTopics** nachgefragt.
+* Bei der Nutzung in der GitBash ist zu beachten, dass diese keine tty-Device zur Verfügung stellt (was immer das heißt). Bei Befehlen, die interaktive Eingaben vom Benutzer verlangen funktioniert das nicht. In diesem Fall muss man ein **winpty** voranstellen.
+  
+    winpty ./kafkacli.exe deleteTopics 'Müll.*'
+    
+* Aktuell wird nur bei **deleteTopics** nachgefragt.
 ### Monitoring
