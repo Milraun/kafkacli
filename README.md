@@ -91,15 +91,20 @@ Für die Entwicklung muss ein aktuelle NodeJs und npm installiert sein. Nach dem
 
 Entwickelt wurde mit VSCode. Dafür gilt auch die launch.json zum Starten in der Entwicklungsumgebung und zum Debuggen.
 
-Übersetzt wird das ganze mit: **npm run build**
+Übersetzt wird das ganze mit:
 
-Eine Binärdatei erzeugen mit: **nexe lib/index.js** (unter Windows)
+    npm run build
+
+Eine Binärdatei erzeugen mit: 
+
+    nexe lib/index.js (unter Windows)
+
 Unter CentOs kann man eine neue Version auf dem ersten Kubernetes-Master des VMIS-Testsystem (172.31.246.1) im Verzeichnis:
 
     /root/kafkacli 
 mit dem Befehl
 
-    **nexe lib/index.js --verbose -t static -b**
+    nexe lib/index.js --verbose -t static -b
 übersetzten. Die Schwierigkeit war, das NodeJs erst für CentOs übersetzt und dann statisch gelinkt werden musste. Deshalb geht das aktuell nur dort.
 
 ## API
