@@ -51,6 +51,8 @@ topicsConfigs:
   - VRZ-MeasuresSelected
   - UZ_A2-SituationsRecognized
   - VRZ-SituationsMerged
+  - VRZ-CausalLinkTask
+  - VRZ-ChangeableMeasuresTask
   config:
     numPartitions: 10
     replicationFactor: 3
