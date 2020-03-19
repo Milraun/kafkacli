@@ -161,6 +161,7 @@ topicsConfigs:
   - VRZ-Parameter-FundamentaldiagrammbetrachtungSituationMapping
   - VRZ-Parameter-ExponentielleGlaettungSWE
   - VRZ-Parameter-Zusammenbruchswahrscheinlichkeit
+  - VRZ-Parameter-ConcreteControlSigns
   config:
     numPartitions: 1
     replicationFactor: 3

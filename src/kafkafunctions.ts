@@ -98,7 +98,8 @@ export async function describeTopicsConfig(
 
 export async function deleteTopicsServer(
   topic: RegExp,
-  kafka: Kafka
+  kafka: Kafka,
+  timeout: number
 ): Promise<void> {
   const adminClient = kafka.admin();
   await adminClient.connect();
@@ -114,13 +115,13 @@ export async function deleteTopicsServer(
 
   filteredTopics.forEach(t => log.info(`Deleting Topic ${t.name}`));
   let topicsToDelete = filteredTopics.map(t => t.name);
-  await adminClient.deleteTopics({ topics: topicsToDelete });
+  await adminClient.deleteTopics({ topics: topicsToDelete, timeout: timeout*1000 });
   await adminClient.disconnect();
 }
 
-export async function deleteTopics(topics: RegExp, kafkaCliConfig: any) {
+export async function deleteTopics(topics: RegExp, kafkaCliConfig: any, timeout: number) {
   const kafka = new Kafka(kafkaCliConfig);
-  await deleteTopicsServer(topics, kafka);
+  await deleteTopicsServer(topics, kafka, timeout);
 }
 
 export async function testProduce(
@@ -161,7 +162,8 @@ export async function createTopicServer(
   kafka: Kafka,
   partitions: number,
   replicationFactor: number,
-  config: string[]
+  config: string[],
+  timeout: number
 ): Promise<boolean> {
   const adminClient = kafka.admin();
   await adminClient.connect();
@@ -189,7 +191,8 @@ export async function createTopicServer(
 
   let created = await adminClient.createTopics({
     validateOnly: false,
-    topics: [topicConfig]
+    topics: [topicConfig],
+    timeout: timeout*1000
   });
 
   await adminClient.disconnect();
@@ -210,7 +213,8 @@ export async function createTopic(
   kafkaCliConfig: any,
   partitions: number,
   replicationFactor: number,
-  config: string[]
+  config: string[],
+  timeout: number
 ): Promise<boolean> {
   const kafka = new Kafka(kafkaCliConfig);
   return await createTopicServer(
@@ -218,7 +222,8 @@ export async function createTopic(
     kafka,
     partitions,
     replicationFactor,
-    config
+    config,
+    timeout
   );
 }
 
@@ -255,7 +260,8 @@ export interface CreateTopicsResult {
  */
 export async function createTopics(
   inputFile: string,
-  kafkaCliConfig: any
+  kafkaCliConfig: any,
+  timeout: number
 ): Promise<CreateTopicsResult[]> {
   const kafka = new Kafka(kafkaCliConfig);
   let conf = ((await fs.readFile(inputFile)) as Buffer).toString();
@@ -276,7 +282,8 @@ export async function createTopics(
       try {
         let created = await adminClient.createTopics({
           validateOnly: false,
-          topics: [itc]
+          topics: [itc],
+          timeout: timeout*1000
         });
 
         results.push({

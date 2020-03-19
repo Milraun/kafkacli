@@ -58,7 +58,7 @@ function printTopics(topics: ITopicMetadata[], full: boolean): void {
 banner();
 
 program
-  .version("0.0.1")
+  .version("0.0.2")
   .option(
     "-c, --config <config>",
     "configuration file (json). Default: config.json",
@@ -112,6 +112,7 @@ program
 program
   .command("deleteTopics <regexp>")
   .description("List topics matching regexp")
+  .option("-t, --timeout <timeout>", "timeout of the operation in seconds.", 5)
   .action(async function(regex, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
@@ -123,7 +124,7 @@ program
       );
       if (answer === "YES") {
         log.info("Deleting topics !");
-        await kf.deleteTopics(new RegExp(regex), kafkaConfig);
+        await kf.deleteTopics(new RegExp(regex), kafkaConfig, cmdObj.timeout);
         log.info("Topics are marked for deletion !");
       }
     } catch (e) {
@@ -138,12 +139,13 @@ program
   .description("create a topic")
   .option("-p, --numPartitions <numPartitions>", "number of partitions", 10)
   .option("-r, --replicationFactor <replicationFactor>", "replication factor", 3)
-  .option("-c, --configValue <configValue>", "config value. configValue=name=value", gatherConfigs, [])
+  .option("-o, --configValue <configValue>", "config value. configValue=name=value", gatherConfigs, [])
+  .option("-t, --timeout <timeout>", "timeout of the operation in seconds.", 5)
   .action(async function(topic, cmdObj) {
     try {
       log.info(`creating topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue}`);
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-      let created = await kf.createTopic(topic, kafkaConfig, cmdObj.numPartitions, cmdObj.replicationFactor, cmdObj.configValue);
+      let created = await kf.createTopic(topic, kafkaConfig, cmdObj.numPartitions, cmdObj.replicationFactor, cmdObj.configValue, cmdObj.timeout);
       if( created ) {
         log.info(`topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue} successfully created!`);
       } else {
@@ -160,10 +162,11 @@ program
   program
   .command("createTopics <inputYaml>")
   .description("create topics from an yaml input file")
+  .option("-t, --timeout <timeout>", "timeout of the operation in seconds.", 5)
   .action(async function(inputYaml, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-      let created = await kf.createTopics(inputYaml, kafkaConfig);
+      let created = await kf.createTopics(inputYaml, kafkaConfig, cmdObj.timeout);
       created.forEach(r => {
         if( r.created ) {
           log.info(`topic: ${r.topic} successfully created`);
