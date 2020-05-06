@@ -124,7 +124,7 @@ Bisher keine ausser händisches ausprobieren.
 ## Betrieb
 Ich habe einen Ordner zusammengepackt der unter:
 
-    \\\\JUERGENB-WX\public\kafkacli\0.0.1\
+    \\\\JUERGENB-WX\public\kafkacli\
 
 zu finden ist. Er enthält Binaries und Beispiele für
   * Eine Konfigurationsdatei (config.json)
