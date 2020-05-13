@@ -20,6 +20,44 @@ topicsConfigs:
   - UZ_A2-PrognosisDataDetSite
   - UZ_A2-LosDataLane
   - UZ_A2-LosDataDetSite
+  - UZ_A2-A_WeightedSoundPressureLevelReplacedData
+  - UZ_A2-AirPressureReplacedData
+  - UZ_A2-AirTemperatureReplacedData
+  - UZ_A2-BaseSoundLevelReplacedData
+  - UZ_A2-DeIcingGritConcentrationReplacedData
+  - UZ_A2-DeIcingGritPerM2ReplacedData
+  - UZ_A2-DewPointTemperatureReplacedData
+  - UZ_A2-EnergyEquivalentContinuousSoundPressureLevelReplacedData
+  - UZ_A2-FreezingTemperatureReplacedData
+  - UZ_A2-GlobalSolarRadiationReplacedData
+  - UZ_A2-GripReplacedData
+  - UZ_A2-GroundTemperatureDepthOneReplacedData
+  - UZ_A2-GroundTemperatureDepthThreeReplacedData
+  - UZ_A2-GroundTemperatureDepthTwoReplacedData
+  - UZ_A2-IceFilmThicknessReplacedData
+  - UZ_A2-LuminosityReplacedData
+  - UZ_A2-MiddlePeakSoundLevelReplacedData
+  - UZ_A2-NitrogenDioxideReplacedData
+  - UZ_A2-NitrogenMonoxideReplacedData
+  - UZ_A2-NitrogenOxideReplacedData
+  - UZ_A2-PM10ReplacedData
+  - UZ_A2-PM1ReplacedData
+  - UZ_A2-PM2_5ReplacedData
+  - UZ_A2-PrecipitationIntensityReplacedData
+  - UZ_A2-PrecipitationTypeReplacedData
+  - UZ_A2-RelativeAirHumidityReplacedData
+  - UZ_A2-ResidualSaltContentReplacedData
+  - UZ_A2-RoadSurfaceConditionReplacedData
+  - UZ_A2-RoadSurfaceConditionWinterServicesReplacedData
+  - UZ_A2-RoadSurfaceTemperatureReplacedData
+  - UZ_A2-ShortTermMeasurementReplacedDataLane
+  - UZ_A2-SnowDepthReplacedData
+  - UZ_A2-SnowFilmThicknessReplacedData
+  - UZ_A2-VisibilityReplacedData
+  - UZ_A2-WaterFilmThicknessReplacedData
+  - UZ_A2-WindDirectionReplacedData
+  - UZ_A2-WindSpeedAverageReplacedData
+  - UZ_A2-WindSpeedTopReplacedData
   config:
     numPartitions: 10
     replicationFactor: 3
@@ -209,6 +247,7 @@ topicsConfigs:
   - VRZ-Parameter-AQLueckenB
   - VRZ-Parameter-VdeGueteMesswertersetzung
   - VRZ-Parameter-UnruheImVerkehrEinstellungen
+  - VRZ-Parameter-DisplayPanelLockMatrices
   config:
     numPartitions: 1
     replicationFactor: 3
