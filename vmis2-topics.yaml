@@ -9,7 +9,6 @@ topicsConfigs:
   - UZ_A2-ShortTermCollectedTrafficCategoriesLane
   - UZ_A2-DiscardedShortTermCollectedDataLane
   - UZ_A2-FailedPlCheckDataLanes
-  - UZ_A2-PlCheckValueSeriesLanes
   - UZ_A2-ShortTermPlCheckedDataLanes
   - UZ_A2-ShortTermMeasurementReplacedDataLane
   - UZ_A2-AnalyticalDataLane
@@ -20,6 +19,45 @@ topicsConfigs:
   - UZ_A2-PrognosisDataDetSite
   - UZ_A2-LosDataLane
   - UZ_A2-LosDataDetSite
+  - UZ_A2-A_WeightedSoundPressureLevelPLCheckedData
+  - UZ_A2-AirPressurePLCheckedData
+  - UZ_A2-AirTemperaturePLCheckedData
+  - UZ_A2-BaseSoundLevelPLCheckedData
+  - UZ_A2-DeIcingGritConcentrationPLCheckedData
+  - UZ_A2-DeIcingGritPerM2PLCheckedData
+  - UZ_A2-DewPointTemperaturePLCheckedData
+  - UZ_A2-EnergyEquivalentContinuousSoundPressureLevelPLCheckedData
+  - UZ_A2-FreezingTemperaturePLCheckedData
+  - UZ_A2-GlobalSolarRadiationPLCheckedData
+  - UZ_A2-GripPLCheckedData
+  - UZ_A2-GroundTemperatureDepthOnePLCheckedData
+  - UZ_A2-GroundTemperatureDepthThreePLCheckedData
+  - UZ_A2-GroundTemperatureDepthTwoPLCheckedData
+  - UZ_A2-IceFilmThicknessPLCheckedData
+  - UZ_A2-LuminosityPLCheckedData
+  - UZ_A2-MiddlePeakSoundLevelPLCheckedData
+  - UZ_A2-NitrogenDioxidePLCheckedData
+  - UZ_A2-NitrogenMonoxidePLCheckedData
+  - UZ_A2-NitrogenOxidePLCheckedData
+  - UZ_A2-PM10PLCheckedData
+  - UZ_A2-PM1PLCheckedData
+  - UZ_A2-PM2_5PLCheckedData
+  - UZ_A2-PrecipitationIntensityPLCheckedData
+  - UZ_A2-PrecipitationTypePLCheckedData
+  - UZ_A2-RelativeAirHumidityPLCheckedData
+  - UZ_A2-ResidualSaltContentPLCheckedData
+  - UZ_A2-RoadSurfaceConditionPLCheckedData
+  - UZ_A2-RoadSurfaceConditionWinterServicesPLCheckedData
+  - UZ_A2-RoadSurfaceTemperaturePLCheckedData
+  - UZ_A2-ShortTermMeasurementPLCheckedDataLane
+  - UZ_A2-SnowDepthPLCheckedData
+  - UZ_A2-SnowFilmThicknessPLCheckedData
+  - UZ_A2-VisibilityPLCheckedData
+  - UZ_A2-WaterFilmThicknessPLCheckedData
+  - UZ_A2-WindDirectionPLCheckedData
+  - UZ_A2-WindSpeedAveragePLCheckedData
+  - UZ_A2-WindSpeedTopPLCheckedData
+  - UZ_A2-FailedPlChecksDataEnvs
   - UZ_A2-A_WeightedSoundPressureLevelReplacedData
   - UZ_A2-AirPressureReplacedData
   - UZ_A2-AirTemperatureReplacedData
@@ -58,6 +96,10 @@ topicsConfigs:
   - UZ_A2-WindDirectionReplacedData
   - UZ_A2-WindSpeedAverageReplacedData
   - UZ_A2-WindSpeedTopReplacedData
+  - VRZ-ConfigSrv-item
+  - VRZ-ZDH-DefinitionList
+  - VRZ-ZDH-InstanceList
+  - VRZ-ZDH-ParameterList
   config:
     numPartitions: 10
     replicationFactor: 3
@@ -95,6 +137,9 @@ topicsConfigs:
   - UZ_A2-tlsin-LVEKanalsteuerung
   - UZ_A2-tlsin-SYSFehlerDUE
   - UZ_A2-tlsin-LVENegativeQuittung
+  - UZ_A2-tlsin-SYSKommunikationsstatus
+  - UZ_A2-tlsin-SteuerSequenz
+  - UZ_A2-tlsin-WZGNichtDartellbareWVZ
   - VRZ-Parameter-VerkehrszustandsstufeSituationMapping
   - VRZ-Parameter-Verkehrszustandsstufe
   - VRZ-Parameter-ZeitabhaengigePruefungenTT1
@@ -248,6 +293,14 @@ topicsConfigs:
   - VRZ-Parameter-VdeGueteMesswertersetzung
   - VRZ-Parameter-UnruheImVerkehrEinstellungen
   - VRZ-Parameter-DisplayPanelLockMatrices
+  - VRZ-Parameter-ErmittlungVerkehrsstufeFS_NEU_VDE
+  - VRZ-Parameter-PLBelegung_NEU_VDE
+  - VRZ-Parameter-PLErgebniskonstanz_NEU_VDE
+  - VRZ-Parameter-PLErsatz_NEU_VDE
+  - VRZ-Parameter-PLLogisch_NEU_VDE
+  - VRZ-Parameter-PLWerteBereichStatus
+  - VRZ-Parameter-PLWerteBereich_NEU_VDE
+  - VRZ-Parameter-SeitenwindSituationMapping
   config:
     numPartitions: 1
     replicationFactor: 3
@@ -264,12 +317,16 @@ topicsConfigs:
   - VRZ-OpGuiControlSignMeasures
   - VRZ-SignOverlayApp-WZGStellzustand
   - VRZ-SignOverlayApp-ControlSignReason  
+  - VRZ-SignOverlayApp-WZGStellzustandList
   - VRZ-MeasuresAdjusted
   - VRZ-MeasuresSelected
   - UZ_A2-SituationsRecognized
   - VRZ-SituationsMerged
   - VRZ-CausalLinkTask
   - VRZ-ChangeableMeasuresTask
+  - VRZ-ManualControlSignMeasures
+  - VRZ-ManualMeasuresWithControlSigns
+  - VRZ-WVZStellzustandIst
   config:
     numPartitions: 10
     replicationFactor: 3
@@ -315,3 +372,18 @@ topicsConfigs:
   config:
     numPartitions: 1
     replicationFactor: 3
+# internal Topics to keep state. Short retention time
+- topics:
+  - UZ_A2-PlCheckValueSeriesLanes
+  - UZ_A2-PlCheckEdValueSeries
+  - UZ_A2-ReplEdValueSeries
+  config:
+    numPartitions: 1
+    replicationFactor: 3
+    configEntries:
+      - name: cleanup.policy
+        value: compact
+      - name: segment.ms
+        value: "300000"
+      - name: retention.ms
+        value: "300000"

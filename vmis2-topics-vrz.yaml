@@ -1,0 +1,244 @@
+## 
+## Apache Kafka topic configuration rVMZ Wien.
+##
+# This file can be used to create or alter topics with the HeuBoe kafkacli tool.
+# If altered only the 'configEntries' are used.
+# To change replicationFactor or numPartitions other tools must be used.
+
+topicsConfigs:
+# Standard topics: one partitions, no log compaction 
+- topics:
+  - VRZ-GeoMan-bridge
+  - VRZ-GeoMan-destination
+  - VRZ-GeoMan-directedGeoFeature
+  - VRZ-GeoMan-linkUse
+  - VRZ-GeoMan-ManualPackage
+  - VRZ-GeoMan-mapSupplyPartVersion
+  - VRZ-GeoMan-mapSupplyVersion
+  - VRZ-GeoMan-pointObject
+  - VRZ-GeoMan-roadElement
+  - VRZ-GeoMan-roadUZRelation
+  - VRZ-GeoMan-segmentData
+  - VRZ-GeoMan-tmcLocation
+  - VRZ-GeoMan-tunnelData
+  - VRZ-VIA-SituationTimePackage
+  config:
+    numPartitions: 1
+    replicationFactor: 3
+
+# Standard topics: multi partitions (moderate number), no log compaction
+- topics:
+  - VRZ-ConfigSrv-item
+  - VRZ-ZDH-BaselineList
+  - VRZ-ZDH-DefinitionList
+  - VRZ-ZDH-InstanceList
+  - VRZ-ZDH-ParameterList
+# Metadata topics for ZDH feed
+  - VRZ-ZdhMeta-Situations
+  - VRZ-ZdhMeta-MergedSituations  
+  - VRZ-ZdhMeta-SelectedMeasures
+  - VRZ-ZdhMeta-AdjustedMeasures
+  - VRZ-ZdhMeta-ControlSignReasonMsgs
+  config:
+    numPartitions: 10
+    replicationFactor: 3
+
+# Standard topics: multi partitions (huge number), no log compaction
+- topics:
+  - GLA-GlaAggregatedDataEntry
+  config:
+    numPartitions: 60
+    replicationFactor: 3
+
+# Compacted topics: one partition, log compaction
+- topics:    
+  - VRZ-ControlSignMeasures
+  - VRZ-ControlSignReason
+  - VRZ-Measures-external
+  - VRZ-Measures-opgui
+  - VRZ-SchemaRepository-Schema
+  - VRZ-Situations-external
+  - VRZ-Situations-opgui
+#Parameterzusammenstellungen
+  - VRZ-Parameter-Aggregation
+  - VRZ-Parameter-AixProB
+  - VRZ-Parameter-AixProBEinstellungen
+  - VRZ-Parameter-AQAusreisser
+  - VRZ-Parameter-AQAusschlussV
+  - VRZ-Parameter-AQLueckenA
+  - VRZ-Parameter-AQLueckenB
+  - VRZ-Parameter-AQMaxGeschwindigkeit
+  - VRZ-Parameter-AQMaxIteration
+  - VRZ-Parameter-AQMaxVDiff
+  - VRZ-Parameter-AQQuerabgleichA
+  - VRZ-Parameter-AQQuerabgleichB
+  - VRZ-Parameter-AQVerriegelung
+  - VRZ-Parameter-DatenuebernahmeEFD
+  - VRZ-Parameter-DatenuebernahmeFBT
+  - VRZ-Parameter-DatenuebernahmeFBZ
+  - VRZ-Parameter-DatenuebernahmeFZW
+  - VRZ-Parameter-DatenuebernahmeGLS
+  - VRZ-Parameter-DatenuebernahmeGR
+  - VRZ-Parameter-DatenuebernahmeGT
+  - VRZ-Parameter-DatenuebernahmeHK
+  - VRZ-Parameter-DatenuebernahmeLA
+  - VRZ-Parameter-DatenuebernahmeLA95
+  - VRZ-Parameter-DatenuebernahmeLAEQ
+  - VRZ-Parameter-DatenuebernahmeLAMS
+  - VRZ-Parameter-DatenuebernahmeLD
+  - VRZ-Parameter-DatenuebernahmeLT
+  - VRZ-Parameter-DatenuebernahmeNI
+  - VRZ-Parameter-DatenuebernahmeNO
+  - VRZ-Parameter-DatenuebernahmeNO2
+  - VRZ-Parameter-DatenuebernahmeNOX
+  - VRZ-Parameter-DatenuebernahmeNS
+  - VRZ-Parameter-DatenuebernahmePM1
+  - VRZ-Parameter-DatenuebernahmePM10
+  - VRZ-Parameter-DatenuebernahmePM2
+  - VRZ-Parameter-DatenuebernahmeRLF
+  - VRZ-Parameter-DatenuebernahmeRS
+  - VRZ-Parameter-DatenuebernahmeSFD
+  - VRZ-Parameter-DatenuebernahmeSH
+  - VRZ-Parameter-DatenuebernahmeSWE
+  - VRZ-Parameter-DatenuebernahmeTPT
+  - VRZ-Parameter-DatenuebernahmeTSK
+  - VRZ-Parameter-DatenuebernahmeTSQ
+  - VRZ-Parameter-DatenuebernahmeTT1
+  - VRZ-Parameter-DatenuebernahmeTT2
+  - VRZ-Parameter-DatenuebernahmeTT3
+  - VRZ-Parameter-DatenuebernahmeWFD
+  - VRZ-Parameter-DatenuebernahmeWGM
+  - VRZ-Parameter-DatenuebernahmeWGS
+  - VRZ-Parameter-DatenuebernahmeWR
+  - VRZ-Parameter-DetektorvergleichStandortbezogen
+  - VRZ-Parameter-DunkelHellErkennung
+  - VRZ-Parameter-ErmittlungVerkehrsstufeFS
+  - VRZ-Parameter-ErmittlungVerkehrsstufeMQ
+  - VRZ-Parameter-ErweiterteWitterungsdetektion
+  - VRZ-Parameter-ErweiterteWitterungsdetektionEinstellungen
+  - VRZ-Parameter-ExponentielleGlaettungNI
+  - VRZ-Parameter-ExponentielleGlaettungSWE
+  - VRZ-Parameter-ExponentielleGlaettungWFD
+  - VRZ-Parameter-FahrstreifenbezogeneKenngroessen
+  - VRZ-Parameter-FailsafeParameter
+  - VRZ-Parameter-FsBezogeneAnalyseDerGeschwindigkeitsdifferenz
+  - VRZ-Parameter-FsBezogeneAnalyseDerGeschwindigkeitsdifferenzEinstellungen
+  - VRZ-Parameter-FsBezogeneAnalyseDerVerkehrsverhaeltnisse
+  - VRZ-Parameter-FsBezogeneAnalyseDerVerkehrsverhaeltnisseEinstellungen
+  - VRZ-Parameter-FsBezogeneStoerfallerkennung
+  - VRZ-Parameter-FsBezogeneStoerfallerkennungEinstellungen
+  - VRZ-Parameter-Fundamentaldiagrammbetrachtung
+  - VRZ-Parameter-FundamentaldiagrammbetrachtungEinstellungen
+  - VRZ-Parameter-FundamentaldiagrammbetrachtungSituationMapping
+  - VRZ-Parameter-Geisterfahrer
+  - VRZ-Parameter-GeisterfahrerEinstellungen
+  - VRZ-Parameter-GeisterfahrerSituationMapping
+  - VRZ-Parameter-GewichteteGleitendeMittelwertbildung
+  - VRZ-Parameter-GlaCluster
+  - VRZ-Parameter-GlaEreignis
+  - VRZ-Parameter-Glaetteerkennung
+  - VRZ-Parameter-GlaetteerkennungEinstellungen
+  - VRZ-Parameter-GlaettungUndTrendextrapolation
+  - VRZ-Parameter-GlaKorridor
+  - VRZ-Parameter-GlaStuetzstellen
+  - VRZ-Parameter-GleitendeMittelwertbildung
+  - VRZ-Parameter-Helligkeitsstufe
+  - VRZ-Parameter-Immission
+  - VRZ-Parameter-ImmissionEinstellungen
+  - VRZ-Parameter-Laerm
+  - VRZ-Parameter-LaermEinstellungen
+  - VRZ-Parameter-LangsamFahrendeFahrzeuge
+  - VRZ-Parameter-LangsamFahrendeFahrzeugeEinstellungen
+  - VRZ-Parameter-LkwAufkommenBeiHohemVerkehrsaufkommen
+  - VRZ-Parameter-LkwAufkommenBeiHohemVerkehrsaufkommenEinstellungen
+  - VRZ-Parameter-LkwAufkommenBeiHohemVerkehrsaufkommenSituationMapping
+  - VRZ-Parameter-LkwAufkommenKriteriumNaesse
+  - VRZ-Parameter-LkwAufkommenKriteriumNaesseEinstellungen
+  - VRZ-Parameter-LkwAufkommenKriteriumNaesseSituationMapping
+  - VRZ-Parameter-LkwAufkommenKriteriumSicht
+  - VRZ-Parameter-LkwAufkommenKriteriumSichtEinstellungen
+  - VRZ-Parameter-LkwAufkommenKriteriumSichtSituationMapping
+  - VRZ-Parameter-Nachlaufzeiten
+  - VRZ-Parameter-Naesseerkennung
+  - VRZ-Parameter-NaesseerkennungDerFahrbahn
+  - VRZ-Parameter-NaesseerkennungDerFahrbahnEinstellungen
+  - VRZ-Parameter-NaesseerkennungEinstellungen
+  - VRZ-Parameter-NaesseerkennungSituationMapping
+  - VRZ-Parameter-Naessestufe
+  - VRZ-Parameter-Niederschlagsintensitaetsstufe
+  - VRZ-Parameter-PLBelegung
+  - VRZ-Parameter-PLErgebniskonstanz
+  - VRZ-Parameter-PLErsatz
+  - VRZ-Parameter-PLLogisch
+  - VRZ-Parameter-PLWerteBereich
+  - VRZ-Parameter-PLWerteBereichStatus
+  - VRZ-Parameter-PM10
+  - VRZ-Parameter-PM10Einstellungen
+  - VRZ-Parameter-RichtungsbezogeneKenngroessen
+  - VRZ-Parameter-Seitenwind
+  - VRZ-Parameter-SeitenwindEinstellungen
+  - VRZ-Parameter-SeitenwindSituationMapping
+  - VRZ-Parameter-Sichtweitenerkennung
+  - VRZ-Parameter-SichtweitenerkennungEinstellungen
+  - VRZ-Parameter-SichtweitenerkennungSituationMapping
+  - VRZ-Parameter-Sichtweitenstufe
+  - VRZ-Parameter-StauerkennungKriteriumBelegung
+  - VRZ-Parameter-StauerkennungKriteriumBelegungEinstellungen
+  - VRZ-Parameter-StauerkennungKriteriumBelegungSituationMapping
+  - VRZ-Parameter-StauerkennungKriteriumGeschwindigkeit
+  - VRZ-Parameter-StauerkennungKriteriumGeschwindigkeitEinstellungen
+  - VRZ-Parameter-StauerkennungKriteriumGeschwindigkeitSituationMapping
+  - VRZ-Parameter-UdeGueteMesswertersetzung
+  - VRZ-Parameter-UdeMesswertersetzungUz
+  - VRZ-Parameter-UnruheImVerkehr
+  - VRZ-Parameter-UnruheImVerkehrEinstellungen
+  - VRZ-Parameter-UnruheImVerkehrSituationMapping
+  - VRZ-Parameter-VdeGueteMesswertersetzung
+  - VRZ-Parameter-VdeMesswertersetzung
+  - VRZ-Parameter-Verkehrszustandsstufe
+  - VRZ-Parameter-VerkehrszustandsstufeEinstellungen
+  - VRZ-Parameter-VerkehrszustandsstufeSituationMapping
+  - VRZ-Parameter-Wasserfilmdickenstufe
+  - VRZ-Parameter-Zeitsynchronisation
+  - VRZ-Parameter-Zusammenbruchswahrscheinlichkeit
+#Parameterkataloge
+  - VRZ-Parameter-AttributeCatalogue
+  - VRZ-Parameter-ConcreteControlSigns
+  - VRZ-Parameter-DefaultControlSigns
+  - VRZ-Parameter-DisplayPanelLockMatrices
+  - VRZ-Parameter-MeasureCatalogue
+  - VRZ-Parameter-PriorityTables
+  - VRZ-Parameter-SituationCatalogue
+  config:
+    numPartitions: 1
+    replicationFactor: 3
+    configEntries:
+    - name: cleanup.policy
+      value: compact
+    - name: segment.ms
+      value: "3600000"
+
+# Compacted topics: multi partitions, log compaction
+- topics: 
+  - VRZ-CausalLinkTask
+  - VRZ-ChangeableMeasuresTask
+  - VRZ-ManualControlSignMeasures
+  - VRZ-ManualMeasuresWithControlSigns
+  - VRZ-MeasuresAdjusted
+  - VRZ-MeasuresSelected
+  - VRZ-OpGuiControlSignMeasures
+  - VRZ-OpGuiMeasuresWithControlSigns
+  - VRZ-SignOverlayApp-ControlSignReason
+  - VRZ-SignOverlayApp-WZGStellzustand
+  - VRZ-SignOverlayApp-WZGStellzustandList
+  - VRZ-SituationsMerged
+  - VRZ-WVZStellzustandIst
+  config:
+    numPartitions: 10
+    replicationFactor: 3
+    configEntries:
+    - name: cleanup.policy
+      value: compact
+    - name: segment.ms
+      value: "3600000"
+

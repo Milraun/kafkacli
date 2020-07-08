@@ -8,7 +8,7 @@ import {
   EachMessagePayload,
   DescribeConfigResponse,
   IResourceConfig,
-  ResourceTypes
+  ResourceTypes,
 } from "kafkajs";
 import Timeout from "await-timeout";
 import protobuf from "protobufjs";
@@ -22,9 +22,9 @@ import { readFile } from "fs";
 const log = pino({
   prettyPrint: {
     colorize: true,
-    translateTime: process.env.LOG_TIME_TRANSLATE || true
+    translateTime: process.env.LOG_TIME_TRANSLATE || true,
   },
-  level: process.env.LOG_LEVEL || "info"
+  level: process.env.LOG_LEVEL || "info",
 });
 
 const fs = require("fs").promises;
@@ -69,19 +69,19 @@ export async function describeTopicsConfigServer(
   const adminClient = kafka.admin();
   await adminClient.connect();
   const metaData = await adminClient.fetchTopicMetadata({ topics: [] });
-  const filteredTopics = metaData.topics.filter(t => t.name.match(topic));
+  const filteredTopics = metaData.topics.filter((t) => t.name.match(topic));
 
-  const query = filteredTopics.map(t => {
+  const query = filteredTopics.map((t) => {
     let rq = {
       type: ResourceTypes.TOPIC,
-      name: t.name
+      name: t.name,
     };
     return rq;
   });
 
   const configs = await adminClient.describeConfigs({
     resources: query,
-    includeSynonyms: false
+    includeSynonyms: false,
   });
 
   await adminClient.disconnect();
@@ -113,13 +113,20 @@ export async function deleteTopicsServer(
     }
   }
 
-  filteredTopics.forEach(t => log.info(`Deleting Topic ${t.name}`));
-  let topicsToDelete = filteredTopics.map(t => t.name);
-  await adminClient.deleteTopics({ topics: topicsToDelete, timeout: timeout*1000 });
+  filteredTopics.forEach((t) => log.info(`Deleting Topic ${t.name}`));
+  let topicsToDelete = filteredTopics.map((t) => t.name);
+  await adminClient.deleteTopics({
+    topics: topicsToDelete,
+    timeout: timeout * 1000,
+  });
   await adminClient.disconnect();
 }
 
-export async function deleteTopics(topics: RegExp, kafkaCliConfig: any, timeout: number) {
+export async function deleteTopics(
+  topics: RegExp,
+  kafkaCliConfig: any,
+  timeout: number
+) {
   const kafka = new Kafka(kafkaCliConfig);
   await deleteTopicsServer(topics, kafka, timeout);
 }
@@ -145,9 +152,9 @@ export async function testProduce(
         messages: [
           {
             key: `${key}`,
-            value: value
-          }
-        ]
+            value: value,
+          },
+        ],
       });
       log.info(`Published to key: ${key} value: ${value}`);
       await Timeout.set(delay);
@@ -171,17 +178,17 @@ export async function createTopicServer(
   let topicConfig: ITopicConfig = {
     topic: topic,
     numPartitions: partitions,
-    replicationFactor: replicationFactor
+    replicationFactor: replicationFactor,
   };
 
   let configValues: any[] = [];
-  config.forEach(ce => {
+  config.forEach((ce) => {
     let configEntry = ce.split("=");
     if (configEntry.length !== 2) {
       throw `Format of ${ce} invalid. Must be: 'configName=value'`;
     }
     configValues = configValues.concat([
-      { name: configEntry[0], value: configEntry[1] }
+      { name: configEntry[0], value: configEntry[1] },
     ]);
   });
 
@@ -192,7 +199,7 @@ export async function createTopicServer(
   let created = await adminClient.createTopics({
     validateOnly: false,
     topics: [topicConfig],
-    timeout: timeout*1000
+    timeout: timeout * 1000,
   });
 
   await adminClient.disconnect();
@@ -243,9 +250,16 @@ export interface CreateTopicsConfig {
   topicsConfigs: TopicsConfig[];
 }
 
+export enum CreateTopicsError {
+  NONE,
+  ALREADY_EXISTS,
+  NOT_EXISTS,
+  ERROR,
+}
+
 export interface CreateTopicsResult {
   topic: string;
-  created: boolean;
+  created: CreateTopicsError;
   error: string;
 }
 
@@ -257,6 +271,7 @@ export interface CreateTopicsResult {
  * or not for each topic
  * @param inputFile the definition file
  * @param kafkaCliConfig  kafka config
+ * @param timeout timeout to create one topic
  */
 export async function createTopics(
   inputFile: string,
@@ -269,35 +284,48 @@ export async function createTopics(
   const adminClient = kafka.admin();
   await adminClient.connect();
   let results: CreateTopicsResult[] = [];
+
+  let metaData = await adminClient.fetchTopicMetadata({ topics: [] });
+
+  let topicSet = new Set(metaData.topics.map((t) => t.name));
+
   for (let tc of topicsConf.topicsConfigs) {
     for (let t of tc.topics) {
-      const itc: ITopicConfig = {
-        topic: t,
-        numPartitions: tc.config.numPartitions,
-        replicaAssignment: tc.config.replicaAssignment,
-        replicationFactor: tc.config.replicationFactor,
-        configEntries: tc.config.configEntries
-      };
-
-      try {
-        let created = await adminClient.createTopics({
-          validateOnly: false,
-          topics: [itc],
-          timeout: timeout*1000
-        });
-
+      if (topicSet.has(t)) {
         results.push({
           topic: t,
-          created: created,
-          error: created ? "" : "does it already exist ?"
+          created: CreateTopicsError.ALREADY_EXISTS,
+          error: `Topic ${t} already exists!`,
         });
-      } catch (e) {
-        log.error(e);
-        results.push({
+      } else {
+        const itc: ITopicConfig = {
           topic: t,
-          created: false,
-          error: e
-        });
+          numPartitions: tc.config.numPartitions,
+          replicaAssignment: tc.config.replicaAssignment,
+          replicationFactor: tc.config.replicationFactor,
+          configEntries: tc.config.configEntries,
+        };
+
+        try {
+          let created = await adminClient.createTopics({
+            validateOnly: false,
+            topics: [itc],
+            timeout: timeout * 1000,
+          });
+
+          results.push({
+            topic: t,
+            created: created ? CreateTopicsError.NONE : CreateTopicsError.ERROR,
+            error: created ? "" : "does it already exist ?",
+          });
+        } catch (e) {
+          log.error(e);
+          results.push({
+            topic: t,
+            created: CreateTopicsError.ERROR,
+            error: e,
+          });
+        }
       }
     }
   }
@@ -317,13 +345,13 @@ export async function alterTopicsConfigServer(
   config: string[]
 ): Promise<CreateTopicsResult[]> {
   let configValues: any[] = [];
-  config.forEach(ce => {
+  config.forEach((ce) => {
     let configEntry = ce.split("=");
     if (configEntry.length !== 2) {
       throw `Format of ${ce} invalid. Must be: 'cname=value'`;
     }
     configValues = configValues.concat([
-      { name: configEntry[0], value: configEntry[1] }
+      { name: configEntry[0], value: configEntry[1] },
     ]);
   });
 
@@ -350,25 +378,28 @@ export async function alterTopicsConfigServer(
     let rc: IResourceConfig = {
       type: ResourceTypes.TOPIC,
       name: topic.name,
-      configEntries: configValues
+      configEntries: configValues,
     };
 
     try {
       let result = await adminClient.alterConfigs({
         validateOnly: false,
-        resources: [rc]
+        resources: [rc],
       });
       results.push({
         topic: result.resources[0].resourceName,
-        created: result.resources[0].errorCode === 0,
-        error: result.resources[0].errorMessage as string | ""
+        created:
+          result.resources[0].errorCode === 0
+            ? CreateTopicsError.NONE
+            : CreateTopicsError.ERROR,
+        error: result.resources[0].errorMessage as string | "",
       });
     } catch (e) {
       log.error(e);
       results.push({
         topic: topic.name,
-        created: false,
-        error: e
+        created: CreateTopicsError.ERROR,
+        error: e,
       });
     }
   }
@@ -421,7 +452,7 @@ export async function alterTopics(
   let metaData = await adminClient.fetchTopicMetadata({ topics: [] });
 
   let topicDic: { [id: string]: string } = {};
-  metaData.topics.forEach(t => (topicDic[t.name] = t.name));
+  metaData.topics.forEach((t) => (topicDic[t.name] = t.name));
 
   let results: CreateTopicsResult[] = [];
   for (let tc of topicsConf.topicsConfigs) {
@@ -431,35 +462,42 @@ export async function alterTopics(
         if (tc.config.configEntries) {
           for (let cv of tc.config.configEntries as ConfigEntry[])
             configValues = configValues.concat([
-              { name: cv.name, value: cv.value }
+              { name: cv.name, value: cv.value },
             ]);
         }
         let rc: IResourceConfig = {
           type: ResourceTypes.TOPIC,
           name: t,
-          configEntries: configValues
+          configEntries: configValues,
         };
 
         try {
           let result = await adminClient.alterConfigs({
             validateOnly: false,
-            resources: [rc]
+            resources: [rc],
           });
           results.push({
             topic: result.resources[0].resourceName,
-            created: result.resources[0].errorCode === 0,
-            error: result.resources[0].errorMessage as string | ""
+            created:
+              result.resources[0].errorCode === 0
+                ? CreateTopicsError.NONE
+                : CreateTopicsError.ERROR,
+            error: result.resources[0].errorMessage as string | "",
           });
         } catch (e) {
           log.error(e);
           results.push({
             topic: t,
-            created: false,
-            error: e
+            created: CreateTopicsError.ERROR,
+            error: e,
           });
         }
       } else {
-        log.info(`Topic: ${t} does NOT exist !`);
+        results.push({
+          topic: t,
+          created: CreateTopicsError.NOT_EXISTS,
+          error: `Topic: ${t} does NOT exist !`,
+        });
       }
     }
   }
@@ -549,14 +587,14 @@ export async function tailTopicsObservableServer(
     let endOffsetPerTopicPartition: { [topicPartition: string]: number } = {};
     let finishedTopicPartitions: { [topicPartition: string]: number } = {};
 
-    topicsMeta.forEach(async tm => {
+    topicsMeta.forEach(async (tm) => {
       let partitionOffsets = await getTopicOffsetsServer(tm.name, kafka);
       partitionOffsetsPerTopic[tm.name] = partitionOffsets.filter(
-        to => !partitions || partitions.includes(to.partition)
+        (to) => !partitions || partitions.includes(to.partition)
       );
       partitionOffsets
-        .filter(to => !partitions || partitions.includes(to.partition))
-        .forEach(to => {
+        .filter((to) => !partitions || partitions.includes(to.partition))
+        .forEach((to) => {
           endOffsetPerTopicPartition[tm.name + "/" + to.partition] =
             +to.high || 0;
         });
@@ -565,7 +603,7 @@ export async function tailTopicsObservableServer(
     log.info(
       `Tailing topics with ${numMessages} message(s) per partition and follow = ${follow} `
     );
-    topicsMeta.forEach(tm => log.info(`  Topic: ${tm.name}`));
+    topicsMeta.forEach((tm) => log.info(`  Topic: ${tm.name}`));
     if (partitions) {
       let sPart = partitions.join(",");
       log.info(`Using partitions: ${sPart}`);
@@ -601,11 +639,11 @@ export async function tailTopicsObservableServer(
             subject.complete();
           }
         }
-      }
+      },
     });
 
     Object.entries(partitionOffsetsPerTopic).forEach(([topic, partitions]) => {
-      partitions.forEach(to => {
+      partitions.forEach((to) => {
         let high: number = 0;
         let low: number = 0;
         if (to.high) {
@@ -629,7 +667,7 @@ export async function tailTopicsObservableServer(
           consumer.seek({
             topic: topic,
             partition: to.partition,
-            offset: offset.toString()
+            offset: offset.toString(),
           });
         }
       });
@@ -813,7 +851,7 @@ export async function publish(
       let producer = kafka.producer();
       try {
         await producer.connect();
-        y.objects.forEach(async o => {
+        y.objects.forEach(async (o) => {
           let pb = type.encode(o.data).finish();
           if (pb) {
             let key = o.key;
@@ -827,9 +865,9 @@ export async function publish(
                 {
                   key: key,
                   value: Buffer.from(pb),
-                  headers: headers
-                }
-              ]
+                  headers: headers,
+                },
+              ],
             });
             log.info(`Done sending topic: ${topic} key: ${key}`);
           } else {
@@ -868,5 +906,5 @@ export default {
   alterTopicsConfig,
   alterTopicsConfigServer,
   alterTopics,
-  publish
+  publish,
 };

@@ -180,7 +180,8 @@
       "preLaunchTask": "tsc: build - tsconfig.json",
       "args": [
         "createTopics",
-        "createTopic.yaml"
+        "createTopic.yaml",
+        "-v"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"
@@ -195,7 +196,8 @@
       "preLaunchTask": "tsc: build - tsconfig.json",
       "args": [
         "alterTopics",
-        "createTopic.yaml"
+        "createTopic.yaml",
+        "-v"
       ],
       "outFiles": [
         "${workspaceFolder}/**/*.js"

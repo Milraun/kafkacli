@@ -4,10 +4,8 @@ import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
 import program from "commander";
-import kf from "./kafkafunctions";
-import {
-  CreateTopicsResult
-} from "./kafkafunctions";
+import kf, { CreateTopicsError } from "./kafkafunctions";
+import { CreateTopicsResult } from "./kafkafunctions";
 const fs = require("fs").promises;
 import { ITopicMetadata } from "kafkajs";
 import pino from "pino";
@@ -16,12 +14,14 @@ import { printMessage } from "./utils";
 import { printMessageJson } from "./utils";
 import * as readlineSync from "readline-sync";
 
+const version = "0.0.3";
+
 const log = pino({
   prettyPrint: {
     colorize: true,
-    translateTime: process.env.LOG_TIME_TRANSLATE || true
+    translateTime: process.env.LOG_TIME_TRANSLATE || true,
   },
-  level: process.env.LOG_LEVEL || "info"
+  level: process.env.LOG_LEVEL || "info",
 });
 
 import doodle from "./doodle";
@@ -30,6 +30,7 @@ function banner(): void {
   console.log(
     chalk.bold(figlet.textSync("kafkacli", { horizontalLayout: "fitted" }))
   );
+  console.log(chalk.red(`Version: ${version}\n`));
 }
 
 async function readKafkaConfig(file: string): Promise<any> {
@@ -43,10 +44,10 @@ async function readProtoDef(file: string): Promise<any> {
 }
 
 function printTopics(topics: ITopicMetadata[], full: boolean): void {
-  topics.forEach(t => {
+  topics.forEach((t) => {
     log.info(t.name);
     if (full) {
-      t.partitions.forEach(p => {
+      t.partitions.forEach((p) => {
         let s = JSON.stringify(p);
         log.info(`  ${s}`);
       });
@@ -54,11 +55,10 @@ function printTopics(topics: ITopicMetadata[], full: boolean): void {
   });
 }
 
-
 banner();
 
 program
-  .version("0.0.2")
+  .version(version)
   .option(
     "-c, --config <config>",
     "configuration file (json). Default: config.json",
@@ -79,7 +79,7 @@ program
   .command("listTopics <regexp>")
   .description("List topics matching regexp")
   .option("-v, --verbose", "detailed output")
-  .action(async function(regex, cmdObj) {
+  .action(async function (regex, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
       let topics = await kf.listTopics(new RegExp(regex), kafkaConfig);
@@ -91,17 +91,22 @@ program
     process.exit(0);
   });
 
-  program
+program
   .command("describeTopicsConfig <regexp>")
   .description("Read and print topics config for topics matching regexp")
-  .action(async function(regex, cmdObj) {
+  .action(async function (regex, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-      let config = await kf.describeTopicsConfig(new RegExp(regex), kafkaConfig);
-      config.resources.forEach(r => {
+      let config = await kf.describeTopicsConfig(
+        new RegExp(regex),
+        kafkaConfig
+      );
+      config.resources.forEach((r) => {
         log.info(r.resourceName);
-        r.configEntries.forEach(ce => log.info("  %s=%s", ce.configName, ce.configValue));
-      })
+        r.configEntries.forEach((ce) =>
+          log.info("  %s=%s", ce.configName, ce.configValue)
+        );
+      });
     } catch (e) {
       log.error(e);
     }
@@ -113,7 +118,7 @@ program
   .command("deleteTopics <regexp>")
   .description("List topics matching regexp")
   .option("-t, --timeout <timeout>", "timeout of the operation in seconds.", 5)
-  .action(async function(regex, cmdObj) {
+  .action(async function (regex, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
       let topics = await kf.listTopics(new RegExp(regex), kafkaConfig);
@@ -134,24 +139,45 @@ program
     process.exit(0);
   });
 
-  program
+program
   .command("createTopic <topic>")
   .description("create a topic")
   .option("-p, --numPartitions <numPartitions>", "number of partitions", 10)
-  .option("-r, --replicationFactor <replicationFactor>", "replication factor", 3)
-  .option("-o, --configValue <configValue>", "config value. configValue=name=value", gatherConfigs, [])
+  .option(
+    "-r, --replicationFactor <replicationFactor>",
+    "replication factor",
+    3
+  )
+  .option(
+    "-o, --configValue <configValue>",
+    "config value. configValue=name=value",
+    gatherConfigs,
+    []
+  )
   .option("-t, --timeout <timeout>", "timeout of the operation in seconds.", 5)
-  .action(async function(topic, cmdObj) {
+  .action(async function (topic, cmdObj) {
     try {
-      log.info(`creating topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue}`);
+      log.info(
+        `creating topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue}`
+      );
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-      let created = await kf.createTopic(topic, kafkaConfig, cmdObj.numPartitions, cmdObj.replicationFactor, cmdObj.configValue, cmdObj.timeout);
-      if( created ) {
-        log.info(`topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue} successfully created!`);
+      let created = await kf.createTopic(
+        topic,
+        kafkaConfig,
+        cmdObj.numPartitions,
+        cmdObj.replicationFactor,
+        cmdObj.configValue,
+        cmdObj.timeout
+      );
+      if (created) {
+        log.info(
+          `topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue} successfully created!`
+        );
       } else {
-        log.info(`topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue} NOT created!`);
+        log.info(
+          `topic: ${topic} -p=${cmdObj.numPartitions} -r=${cmdObj.replicationFactor} -c=${cmdObj.configValue} NOT created!`
+        );
       }
-
     } catch (e) {
       log.error(e);
     }
@@ -159,21 +185,43 @@ program
     process.exit(0);
   });
 
-  program
+program
   .command("createTopics <inputYaml>")
   .description("create topics from an yaml input file")
   .option("-t, --timeout <timeout>", "timeout of the operation in seconds.", 5)
-  .action(async function(inputYaml, cmdObj) {
+  .option("-v, --verbose", "print already existing topics")
+  .action(async function (inputYaml, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-      let created = await kf.createTopics(inputYaml, kafkaConfig, cmdObj.timeout);
-      created.forEach(r => {
-        if( r.created ) {
-          log.info(`topic: ${r.topic} successfully created`);
-        } else {
-          log.info(`topic: ${r.topic} NOT successfully created. Error: ${r.error}`);
+      let created = await kf.createTopics(
+        inputYaml,
+        kafkaConfig,
+        cmdObj.timeout
+      );
+      created.forEach((r) => {
+        switch (r.created) {
+          case CreateTopicsError.NONE:
+          case CreateTopicsError.NOT_EXISTS:
+            log.info(`topic: ${r.topic} successfully created`);
+            break;
+          case CreateTopicsError.ALREADY_EXISTS:
+            if (cmdObj.verbose) {
+              log.warn(`topic: ${r.topic} already exists.`);
+            }
+            break;
+          case CreateTopicsError.ERROR:
+            log.error(
+              `topic: ${r.topic} NOT successfully created. Error: ${r.error}`
+            );
+            break;
         }
-      })
+      });
+      let errorsAndDones = created.filter(
+        (c) => c.created !== CreateTopicsError.ALREADY_EXISTS
+      );
+      if (errorsAndDones.length === 0) {
+        log.warn("NO Topics are created !");
+      }
     } catch (e) {
       log.error(e);
     }
@@ -181,20 +229,38 @@ program
     process.exit(0);
   });
 
-  program
+program
   .command("alterTopics <inputYaml>")
   .description("alter topics configuration from an yaml input file")
-  .action(async function(inputYaml, cmdObj) {
+  .option("-v, --verbose", "print NOT existing topics", false)
+  .action(async function (inputYaml, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
       let created = await kf.alterTopics(inputYaml, kafkaConfig);
-      created.forEach(r => {
-        if( r.created ) {
-          log.info(`topic: ${r.topic} successfully altered`);
-        } else {
-          log.info(`topic: ${r.topic} NOT successfully altered. Error: ${r.error}`);
+      created.forEach((r) => {
+        switch (r.created) {
+          case CreateTopicsError.NONE:
+          case CreateTopicsError.ALREADY_EXISTS:
+            log.info(`topic: ${r.topic} successfully altered`);
+            break;
+          case CreateTopicsError.NOT_EXISTS:
+            if (cmdObj.verbose) {
+              log.warn(`topic: ${r.topic} does NOT exist.`);
+            }
+            break;
+          case CreateTopicsError.ERROR:
+            log.error(
+              `topic: ${r.topic} NOT successfully altered. Error: ${r.error}`
+            );
+            break;
         }
-      })
+      });
+      let errorsAndDones = created.filter(
+        (c) => c.created !== CreateTopicsError.NOT_EXISTS
+      );
+      if (errorsAndDones.length === 0) {
+        log.warn("NO Topics are altered !");
+      }
     } catch (e) {
       log.error(e);
     }
@@ -202,24 +268,33 @@ program
     process.exit(0);
   });
 
-
-  program
+program
   .command("alterTopicsConfig <topics>")
   .description("change configurations of topics given by a regular expression.")
-  .option("-c, --configValue <configValue>", "config value. Repeatable parameter. --configValue=name=value", gatherConfigs, [])
-  .action(async function(topics, cmdObj) {
+  .option(
+    "-c, --configValue <configValue>",
+    "config value. Repeatable parameter. --configValue=name=value",
+    gatherConfigs,
+    []
+  )
+  .action(async function (topics, cmdObj) {
     try {
       log.info(`alter topics config: ${topics} -c=${cmdObj.configValue}`);
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
-      let created = await kf.alterTopicsConfig(topics, kafkaConfig, cmdObj.configValue);
-      created.forEach(r => {
-        if( r.created ) {
+      let created = await kf.alterTopicsConfig(
+        topics,
+        kafkaConfig,
+        cmdObj.configValue
+      );
+      created.forEach((r) => {
+        if (r.created) {
           log.info(`topic: ${r.topic} successfully changed`);
         } else {
-          log.info(`topic: ${r.topic} NOT successfully changed. Error: ${r.error}`);
+          log.info(
+            `topic: ${r.topic} NOT successfully changed. Error: ${r.error}`
+          );
         }
-      })
-
+      });
     } catch (e) {
       log.error(e);
     }
@@ -230,7 +305,7 @@ program
 function splitPartitions(value?: string, dummyPrevious?: any): number[] {
   if (value) {
     let partitions: number[] = [];
-    value.split(",").forEach(s => partitions.push(parseInt(s)));
+    value.split(",").forEach((s) => partitions.push(parseInt(s)));
     return partitions;
   } else {
     return [];
@@ -258,7 +333,7 @@ program
     "partitions to tail as comma seperated list. If omitted all partitions are used",
     splitPartitions
   )
-  .action(async function(regex, cmdObj) {
+  .action(async function (regex, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
       let observable = await kf.tailTopicsObservable(
@@ -272,12 +347,12 @@ program
       let root = protobuf.Root.fromJSON(proto);
 
       observable.subscribe({
-        next: m =>
+        next: (m) =>
           cmdObj.json
             ? printMessageJson(m.topic, m.partition, m.message, root)
             : printMessage(m.topic, m.partition, m.message, root),
         complete: () => (cmdObj.json ? "" : log.info(`Done!`)),
-        error: e => log.error(`An error occurred: ${e}`)
+        error: (e) => log.error(`An error occurred: ${e}`),
       });
     } catch (e) {
       log.error(e);
@@ -289,7 +364,7 @@ program
   .description(
     "Publish the contents described in a yaml file to a topic. Data is converted to protobuf before publishing."
   )
-  .action(async function(yaml, cmdObj) {
+  .action(async function (yaml, cmdObj) {
     try {
       log.info(`publish: ${yaml}`);
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
@@ -305,11 +380,11 @@ program
 program
   .command("getTopicOffsets <topic>")
   .description("Gets the partition offsets of a certain topic")
-  .action(async function(topic, cmdObj) {
+  .action(async function (topic, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
       let topicOffsets = await kf.getTopicOffsets(topic, kafkaConfig);
-      topicOffsets.forEach(o => {
+      topicOffsets.forEach((o) => {
         log.info(JSON.stringify(o));
       });
     } catch (e) {
@@ -324,7 +399,7 @@ program
   .description("Produces dummy text messages to one topic !")
   .option("-n <numMessages>", "number of message", 10)
   .option("-d <delay>", "delay im ms", 0)
-  .action(async function(topic, cmdObj) {
+  .action(async function (topic, cmdObj) {
     try {
       let kafkaConfig = await readKafkaConfig(cmdObj.parent.config);
       await kf.testProduce("JayBeeTest", kafkaConfig, cmdObj.D, cmdObj.N);
@@ -336,7 +411,7 @@ program
   });
 
 // error on unknown commands
-program.on("command:*", function() {
+program.on("command:*", function () {
   console.error(
     "Invalid command: %s\nSee --help for a list of available commands.",
     program.args.join(" ")
