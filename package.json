@@ -20,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/await-timeout": "^0.3.1",
+    "@types/nedb": "github:ramiroaisen/nedb-types",
     "@types/socket.io": "^2.1.4",
     "@types/uuid": "^3.4.6",
     "await-timeout": "^0.6.0",
@@ -33,6 +34,8 @@
     "fibers": "^4.0.2",
     "figlet": "^1.2.4",
     "kafkajs": "^1.11.0",
+    "nedb": "^1.8.0",
+    "nedb-promises-ts": "0.0.1-4",
     "path": "^0.12.7",
     "pino": "^5.14.0",
     "pino-pretty": "^3.4.0",

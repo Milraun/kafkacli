@@ -1,9 +1,10 @@
 import Controller from "./controller.interface"
 import express from 'express';
-import View from './view.interface'
+import { View, ViewDB } from './view.interface'
 import kf from "./kafkafunctions";
 import { Server } from 'socket.io';
 import uuidv4 from 'uuid/v4';
+import Nedb from 'nedb-promises-ts';
 
 import {
   Kafka,
@@ -34,11 +35,13 @@ class ViewController implements Controller {
   public kafka: Kafka;
   private runObserveTopics = false;
   private socket?: SocketIO.Socket;
+  private db: Nedb<ViewDB>;
 
   private views: { [key: string]: View } = {};
 
   constructor(kafka: Kafka) {
     this.kafka = kafka;
+    this.db = this.initializeDB();
   }
 
   public init (io: Server): void {
@@ -52,6 +55,23 @@ class ViewController implements Controller {
     this.router.delete(this.delPath, this.delView);
     this.router.get(this.path, this.getAllViews);
     this.router.get(this.getViewPath, this.getView);
+  }
+
+  private initializeDB (): Nedb<ViewDB> {
+    let db = new Nedb<ViewDB>({
+      filename: 'views.db',
+      autoload: true,
+      timestampData: true,
+      onload: (err) => {
+        if (err) {
+          log.error(`Couldn't load database views.db. Error = ${err}`);
+        } else {
+          this.db?.ensureIndex({ fieldName: 'view', unique: true })
+        }
+      }
+    }
+    )
+    return db;
   }
 
   private intializeSockets (): void {
@@ -74,12 +94,23 @@ class ViewController implements Controller {
       response.status(500).send("No kafka cluster intialized !");
     } else {
       try {
-        let view = this.views[request.params.name];
-        if (view) {
-          response.send(JSON.stringify(view))
+        let v = await this.db.findOne({ view: request.params.name }) as ViewDB;
+
+        if (v) {
+          //          await delView(name);
+          log.error("View exists");
+          response.status(200).send(JSON.stringify(v));
+          return;
         } else {
           response.status(404).send(`No view with name ${request.params.name} found!`);
         }
+
+        // let view = this.views[request.params.name];
+        // if (view) {
+        //   response.send(JSON.stringify(view))
+        // } else {
+        //   response.status(404).send(`No view with name ${request.params.name} found!`);
+        // }
       } catch (e) {
         next(e);
       }
@@ -91,8 +122,9 @@ class ViewController implements Controller {
       response.status(500).send("No kafka cluster intialized !");
     } else {
       try {
-        let outViews = Object.keys(this.views);
-        response.send(JSON.stringify(outViews));
+        let views = await this.db.find({});
+        //        let outViews = Object.keys(this.views);
+        response.send(JSON.stringify(views));
       } catch (e) {
         next(e);
       }
@@ -104,31 +136,46 @@ class ViewController implements Controller {
       response.status(500).send("No kafka cluster intialized !");
     } else {
       try {
-        let regExp = new RegExp(request.params.regex);
+        let regExp = request.params.regex;
         let name = request.params.name;
-        if (this.views[name]) {
+
+        let v = await this.db.findOne({ view: name }) as ViewDB;
+
+        if (v) {
           //          await delView(name);
           log.error("View exists");
           response.status(500).send("View exists !");
           return;
+        } else {
+          let vdb = new ViewDB(uuidv4(), name, regExp);
+          await this.db.insert(vdb);
+          response.status(200);
         }
-        let observable = await kf.tailTopicsObservableServer(regExp, this.kafka, uuidv4(), undefined, true);
-        observable.subscribe({
-          next: m => {
-            if (this.socket) {
-              this.socket.emit(name, "Message");
-            }
-          },
-          complete: () => (log.info(`Done!`)),
-          error: e => log.error(`An error occurred: ${e}`)
-        });
-        let view = new View(name, regExp, observable);
-        this.views[name] = view;
+
+        //   if (this.views[name]) {
+        //     //          await delView(name);
+        //     log.error("View exists");
+        //     response.status(500).send("View exists !");
+        //     return;
+        //   }
+        //   let observable = await kf.tailTopicsObservableServer(regExp, this.kafka, uuidv4(), undefined, true);
+        //   observable.subscribe({
+        //     next: m => {
+        //       if (this.socket) {
+        //         this.socket.emit(name, "Message");
+        //       }
+        //     },
+        //     complete: () => (log.info(`Done!`)),
+        //     error: e => log.error(`An error occurred: ${e}`)
+        //   });
+        //   let view = new View(uuidv4(), name, regExp, observable);
+        //   this.views[name] = view;
       } catch (e) {
         response.status(500).send(e);
         return;
       }
-      response.status(200);
+      // response.status(200);
+
     }
   }
 
@@ -137,4 +184,4 @@ class ViewController implements Controller {
 }
 
 
-export default TopicController;
+export default ViewController;

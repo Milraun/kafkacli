@@ -8,6 +8,7 @@ import {
   port
 } from "envalid";
 import { Kafka } from "kafkajs";
+import ViewController from "./view.controller";
 
 function validateEnv () {
   cleanEnv(process.env, {
@@ -32,7 +33,7 @@ let br = {
   brokers: brokers.brokers
 };
 const kafka = new Kafka(br);
-const app = new App([new TopicController(kafka)], 5000);
+const app = new App([new TopicController(kafka), new ViewController(kafka)], 5000);
 
 app.listen();
 
